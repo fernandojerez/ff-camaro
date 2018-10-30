@@ -1,0 +1,9 @@
+{
+  "menu": {
+    "Publish": "build,ff-publish",
+    "Test": "test",
+    "Build": "build",
+    "Clean": "clean",
+    "Update Camaro": "update_camaro"
+  }
+}

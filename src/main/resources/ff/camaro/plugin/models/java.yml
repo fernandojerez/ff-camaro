@@ -1,0 +1,24 @@
+use: base_camaro
+
+dependencies:
+   compile:
+      - "ff.java:charger:+"
+      - "ff:charger:+"
+      - "ff:crl:+"
+
+sources:
+   ff: { test: true }
+
+eclipse:
+   ff: { test: true, output: false }
+   
+tasks: 
+   ff_compile:
+      use: ff_compile
+      source: ff
+   ff_test_compile:
+      use: ff_compile
+      source: ff
+      test: true
+
+facets: [ $clear, java ]

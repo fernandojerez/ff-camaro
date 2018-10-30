@@ -1,0 +1,38 @@
+use: base_camaro
+
+configurations:
+   plugin: [ ]
+   server: [ ]
+   compile: [ server, plugin ]
+   
+dependencies:
+   server:
+      - "ff:mustang:+"
+      - "com.h2database:h2:+"
+
+sources:
+   ff: { test: true }
+
+eclipse:
+   ff: { test: true, output: false }
+
+tasks: 
+   ff_compile:
+      use: ff_compile
+      source: ff
+   ff_test_compile:
+      use: ff_compile
+      source: ff
+      test: true
+   run_server:
+      class: RunServer
+      group: ff
+      description: Start service
+   stop_server:
+      class: StopServer
+      group: ff
+      description: Stop service
+      log-end: Service stopped
+
+facets: [ $clear, mustang ]
+

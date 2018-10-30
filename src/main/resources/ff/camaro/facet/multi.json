@@ -1,0 +1,9 @@
+{
+  "menu": {
+    "Publish": "ff_macros_compile, ff_java_compile, ff_js_compile, jar, js_jar, java_jar, ff_publish",
+    "FF compile": "ff_macros_compile, ff_java_compile, ff_js_compile",
+    "Test": "test",
+    "Clean": "clean",
+    "Update Camaro": "update_camaro"
+  }
+}

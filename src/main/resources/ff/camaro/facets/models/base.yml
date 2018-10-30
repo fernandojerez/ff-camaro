@@ -1,0 +1,17 @@
+files:
+   - file: /ff/camaro/eclipse/org.eclipse.core.resources.prefs
+     to: .settings/org.eclipse.core.resources.prefs
+   - file: /ff/camaro/eclipse/org.eclipse.buildship.core.prefs
+     to: .settings/org.eclipse.buildship.core.prefs
+   - file: /ff/camaro/eclipse/org.eclipse.jdt.core.prefs
+     to: .settings/org.eclipse.jdt.core.prefs
+   - file: /ff/camaro/eclipse/org.eclipse.jdt.ui.prefs
+     to: .settings/org.eclipse.jdt.ui.prefs
+   - file: /ff/camaro/gradle/gradle-wrapper.properties
+     to: gradle/wrapper/gradle-wrapper.properties
+   - file: /ff/camaro/eclipse/.gitignore
+     to: .gitignore
+   - file: /ff/camaro/eclipse/.hgignore
+     to: .hgignore
+     
+commands: [ base ]

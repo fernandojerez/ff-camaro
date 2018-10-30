@@ -1,0 +1,10 @@
+{
+  "menu": {
+    "Publish": "publish",
+    "FF compile": "ff_macros_compile, ff_compile",
+    "Test": "test",
+    "Build": "build",
+    "Clean": "clean",
+    "Update Camaro": "update_camaro"
+  }
+}

@@ -1,0 +1,113 @@
+use: base_camaro
+
+configurations:
+   java: [  ]
+   js: [  ]
+   macros: [  ]
+   java_test: [  ]
+   js_test: [  ]
+   macros_test: [  ]
+   publish: [ ]
+   
+dependencies:
+   js: 
+      - "ff.js:charger:+"
+   compile:
+      - "ff:charger:+"
+      - "ff:crl:+"
+   macros:
+      - "ff.java:charger:+"
+
+sources:
+   ff: { test: true }
+   macros: { test: false }
+   interfaces/js: { test: false }
+   js: { test: false }
+   resources: { test: false }
+
+eclipse:
+   ff: { test: true, output: false }
+   js: { test: false, output: false }
+   macros: { test: false, output: false }
+   resources: { test: false, output: false }
+   interfaces/js: { test: false, output: true }
+   
+tasks: 
+   ff_macros_compile:
+      use: ff_compile
+      source: macros
+      configuration: macros
+   ff_js_compile:
+      use: ff_js_compile
+      output: ff_js
+      source: ff
+      configuration: js
+   ff_js_test_compile:
+      use: ff_js_compile
+      source: ff
+      output: ff_js
+      test: true
+      configuration: [ js, js_test ]
+   ff_java_compile:
+      use: ff_compile
+      source: ff
+      output: ff_java
+      configuration: java
+   ff_java_test_compile:
+      use: ff_compile
+      source: ff
+      output: ff_java
+      test: true
+      configuration: [ java, java_test ]
+   java_jar:
+      class: $Jar
+      group: ff
+      description: Generate Java FF jar
+      classifier: java
+      extension: jar
+      from:
+         resources:
+            include: [ "**/*" ]
+         ff_java:
+            type: output
+            include: [ "**/*.class" ]
+   js_jar:
+      class: $Jar
+      group: ff
+      description: Generate Javascript FF jar
+      classifier: js
+      extension: jar
+      from:
+         js:
+            include: [ "**/*.js" ]
+         resources:
+            include: [ "**/*" ]
+         ff_js:
+            type: output
+            include: [ "**/*.class", "**/*.js" ]
+         interfaces/js:
+            type: output
+            include: [ "**/*.class" ]
+   macros_jar:
+       class: $Jar
+       group: ff
+       description: Generate Macros FF jar
+       extension: jar
+       from:
+          macros:
+             type: output
+             include: [ "**/*.class" ]
+   ff_publish:
+      class: $Publish
+      configuration: publish
+      publish_to:
+         local: $local
+
+facets: [ $clear, multi ]
+
+artifacts: 
+   publish:
+      - $task macros_jar
+      - $task java_jar
+      - $task js_jar
+

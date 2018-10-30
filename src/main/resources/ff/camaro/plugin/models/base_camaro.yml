@@ -1,0 +1,8 @@
+use: base
+
+configurations: 
+   camaro: [ ]
+
+dependencies:
+   camaro: 
+      - "ff:ff:+"

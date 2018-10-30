@@ -1,0 +1,45 @@
+plugins: [ camaro, java, eclipse, maven ]
+
+tasks:
+   ff-publish:
+      group: ff
+      description: Build and Publish the artifact
+      depends: [ testing, uploadArchives ]
+      log-end: App build and uploaded
+
+   testing:
+      group: ff
+      description: Build and Test the artifact
+      depends: [ build, jacocoTestReport ]
+      log-end: App build and jacoco report generated
+   
+   jar: 
+      class: $ChangeJar
+   
+publish_to:
+   local: $local
+
+facets: [ base ]
+
+configurations:
+   implementation: [ ]
+   compileOnly: [ ]
+   compileClasspath: [ compileOnly, implementation ]
+   annotationProcessor: [ ]
+   runtimeOnly: [ ]
+   runtimeClasspath: [ runtimeOnly, implementation ]
+   testImplementation: [ implementation ]
+   testCompileOnly: [ ]
+   testCompileClasspath: [ testCompileOnly, testImplementation ]
+   testRuntimeOnly: [ runtimeOnly ]
+   testRuntimeClasspath: [ testRuntimeOnly, testImplementation, testCompileClasspath ]
+   archives: [ ]
+   default: [ runtime ]
+
+dependencies:
+   testCompileClasspath: 
+      - "junit:junit:4.12"
+      
+artifacts:
+   archives:
+      - $task jar
