@@ -9,9 +9,9 @@ files:
      to: .settings/org.eclipse.jdt.ui.prefs
    - file: /ff/camaro/gradle/gradle-wrapper.properties
      to: gradle/wrapper/gradle-wrapper.properties
-   - file: /ff/camaro/eclipse/.gitignore
+   - file: /ff/camaro/eclipse/gitignore.txt
      to: .gitignore
-   - file: /ff/camaro/eclipse/.hgignore
+   - file: /ff/camaro/eclipse/hgignore.txt
      to: .hgignore
      
 commands: [ base ]

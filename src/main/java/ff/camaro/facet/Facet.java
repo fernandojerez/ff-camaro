@@ -47,6 +47,7 @@ public abstract class Facet extends Configurator {
 	}
 
 	protected void copyTextFile(final String route, final File output, final Object... args) throws IOException {
+		System.out.println(route);
 		try (InputStream input = getClass().getResourceAsStream(route)) {
 			final InputStreamReader reader = new InputStreamReader(input);
 			final StringBuilder result = new StringBuilder();
