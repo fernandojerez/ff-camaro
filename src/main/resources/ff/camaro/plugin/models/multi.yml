@@ -12,6 +12,8 @@ configurations:
 dependencies:
    js: 
       - "ff.js:charger:+"
+   java:
+      - "ff.java:charger:+"
    compile:
       - "ff:charger:+"
       - "ff:crl:+"
