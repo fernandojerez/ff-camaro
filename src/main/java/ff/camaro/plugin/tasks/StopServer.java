@@ -14,15 +14,14 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ResolvedArtifact;
 import org.gradle.process.ExecSpec;
 
-import ff.camaro.CamaroTask;
-
-public class StopServer extends CamaroTask {
+public class StopServer extends BaseTask {
 
 	public StopServer() {
 		setGroup("ff server");
 		setDescription("Stop a server");
 	}
 
+	@Override
 	public void custom_process() throws Exception {
 		final Map<String, ?> properties = getProject().getProperties();
 		final String location = (String) properties.get("location");

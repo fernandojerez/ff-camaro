@@ -4,6 +4,7 @@ dependencies:
    compile:
       - "ff.java:charger:+"
       - "ff:charger:+"
+      - "ff:charger:+:java"
       - "ff:crl:+"
 
 sources:
