@@ -106,7 +106,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			}
 		}));
 		try {
-//			System.out.println(this);
 			final List<String> plugins = getList("plugins");
 			for (final String plugin : plugins) {
 				loadGradlePlugin(plugin).apply(project, this);
