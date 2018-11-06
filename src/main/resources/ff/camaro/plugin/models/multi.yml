@@ -15,6 +15,7 @@ dependencies:
       - "ff:charger:+:js"
    java:
       - "ff.java:charger:+"
+      - "ff.java:charger.extra:+"
       - "ff:charger:+:java"
    compile:
       - "ff:charger:+"
@@ -22,6 +23,7 @@ dependencies:
    macros:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
+      - "ff.java:charger.extra:+"
 
 sources:
    ff: { test: true }

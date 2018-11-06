@@ -3,6 +3,7 @@ use: base_camaro
 dependencies:
    compile:
       - "ff.java:charger:+"
+      - "ff.java:charger.extra:+"
       - "ff:charger:+"
       - "ff:charger:+:java"
       - "ff:crl:+"
