@@ -8,6 +8,7 @@ configurations:
 dependencies:
    server:
       - "ff:mustang:+"
+      - "ff.java:charger.extra:+"
       - "com.h2database:h2:+"
 
 sources:
