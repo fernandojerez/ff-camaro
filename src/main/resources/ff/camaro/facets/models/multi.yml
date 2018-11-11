@@ -1,4 +1,10 @@
 use: base
 
+files:
+   - file: /ff/camaro/test/FFJavaTestSuite.txt
+     to: src/test/ff/ff/test/FFJavaTestSuite.java
+   - file: /ff/camaro/test/FFJsTestSuite.txt
+     to: src/test/ff/ff/test/FFJsTestSuite.java
+     
 commands: [ $clear, multi ]
       

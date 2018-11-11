@@ -33,7 +33,7 @@ sources:
    resources: { test: false }
 
 eclipse:
-   ff: { test: true, output: false }
+   ff: { test: true, output: true }
    js: { test: false, output: false }
    macros: { test: false, output: false }
    resources: { test: false, output: false }
