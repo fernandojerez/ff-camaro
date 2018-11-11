@@ -3,7 +3,7 @@ use: base_camaro
 configurations:
    plugin: [ ]
    server: [ ]
-   compile: [ server, plugin ]
+   implementation: [ server, plugin ]
    
 dependencies:
    server:

@@ -17,7 +17,7 @@ dependencies:
       - "ff.java:charger:+"
       - "ff.java:charger.extra:+"
       - "ff:charger:+:java"
-   compile:
+   implementation:
       - "ff:charger:+"
       - "ff:crl:+"
    macros:

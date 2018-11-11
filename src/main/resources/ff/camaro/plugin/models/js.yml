@@ -1,7 +1,7 @@
 use: base_camaro
 
 dependencies:
-   compile:
+   implementation:
       - "ff.js:charger:+"
       - "ff:charger:+"
       - "ff:crl:+"

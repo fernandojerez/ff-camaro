@@ -34,6 +34,9 @@ public class Java implements GradlePlugin {
 		final Jar jar = (Jar) project.getTasks().getByName("jar");
 		jar.getManifest().attributes(configurator.getManifestAttributes(""));
 
+		final Test test = (Test) project.getTasks().getByName("test");
+		test.useJUnitPlatform();
+
 		setup_jacoco(project);
 	}
 
