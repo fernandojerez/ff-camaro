@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import ff.crl.test.FFTestEvent;
 import ff.crl.test.FFTestSuite;
+import ff.java.charger.test.FFJavaTestEvent;
 
 public class FFJavaTestSuite extends FFTestSuite {
 
@@ -17,7 +18,7 @@ public class FFJavaTestSuite extends FFTestSuite {
 
 	@Override
 	protected FFTestEvent getTestEvent() {
-		return null;
+		return new FFJavaTestEvent();
 	}
 
 	@Override

@@ -24,6 +24,9 @@ dependencies:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
       - "ff.java:charger.extra:+"
+   testImplementation:
+      - "ff.js:charger:+"
+      - "ff.java:charger:+"  
 
 sources:
    ff: { test: true }
