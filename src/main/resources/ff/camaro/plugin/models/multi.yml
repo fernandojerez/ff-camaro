@@ -4,9 +4,10 @@ configurations:
    java: [  ]
    js: [  ]
    macros: [  ]
-   java_test: [  ]
-   js_test: [  ]
-   macros_test: [  ]
+   base_test: [ ]
+   java_test: [ java, base_test ]
+   js_test: [ js, base_test ]
+   macros_test: [ macros, base_test ]
    publish: [ ]
    
 dependencies:
@@ -26,7 +27,11 @@ dependencies:
       - "ff.java:charger.extra:+"
    testImplementation:
       - "ff.js:charger:+"
-      - "ff.java:charger:+"  
+      - "ff.java:charger:+" 
+   base_test:
+      - "org.junit.jupiter:junit-jupiter-api:5.3.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.3.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.3.1"
 
 sources:
    ff: { test: true }
@@ -112,7 +117,28 @@ tasks:
       configuration: publish
       publish_to:
          local: $local
-
+   ff_java_test:
+      class: $Test
+      group: ff
+      description: Execute Java Test
+      lang: java
+      log-end: "Java Test finished"
+      depends: ["ff_java_test_compile"]
+   ff_js_test:
+      class: $Test
+      group: ff
+      description: Execute Java Test
+      lang: js
+   ff_compile:
+      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile"]
+      log-end: "Source compiled"
+   ff_jar:
+      depends: ["jar", "js_jar", "java_jar"]
+      log-end: "Jar generated"
+   ff_test:
+      depends: ["ff_java_test", "ff_js_test"]
+      log-end: "Test executed"
+      
 facets: [ $clear, multi ]
 
 artifacts: 

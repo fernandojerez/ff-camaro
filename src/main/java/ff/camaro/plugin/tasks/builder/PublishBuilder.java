@@ -38,7 +38,6 @@ public class PublishBuilder extends TaskBuilder {
 
 		final MavenDeployer deployer = maven.mavenDeployer();
 		try {
-			System.out.println("Publicando a " + Util.getFFRepo());
 			deployer.setRepository(deployer.getClass().getMethod("repository", Map.class)//
 					.invoke(deployer, Util.map("url", Util.getFFRepo())));
 		} catch (final Exception e) {
