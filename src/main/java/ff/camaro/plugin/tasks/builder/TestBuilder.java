@@ -62,6 +62,8 @@ public class TestBuilder extends TaskBuilder {
 
 				test.setExcludes(excludes);
 				test.setTestClassesDirs(project.files(project.file(ConfigLoader.output_test_path("ff"))));
+				test.getTestLogging().setShowStandardStreams(true);
+				test.getTestLogging().setShowStackTraces(true);
 
 				final JacocoTaskExtension jacoco = test.getExtensions().getByType(JacocoTaskExtension.class);
 				jacoco.setDestinationFile(new File(project.getBuildDir(), "jacoco/test.exec"));
