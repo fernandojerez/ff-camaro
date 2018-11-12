@@ -122,13 +122,13 @@ tasks:
       group: ff
       description: Execute Java Test
       lang: java
-      log-end: "Java Test finished"
       depends: ["ff_java_test_compile"]
    ff_js_test:
       class: $Test
       group: ff
-      description: Execute Java Test
+      description: Execute Js Test
       lang: js
+      depends: ["ff_js_test_compile"]
    ff_compile:
       depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile"]
       log-end: "Source compiled"
