@@ -1,0 +1,15 @@
+# Notes
+
+Camaro Yaml commands
+
+	In list:
+		$clear -> first element of the list clear in merge process
+
+	In Map
+		$remove -> use as value indicate remove key in merge process
+		
+	In String
+	
+		$format -> {key} denotate key, {test?value}
+		$output_main_path -> get output main path
+		$output_test_path -> get output test path

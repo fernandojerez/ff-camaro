@@ -1,0 +1,152 @@
+use: base_camaro
+
+configurations:
+   java: [  ]
+   js: [  ]
+   macros: [  ]
+   base_test: [ ]
+   java_test: [ java, base_test ]
+   js_test: [ js, base_test ]
+   macros_test: [ macros, base_test ]
+   publish: [ ]
+   
+dependencies:
+   js: 
+      - "ff.js:charger:+"
+      - "ff:charger:+:js"
+   java:
+      - "ff.java:charger:+"
+      - "ff.java:charger.extra:+"
+      - "ff:charger:+:java"
+   implementation:
+      - "ff:charger:+"
+      - "ff:crl:+"
+   macros:
+      - "ff:charger:+:java"
+      - "ff.java:charger:+"
+      - "ff.java:charger.extra:+"
+   testImplementation:
+      - "ff.js:charger:+"
+      - "ff.java:charger:+" 
+   base_test:
+      - "org.junit.jupiter:junit-jupiter-api:5.3.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.3.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.3.1"
+   js_test:
+      - "org.seleniumhq.selenium:selenium-java:3.141.5"
+      - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.5"
+
+sources:
+   ff: { test: true }
+   macros: { test: false }
+   interfaces/js: { test: false }
+   js: { test: false }
+   resources: { test: false }
+
+eclipse:
+   ff: { test: true, output: true }
+   js: { test: false, output: false }
+   macros: { test: false, output: false }
+   resources: { test: false, output: false }
+   interfaces/js: { test: false, output: true }
+   
+tasks: 
+   ff_macros_compile:
+      use: ff_compile
+      source: macros
+      configuration: macros
+   ff_js_compile:
+      use: ff_js_compile
+      output: ff_js
+      source: ff
+      configuration: js
+   ff_js_test_compile:
+      use: ff_js_compile
+      source: ff
+      output: ff_js
+      test: true
+      configuration: [ js, js_test ]
+   ff_java_compile:
+      use: ff_compile
+      source: ff
+      output: ff_java
+      configuration: java
+   ff_java_test_compile:
+      use: ff_compile
+      source: ff
+      output: ff_java
+      test: true
+      configuration: [ java, java_test ]
+   java_jar:
+      class: $Jar
+      group: ff
+      description: Generate Java FF jar
+      classifier: java
+      extension: jar
+      from:
+         resources:
+            include: [ "**/*" ]
+         ff_java:
+            type: output
+            include: [ "**/*.class" ]
+   js_jar:
+      class: $Jar
+      group: ff
+      description: Generate Javascript FF jar
+      classifier: js
+      extension: jar
+      from:
+         js:
+            include: [ "**/*.js" ]
+         resources:
+            include: [ "**/*" ]
+         ff_js:
+            type: output
+            include: [ "**/*.class", "**/*.js" ]
+         interfaces/js:
+            type: output
+            include: [ "**/*.class" ]
+   macros_jar:
+       class: $Jar
+       group: ff
+       description: Generate Macros FF jar
+       extension: jar
+       from:
+          macros:
+             type: output
+             include: [ "**/*.class" ]
+   ff_publish:
+      class: $Publish
+      configuration: publish
+      publish_to:
+         local: $local
+   ff_java_test:
+      class: $Test
+      group: ff
+      description: Execute Java Test
+      lang: java
+      depends: ["ff_java_test_compile"]
+   ff_js_test:
+      class: $Test
+      group: ff
+      description: Execute Js Test
+      lang: js
+      depends: ["ff_js_test_compile"]
+   ff_compile:
+      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile"]
+      log-end: "Source compiled"
+   ff_jar:
+      depends: ["jar", "js_jar", "java_jar"]
+      log-end: "Jar generated"
+   ff_test:
+      depends: ["ff_java_test", "ff_js_test"]
+      log-end: "Test executed"
+      
+facets: [ $clear, multi ]
+
+artifacts: 
+   publish:
+      - $task macros_jar
+      - $task java_jar
+      - $task js_jar
+

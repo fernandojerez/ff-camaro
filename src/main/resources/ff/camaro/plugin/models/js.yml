@@ -1,0 +1,43 @@
+use: base_camaro
+
+dependencies:
+   implementation:
+      - "ff.js:charger:+"
+      - "ff:charger:+"
+      - "ff:crl:+"
+   compileOnly:
+      - "ff:mustang:+"
+
+sources:
+   ff: { test: true }
+   macros: { test: false }
+   resources: { test: false }
+   interfaces: { test: false }
+
+eclipse:
+   ff: { test: true, output: false }
+   macros: { test: false, output: false }
+   resources: { test: false, output: false }
+   interfaces: { test: false, output: true }
+   
+tasks: 
+   ff_compile:
+      use: ff_js_compile
+      source: ff
+   ff_test_compile:
+      use: ff_js_compile
+      source: ff
+      test: true
+   ff_macros_compile:
+      use: ff_compile
+      source: macros
+   jar:
+      class: $ChangeJar
+      from:
+         ff:
+            include: [ "**/*.js" ]
+         resources:
+            include: [ "**/*" ]
+
+facets: [ $clear, js ]
+

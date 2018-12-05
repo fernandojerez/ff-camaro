@@ -1,0 +1,9 @@
+
+syntax: regexp
+^\.gradle$
+syntax: regexp
+^bin$
+syntax: regexp
+^build$
+syntax: regexp
+^\.gradle$
