@@ -41,6 +41,7 @@ public class TestBuilder extends TaskBuilder {
 					public void execute(final Project arg0) {
 						final Set<File> files = new HashSet<>();
 						files.addAll(project.getConfigurations().getByName(flang + "_test").resolve());
+						files.add(project.file(ConfigLoader.output_main_path("ff_" + flang)));
 						files.add(project.file(ConfigLoader.output_test_path("ff_" + flang)));
 						files.add(project.file(ConfigLoader.output_test_path("ff")));
 

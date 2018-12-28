@@ -17,3 +17,4 @@ sourceSet: $format {test?test_set:main_set}
 folder: $format {source}
 outputDir: $format {test?test_output:main_output}
 definitionOutput: $format {definition?outputDir:none}
+moduleOutputDir: $output_main_path output

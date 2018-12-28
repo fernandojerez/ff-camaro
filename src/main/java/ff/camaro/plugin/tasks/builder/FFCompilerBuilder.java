@@ -25,6 +25,9 @@ public class FFCompilerBuilder extends TaskBuilder {
 				compiler.setOutput(project.file(getString("outputDir")));
 				compiler.setSourceSet(getString("sourceSet"));
 				compiler.setConfiguration(getList("configuration").toArray(new String[0]));
+				if ("true".equals(getString("test"))) {
+					compiler.setModuleOutputDir(project.file(getString("moduleOutputDir")));
+				}
 			}
 
 		});

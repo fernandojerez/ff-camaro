@@ -26,6 +26,7 @@ public class FFCompiler extends CamaroTask {
 	private String folder;
 	private String sourceSet;
 	private String[] configuration;
+	private File moduleOutputDir;
 
 	public FFCompiler() {
 		setGroup("ff");
@@ -57,6 +58,10 @@ public class FFCompiler extends CamaroTask {
 		}
 		for (final File f : classes) {
 			urls.add(f.toURI().toURL());
+		}
+
+		if (moduleOutputDir != null) {
+			urls.add(moduleOutputDir.toURI().toURL());
 		}
 
 		final URLClassLoader loader = getClassLoader(urls);
@@ -138,6 +143,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setMacroOutput(final File macroOutput) {
 		this.macroOutput = macroOutput;
+	}
+
+	public void setModuleOutputDir(final File file) {
+		moduleOutputDir = file;
 	}
 
 	public void setOutput(final File output) {
