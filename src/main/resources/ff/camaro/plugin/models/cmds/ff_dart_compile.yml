@@ -1,0 +1,7 @@
+#Properties: 
+#test: Compile test source
+#source: Source to compile defined in source section
+use: ff_compile
+
+definition: true
+compilerClass: ff.lang.compiler.camaro.FFDartCamaroCompiler

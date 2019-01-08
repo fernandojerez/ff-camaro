@@ -3,14 +3,19 @@ use: base_camaro
 configurations:
    java: [  ]
    js: [  ]
+   dart: [  ]
    macros: [  ]
    base_test: [ ]
    java_test: [ java, base_test ]
    js_test: [ js, base_test ]
+   dart_test: [ dart, base_test ]
    macros_test: [ macros, base_test ]
    publish: [ ]
    
 dependencies:
+   dart:
+      - "ff.dart:charger:+"
+      - "ff:charger:+:dart"
    js: 
       - "ff.js:charger:+"
       - "ff:charger:+:js"
@@ -40,6 +45,7 @@ sources:
    ff: { test: true }
    macros: { test: false }
    interfaces/js: { test: false }
+   interfaces/dart: { test: false }
    js: { test: false }
    resources: { test: false }
 
@@ -49,6 +55,7 @@ eclipse:
    macros: { test: false, output: false }
    resources: { test: false, output: false }
    interfaces/js: { test: false, output: true }
+   interfaces/dart: { test: false, output: true }
    
 tasks: 
    ff_macros_compile:
@@ -66,6 +73,17 @@ tasks:
       output: ff_js
       test: true
       configuration: [ js, js_test ]
+   ff_dart_compile:
+      use: ff_dart_compile
+      output: ff_dart
+      source: ff
+      configuration: js
+   ff_dart_test_compile:
+      use: ff_dart_compile
+      source: ff
+      output: ff_dart
+      test: true
+      configuration: [ dart, dart_test ]
    ff_java_compile:
       use: ff_compile
       source: ff
@@ -104,6 +122,21 @@ tasks:
             type: output
             include: [ "**/*.class", "**/*.js" ]
          interfaces/js:
+            type: output
+            include: [ "**/*.class" ]
+   dart_jar:
+      class: $Jar
+      group: ff
+      description: Generate Dart FF jar
+      classifier: dart
+      extension: jar
+      from:
+         resources:
+            include: [ "**/*" ]
+         ff_dart:
+            type: output
+            include: [ "**/*.class", "**/*.dart" ]
+         interfaces/dart:
             type: output
             include: [ "**/*.class" ]
    macros_jar:
