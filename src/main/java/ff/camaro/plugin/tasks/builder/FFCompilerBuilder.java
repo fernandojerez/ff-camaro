@@ -20,6 +20,7 @@ public class FFCompilerBuilder extends TaskBuilder {
 				if (!getString("definitionOutput").equals("none")) {
 					compiler.setDefinitionOutput(project.file(getString("definitionOutput")));
 				}
+				compiler.setCompilationType(getString("compilation_type"));
 				compiler.setFolder(getString("folder"));
 				compiler.setMacroOutput(project.file(getString("macroOutput")));
 				compiler.setOutput(project.file(getString("outputDir")));

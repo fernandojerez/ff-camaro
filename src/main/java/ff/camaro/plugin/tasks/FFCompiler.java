@@ -27,6 +27,7 @@ public class FFCompiler extends CamaroTask {
 	private String sourceSet;
 	private String[] configuration;
 	private File moduleOutputDir;
+	private String type;
 
 	public FFCompiler() {
 		setGroup("ff");
@@ -77,6 +78,9 @@ public class FFCompiler extends CamaroTask {
 		final Class<?> ff_compiler_class = loader.loadClass(getCompilerClass());
 		final Object ff_compiler = ff_compiler_class.getConstructor().newInstance();
 
+		ff_compiler_class.getMethod("setType", String.class) //
+				.invoke(ff_compiler, type);
+
 		ff_compiler_class
 				.getMethod("setup", ClassLoader.class, File.class, File.class, File.class, File.class, File[].class)//
 				.invoke(ff_compiler, loader, output, definitionOutput, macros, analized, sources);
@@ -123,6 +127,15 @@ public class FFCompiler extends CamaroTask {
 
 	public void setAnalizedOutput(final File analizedOutput) {
 		this.analizedOutput = analizedOutput;
+	}
+
+	public void setCompilationType(final String type) {
+		if (type == null) {
+			this.type = "LIBRARY";
+		} else {
+			this.type = type.toUpperCase();
+		}
+
 	}
 
 	public void setCompilerClass(final String compilerClass) {

@@ -82,6 +82,7 @@ tasks:
       use: ff_dart_compile
       source: ff
       output: ff_dart
+      compilation_type: APPLICATION
       test: true
       configuration: [ dart, dart_test ]
    ff_java_compile:
@@ -165,11 +166,17 @@ tasks:
       description: Execute Js Test
       lang: js
       depends: ["ff_js_test_compile"]
+   ff_dart_test:
+      class: $Test
+      group: ff
+      description: Execute Dart Test
+      lang: dart
+      depends: ["ff_dart_test_compile"]
    ff_compile:
-      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile"]
+      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile", "ff_dart_compile"]
       log-end: "Source compiled"
    ff_jar:
-      depends: ["jar", "js_jar", "java_jar"]
+      depends: ["jar", "js_jar", "java_jar", "dart_jar"]
       log-end: "Jar generated"
    ff_test:
       depends: ["ff_java_test", "ff_js_test"]
@@ -182,4 +189,5 @@ artifacts:
       - $task macros_jar
       - $task java_jar
       - $task js_jar
+      - $task dart_jar
 
