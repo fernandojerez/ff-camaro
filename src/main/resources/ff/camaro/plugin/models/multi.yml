@@ -124,7 +124,8 @@ tasks:
             include: [ "**/*.class", "**/*.js" ]
          interfaces/js:
             type: output
-            include: [ "**/*.class" ]
+            include: [ "**/*.class", "**/*" ]
+            exclude: [ "**/*.java" ]
    dart_jar:
       class: $Jar
       group: ff
@@ -139,7 +140,8 @@ tasks:
             include: [ "**/*.class", "**/*.dart" ]
          interfaces/dart:
             type: output
-            include: [ "**/*.class" ]
+            include: [ "**/*.class", "**/*.dart" ]
+            exclude: [ "**/*.java" ]
    macros_jar:
        class: $Jar
        group: ff

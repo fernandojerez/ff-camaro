@@ -23,7 +23,7 @@ public class JarBuilder extends TaskBuilder {
 
 	@Override
 	public void define(final Project project, final String taskName) {
-		final Action<Jar> action = new Action<Jar>() {
+		final Action<Jar> action = new Action<>() {
 
 			@Override
 			public void execute(final Jar jar) {
@@ -39,6 +39,9 @@ public class JarBuilder extends TaskBuilder {
 								public void execute(final CopySpec spec) {
 									final List<String> include = getList(f, "include");
 									spec.include(include.toArray(new String[0]));
+
+									final List<String> exclude = getList(f, "exclude");
+									spec.exclude(exclude.toArray(new String[0]));
 								}
 							});
 				}
