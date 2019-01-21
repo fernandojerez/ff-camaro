@@ -46,6 +46,7 @@ sources:
    macros: { test: false }
    interfaces/js: { test: false }
    interfaces/dart: { test: false }
+   interfaces/java: { test: false }
    js: { test: false }
    resources: { test: false }
 
@@ -54,6 +55,7 @@ eclipse:
    js: { test: false, output: false }
    macros: { test: false, output: false }
    resources: { test: false, output: false }
+   interfaces/java: { test: false, output: true }
    interfaces/js: { test: false, output: true }
    interfaces/dart: { test: false, output: true }
    
@@ -108,6 +110,10 @@ tasks:
          ff_java:
             type: output
             include: [ "**/*.class" ]
+         interfaces/java:
+            type: output
+            include: [ "**/*.class", "**/*" ]
+            exclude: [ "**/*.java" ]
    js_jar:
       class: $Jar
       group: ff
