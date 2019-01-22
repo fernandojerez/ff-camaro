@@ -89,7 +89,6 @@ public class Eclipse implements GradlePlugin {
 
 						final List<String> builds = configurator.getList("eclipse_build");
 						for (final String path : builds) {
-							System.out.println(ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME));
 							cp.getEntries().add(new Library(new FileReferenceFactory()
 									.fromPath(ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME))));
 						}
