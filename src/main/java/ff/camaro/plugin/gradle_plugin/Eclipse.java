@@ -15,7 +15,9 @@ import org.gradle.plugins.ide.eclipse.model.Classpath;
 import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
 import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
 import org.gradle.plugins.ide.eclipse.model.EclipseModel;
+import org.gradle.plugins.ide.eclipse.model.Library;
 import org.gradle.plugins.ide.eclipse.model.SourceFolder;
+import org.gradle.plugins.ide.eclipse.model.internal.FileReferenceFactory;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
@@ -83,6 +85,13 @@ public class Eclipse implements GradlePlugin {
 							} else {
 								addEclipseSourceFolder(cp, entry.getKey(), configurator.test(f.get("test")));
 							}
+						}
+
+						final List<String> builds = configurator.getList("eclipse_build");
+						for (final String path : builds) {
+							System.out.println(ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME));
+							cp.getEntries().add(new Library(new FileReferenceFactory()
+									.fromPath(ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME))));
 						}
 
 					}

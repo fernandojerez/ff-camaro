@@ -58,6 +58,8 @@ eclipse:
    interfaces/java: { test: false, output: true }
    interfaces/js: { test: false, output: true }
    interfaces/dart: { test: false, output: true }
+  
+eclipse_build: [ ff_java ]
    
 tasks: 
    ff_macros_compile:
