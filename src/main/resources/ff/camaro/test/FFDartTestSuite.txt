@@ -1,0 +1,29 @@
+package ff.test;
+
+import java.io.File;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+
+import ff.crl.test.FFTestEvent;
+import ff.crl.test.FFTestSuite;
+import ff.dart.charger.test.FFDartTestEvent;
+
+public class FFDartTestSuite extends FFTestSuite {
+
+	@Test
+	public void dummy() {
+		return;
+	}
+
+	@Override
+	protected FFTestEvent getTestEvent() {
+		return new FFDartTestEvent(new File("build/classes/ff_dart/test").toPath());
+	}
+
+	@Override
+	protected Path getTestPath() {
+		return new File("src/test/ff").toPath();
+	}
+
+}
