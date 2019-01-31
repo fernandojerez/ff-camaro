@@ -20,7 +20,7 @@ public abstract class Facet extends Configurator {
 
 	public void apply(final Project project, final Map<String, Object> config) throws IOException {
 		System.out.println(getConfiguration());
-		setup(project, ConfigLoader.facet.load(getConfiguration()));
+		setup(project, ConfigLoader.facet.load(project, getConfiguration()));
 
 		final File projectDir = project.getProjectDir();
 		final Properties props = new Properties();
@@ -44,6 +44,9 @@ public abstract class Facet extends Configurator {
 		for (final Map<String, String> file : files) {
 			copyTextFile(file.get("file"), new File(projectDir, file.get("to")));
 		}
+
+		copyTextFile("/ff/camaro/eclipse/project.txt", new File(projectDir, ".project"), "#ProjectName#",
+				props.getProperty("project_group") + "@" + props.getProperty("project_name"));
 	}
 
 	protected void copyTextFile(final String route, final File output, final Object... args) throws IOException {

@@ -64,7 +64,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				new DslObject(sourceSet).getConvention().getPlugins().put(name, ffSourceSet);
 
 				prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));
-				final File outdir = prj.file(ConfigLoader.output_path(name, sourceSet.getName()));
+				final File outdir = new File(prj.getBuildDir(),
+						ConfigLoader.output_path(prj, name, sourceSet.getName()));
 				prj.mkdir(outdir);
 				ffSourceSet.getFf().srcDir(ConfigLoader.src_path(name, sourceSet.getName()));
 				ffSourceSet.getFf().setOutputDir(outdir);
@@ -93,7 +94,16 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	@Override
 	public final void apply(final Project target) {
-		setup(target, ConfigLoader.plugin.load(getConfiguration()));
+		final String file = System.getenv("FF_BUILD_DIR");
+		final File ffBuildDir = new File(file);
+		final File buildDir = new File(ffBuildDir, target.getName() + "/build");
+		buildDir.mkdirs();
+		target.setBuildDir(buildDir);
+
+		new File(ffBuildDir, target.getName() + "/.gradle").mkdirs();
+		new File(ffBuildDir, target.getName() + "/eclipse").mkdirs();
+
+		setup(target, ConfigLoader.plugin.load(target, getConfiguration()));
 		final RepositoryHandler repositories = project.getRepositories();
 		repositories.add(repositories.maven(new Action<MavenArtifactRepository>() {
 			@Override

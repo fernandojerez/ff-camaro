@@ -31,6 +31,11 @@ jar {
 	}
 }
 
+if(System.env.FF_BUILD_DIR != null){
+	new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build').mkdirs()
+	project.buildDir = new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build')
+}
+
 artifacts {
 	archives jar
 }

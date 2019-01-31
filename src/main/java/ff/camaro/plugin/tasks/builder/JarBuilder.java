@@ -33,7 +33,7 @@ public class JarBuilder extends TaskBuilder {
 					@SuppressWarnings("unchecked")
 					final Map<String, Object> f = (Map<String, Object>) entry.getValue();
 					jar.from("output".equals(f.get("type")) ? //
-					ConfigLoader.output_main_path(entry.getKey()) //
+					ConfigLoader.output_main_path(project, entry.getKey()) //
 							: ConfigLoader.src_main_path(entry.getKey()), new Action<CopySpec>() {
 								@Override
 								public void execute(final CopySpec spec) {

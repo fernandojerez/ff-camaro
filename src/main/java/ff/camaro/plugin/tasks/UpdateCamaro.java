@@ -37,6 +37,7 @@ public class UpdateCamaro extends DefaultTask {
 			result.remove("menu");
 			base_map.putAll(result);
 		}
+
 		for (final String facet : facets) {
 			final Facet f = (Facet) Class.forName("ff.camaro.facet." + Configurator.capitalize(facet) + "Facet")
 					.getConstructor().newInstance();

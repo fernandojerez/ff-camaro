@@ -1,5 +1,7 @@
 package ff.camaro.plugin.tasks.builder;
 
+import java.io.File;
+
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 
@@ -14,20 +16,21 @@ public class FFCompilerBuilder extends TaskBuilder {
 
 			@Override
 			public void execute(final FFCompiler compiler) {
+				final File buildDir = project.getBuildDir();
 				BaseTask.base_setup(compiler, getDefinition(), getConfiguration());
-				compiler.setAnalizedOutput(project.file(getString("analizedOutput")));
+				compiler.setAnalizedOutput(new File(buildDir, getString("analizedOutput")));
 				compiler.setCompilerClass(getString("compilerClass"));
 				if (!getString("definitionOutput").equals("none")) {
-					compiler.setDefinitionOutput(project.file(getString("definitionOutput")));
+					compiler.setDefinitionOutput(new File(buildDir, getString("definitionOutput")));
 				}
 				compiler.setCompilationType(getString("compilation_type"));
 				compiler.setFolder(getString("folder"));
-				compiler.setMacroOutput(project.file(getString("macroOutput")));
-				compiler.setOutput(project.file(getString("outputDir")));
+				compiler.setMacroOutput(new File(buildDir, getString("macroOutput")));
+				compiler.setOutput(new File(buildDir, getString("outputDir")));
 				compiler.setSourceSet(getString("sourceSet"));
 				compiler.setConfiguration(getList("configuration").toArray(new String[0]));
 				if ("true".equals(getString("test"))) {
-					compiler.setModuleOutputDir(project.file(getString("moduleOutputDir")));
+					compiler.setModuleOutputDir(new File(buildDir, getString("moduleOutputDir")));
 				}
 			}
 

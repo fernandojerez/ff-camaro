@@ -72,6 +72,7 @@ public class FFCompiler extends CamaroTask {
 		final File definitionOutput = getDefinitionOutput();
 		final File macros = getMacroOutput();
 		final File analized = getAnalizedOutput();
+
 		macros.mkdirs();
 		analized.mkdirs();
 

@@ -1,5 +1,6 @@
 package ff.camaro.plugin.gradle_plugin;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,9 @@ import org.gradle.plugins.ide.eclipse.model.Classpath;
 import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
 import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
 import org.gradle.plugins.ide.eclipse.model.EclipseModel;
+import org.gradle.plugins.ide.eclipse.model.EclipseProject;
 import org.gradle.plugins.ide.eclipse.model.Library;
+import org.gradle.plugins.ide.eclipse.model.Link;
 import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 import org.gradle.plugins.ide.eclipse.model.internal.FileReferenceFactory;
 
@@ -33,12 +36,13 @@ public class Eclipse implements GradlePlugin {
 		}
 	}
 
-	protected void addEclipseSourceWithOutputFolder(final Classpath cp, final String path, final boolean test) {
+	protected void addEclipseSourceWithOutputFolder(final Project prj, final Classpath cp, final String path,
+			final boolean test) {
 		cp.getEntries().add(new SourceFolder(ConfigLoader.src_path(path, SourceSet.MAIN_SOURCE_SET_NAME),
-				ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME)));
+				ConfigLoader.eclipse_output_path(path, SourceSet.MAIN_SOURCE_SET_NAME)));
 		if (test) {
 			cp.getEntries().add(new SourceFolder(ConfigLoader.src_path(path, SourceSet.TEST_SOURCE_SET_NAME),
-					ConfigLoader.output_path(path, SourceSet.TEST_SOURCE_SET_NAME)));
+					ConfigLoader.eclipse_output_path(path, SourceSet.TEST_SOURCE_SET_NAME)));
 		}
 	}
 
@@ -51,7 +55,20 @@ public class Eclipse implements GradlePlugin {
 		model.getJdt().setSourceCompatibility(JavaVersion.VERSION_11);
 		model.getJdt().setTargetCompatibility(JavaVersion.VERSION_11);
 
+		model.project(new Action<EclipseProject>() {
+
+			@Override
+			public void execute(final EclipseProject item) {
+				item.getLinkedResources()
+						.add(new Link("build", "2", null, "FF_BUILD_DIR/" + project.getName() + "/build"));
+				item.getLinkedResources()
+						.add(new Link(".gradle", "2", null, "FF_BUILD_DIR/" + project.getName() + "/.gradle"));
+			}
+
+		});
+
 		final EclipseClasspath classpath = model.getClasspath();
+		classpath.setDefaultOutputDir(new File("build/classes"));
 		classpath.file(new Action<XmlFileContentMerger>() {
 			@Override
 			public void execute(final XmlFileContentMerger merger) {
@@ -81,7 +98,8 @@ public class Eclipse implements GradlePlugin {
 							final Map<String, Object> f = (Map<String, Object>) entry.getValue();
 
 							if (configurator.test(f.get("output"))) {
-								addEclipseSourceWithOutputFolder(cp, entry.getKey(), configurator.test(f.get("test")));
+								addEclipseSourceWithOutputFolder(project, cp, entry.getKey(),
+										configurator.test(f.get("test")));
 							} else {
 								addEclipseSourceFolder(cp, entry.getKey(), configurator.test(f.get("test")));
 							}
@@ -90,7 +108,7 @@ public class Eclipse implements GradlePlugin {
 						final List<String> builds = configurator.getList("eclipse_build");
 						for (final String path : builds) {
 							cp.getEntries().add(new Library(new FileReferenceFactory()
-									.fromPath(ConfigLoader.output_path(path, SourceSet.MAIN_SOURCE_SET_NAME))));
+									.fromPath(ConfigLoader.eclipse_output_path(path, SourceSet.MAIN_SOURCE_SET_NAME))));
 						}
 
 					}
