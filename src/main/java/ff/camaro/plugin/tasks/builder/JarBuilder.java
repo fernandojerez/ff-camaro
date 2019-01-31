@@ -1,5 +1,6 @@
 package ff.camaro.plugin.tasks.builder;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +34,8 @@ public class JarBuilder extends TaskBuilder {
 					@SuppressWarnings("unchecked")
 					final Map<String, Object> f = (Map<String, Object>) entry.getValue();
 					jar.from("output".equals(f.get("type")) ? //
-					ConfigLoader.output_main_path(project, entry.getKey()) //
+					new File(project.getBuildDir(), ConfigLoader.output_main_path(project, entry.getKey()))
+							.getAbsolutePath() //
 							: ConfigLoader.src_main_path(entry.getKey()), new Action<CopySpec>() {
 								@Override
 								public void execute(final CopySpec spec) {
