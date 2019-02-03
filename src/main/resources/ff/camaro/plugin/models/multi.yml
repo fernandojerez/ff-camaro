@@ -188,7 +188,7 @@ tasks:
       depends: ["jar", "js_jar", "java_jar", "dart_jar"]
       log-end: "Jar generated"
    ff_test:
-      depends: ["ff_java_test", "ff_js_test", "ff_dart_test"]
+      depends: [ "ff_java_test", "ff_js_test", "ff_dart_test"]
       log-end: "Test executed"
       
 facets: [ $clear, multi ]

@@ -18,7 +18,13 @@ public class FFDartTestSuite extends FFTestSuite {
 
 	@Override
 	protected FFTestEvent getTestEvent() {
-		return new FFDartTestEvent(new File("build/classes/ff_dart/test").toPath());
+		String projectName = "#project.name#";
+		String build_dir = System.getenv("FF_BUILD_DIR");
+		String resolve = "";
+		if(build_dir != null) {
+			resolve = build_dir + "/" + projectName + "/";
+		}
+		return new FFDartTestEvent(new File(resolve + "build/classes/ff_dart/test").toPath());
 	}
 
 	@Override

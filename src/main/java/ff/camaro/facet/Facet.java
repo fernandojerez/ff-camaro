@@ -42,7 +42,8 @@ public abstract class Facet extends Configurator {
 
 		final List<Map<String, String>> files = getList("files");
 		for (final Map<String, String> file : files) {
-			copyTextFile(file.get("file"), new File(projectDir, file.get("to")));
+			copyTextFile(file.get("file"), new File(projectDir, file.get("to")), "#project.name#",
+					props.getProperty("project_group") + "@" + props.getProperty("project_name"));
 		}
 
 		copyTextFile("/ff/camaro/eclipse/project.txt", new File(projectDir, ".project"), "#ProjectName#",
