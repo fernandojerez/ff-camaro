@@ -80,7 +80,7 @@ tasks:
       use: ff_dart_compile
       output: ff_dart
       source: ff
-      configuration: js
+      configuration: dart
    ff_dart_test_compile:
       use: ff_dart_compile
       source: ff

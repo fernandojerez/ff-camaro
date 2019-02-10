@@ -7,10 +7,10 @@ import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.gradle.api.GradleException;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.StopActionException;
 import org.gradle.api.tasks.TaskAction;
 
 import ff.camaro.CamaroTask;
@@ -90,11 +90,13 @@ public class FFCompiler extends CamaroTask {
 		try {
 			for (final File source_dir : sources) {
 				if (Boolean.FALSE.equals(compile.invoke(ff_compiler, source_dir))) {
-					throw new GradleException("Failed to compile ff sources");
+					throw new StopActionException("Failed to compile ff sources");
 				}
 			}
 		} finally {
-			ff_compiler.getClass().getMethod("end").invoke(ff_compiler);
+			if (Boolean.FALSE.equals(ff_compiler.getClass().getMethod("end").invoke(ff_compiler))) {
+				throw new StopActionException("Failed to compile ff sources");
+			}
 		}
 	}
 
