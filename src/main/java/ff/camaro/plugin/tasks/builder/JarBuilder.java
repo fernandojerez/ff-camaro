@@ -49,7 +49,7 @@ public class JarBuilder extends TaskBuilder {
 				}
 				final String classifier = getString("classifier");
 				if (classifier != null) {
-					jar.setClassifier(classifier);
+					jar.getArchiveClassifier().set(classifier);
 					jar.getManifest().attributes(getManifestAttributes(project, "-" + classifier));
 				} else {
 					jar.getManifest().attributes(getManifestAttributes(project, ""));
@@ -57,7 +57,7 @@ public class JarBuilder extends TaskBuilder {
 
 				final String extension = getString("extension");
 				if (extension != null) {
-					jar.setExtension(extension);
+					jar.getArchiveExtension().set(extension);
 				}
 
 			}

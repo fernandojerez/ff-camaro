@@ -23,7 +23,6 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.Upload;
-import org.gradle.internal.reflect.Instantiator;
 import org.gradle.jvm.tasks.Jar;
 
 import ff.camaro.ConfigLoader;
@@ -38,11 +37,9 @@ import ff.camaro.plugin.tasks.builder.TaskBuilder;
 public abstract class CamaroPlugin extends Configurator implements Plugin<Project> {
 
 	private final ObjectFactory objectFactory;
-	private final Instantiator instantiator;
 
-	public CamaroPlugin(final ObjectFactory objectFactory, final Instantiator instantiator) {
+	public CamaroPlugin(final ObjectFactory objectFactory) {
 		this.objectFactory = objectFactory;
-		this.instantiator = instantiator;
 	}
 
 	private void addFFMainSourceSet(final Project prj, final String name, final boolean test) {
@@ -60,7 +57,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					}
 				}
 				final FFSourceSet ffSourceSet = new FFSourceSet(((DefaultSourceSet) sourceSet).getDisplayName(),
-						objectFactory, instantiator);
+						objectFactory, sourceSet.getExtensions());
 				new DslObject(sourceSet).getConvention().getPlugins().put(name, ffSourceSet);
 
 				prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));

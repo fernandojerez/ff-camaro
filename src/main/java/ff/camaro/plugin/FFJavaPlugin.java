@@ -3,7 +3,6 @@ package ff.camaro.plugin;
 import javax.inject.Inject;
 
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.internal.reflect.Instantiator;
 
 /**
  * @author fernandojerez
@@ -11,8 +10,8 @@ import org.gradle.internal.reflect.Instantiator;
 public class FFJavaPlugin extends CamaroPlugin {
 
 	@Inject
-	public FFJavaPlugin(final ObjectFactory objectFactory, final Instantiator instantiator) {
-		super(objectFactory, instantiator);
+	public FFJavaPlugin(final ObjectFactory objectFactory) {
+		super(objectFactory);
 	}
 
 	@Override

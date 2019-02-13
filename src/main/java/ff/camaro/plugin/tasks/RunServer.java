@@ -68,7 +68,7 @@ public class RunServer extends BaseTask {
 		getProject().copy(new Action<CopySpec>() {
 			@Override
 			public void execute(final CopySpec copySpec) {
-				copySpec.from(jar.getArchivePath());
+				copySpec.from(jar.getArchiveFile());
 				copySpec.rename(".+", properties.get("project_group") + "." + properties.get("project_name") + "-"
 						+ properties.get("project_version") + ".jar");
 				copySpec.into(output);
