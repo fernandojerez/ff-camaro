@@ -46,7 +46,11 @@ uploadArchives {
         	String usrHome = System.getProperty("user.home")
         	String repoUrl = "file://" + usrHome + "/.ff"
         	if(System.env.FF_REPO != null){
-        		repoUrl = System.env.FF_REPO
+        		if(!System.env.FF_REPO.contains('://')){
+        			repoUrl = 'file://' + System.env.FF_REPO
+        		}else{
+        			repoUrl = System.env.FF_REPO
+        		}
         	}
             repository(url: repoUrl)
             pom.groupId = project_group
