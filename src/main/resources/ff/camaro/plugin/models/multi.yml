@@ -4,11 +4,13 @@ configurations:
    java: [  ]
    js: [  ]
    dart: [  ]
+   python: [ ]
    macros: [  ]
    base_test: [ ]
    java_test: [ java, base_test ]
    js_test: [ js, base_test ]
    dart_test: [ dart, base_test ]
+   python_test: [ python, base_test ]
    macros_test: [ macros, base_test ]
    publish: [ ]
    
@@ -16,6 +18,9 @@ dependencies:
    dart:
       - "ff.dart:charger:+"
       - "ff:charger:+:dart"
+   python:
+      - "ff.python:charger:+"
+      - "ff:charger:+:python"
    js: 
       - "ff.js:charger:+"
       - "ff:charger:+:js"
@@ -45,6 +50,7 @@ sources:
    macros: { test: false }
    interfaces/js: { test: false }
    interfaces/dart: { test: false }
+   interfaces/python: { test: false }
    interfaces/java: { test: false }
    js: { test: false }
    resources: { test: false }
@@ -57,6 +63,7 @@ eclipse:
    interfaces/java: { test: false, output: true }
    interfaces/js: { test: false, output: true }
    interfaces/dart: { test: false, output: true }
+   interfaces/python: { test: false, output: true }
   
 eclipse_build: [ ff_java ]
    
@@ -87,7 +94,19 @@ tasks:
       output: ff_dart
       compilation_type: APPLICATION
       test: true
-      configuration: [ dart, dart_test ]
+      configuration: [ dart, dart_test ]      
+   ff_python_compile:
+      use: ff_python_compile
+      output: ff_python
+      source: ff
+      configuration: python
+   ff_python_test_compile:
+      use: ff_python_compile
+      source: ff
+      output: ff_python
+      compilation_type: APPLICATION
+      test: true
+      configuration: [ python, python_test ]
    ff_java_compile:
       use: ff_compile
       source: ff
@@ -149,6 +168,22 @@ tasks:
             type: output
             include: [ "**/*.class", "**/*.dart" ]
             exclude: [ "**/*.java" ]
+   python_jar:
+      class: $Jar
+      group: ff
+      description: Generate Python FF jar
+      classifier: python
+      extension: jar
+      from:
+         resources:
+            include: [ "**/*" ]
+         ff_python:
+            type: output
+            include: [ "**/*.class", "**/*.py" ]
+         interfaces/python:
+            type: output
+            include: [ "**/*.class", "**/*.py" ]
+            exclude: [ "**/*.java" ]
    macros_jar:
        class: $Jar
        group: ff
@@ -181,14 +216,20 @@ tasks:
       description: Execute Dart Test
       lang: dart
       depends: ["ff_dart_test_compile"]
+   ff_python_test:
+      class: $Test
+      group: ff
+      description: Execute Python Test
+      lang: python
+      depends: ["ff_python_test_compile"]
    ff_compile:
-      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile", "ff_dart_compile"]
+      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile", "ff_dart_compile", "ff_python_compile"]
       log-end: "Source compiled"
    ff_jar:
-      depends: ["jar", "js_jar", "java_jar", "dart_jar"]
+      depends: ["jar", "js_jar", "java_jar", "dart_jar", "python_jar"]
       log-end: "Jar generated"
    ff_test:
-      depends: [ "ff_java_test", "ff_js_test", "ff_dart_test"]
+      depends: [ "ff_java_test", "ff_js_test", "ff_dart_test", "ff_python_test"]
       log-end: "Test executed"
       
 facets: [ $clear, multi ]
@@ -199,4 +240,5 @@ artifacts:
       - $task java_jar
       - $task js_jar
       - $task dart_jar
+      - $task python_jar
 
