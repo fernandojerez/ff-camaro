@@ -17,10 +17,10 @@ import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
 import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
 import org.gradle.plugins.ide.eclipse.model.EclipseModel;
 import org.gradle.plugins.ide.eclipse.model.EclipseProject;
+import org.gradle.plugins.ide.eclipse.model.FileReference;
 import org.gradle.plugins.ide.eclipse.model.Library;
 import org.gradle.plugins.ide.eclipse.model.Link;
 import org.gradle.plugins.ide.eclipse.model.SourceFolder;
-import org.gradle.plugins.ide.eclipse.model.internal.FileReferenceFactory;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
@@ -107,8 +107,30 @@ public class Eclipse implements GradlePlugin {
 
 						final List<String> builds = configurator.getList("eclipse_build");
 						for (final String path : builds) {
-							cp.getEntries().add(new Library(new FileReferenceFactory()
-									.fromPath(ConfigLoader.eclipse_output_path(path, SourceSet.MAIN_SOURCE_SET_NAME))));
+							final File output_path = new File(project.getBuildDir(), "classes/" + path + "/main");
+							System.out.println(output_path.getAbsolutePath());
+							cp.getEntries().add(new Library(new FileReference() {
+
+								@Override
+								public File getFile() {
+									return output_path;
+								}
+
+								@Override
+								public String getJarURL() {
+									return null;
+								}
+
+								@Override
+								public String getPath() {
+									return output_path.getAbsolutePath();
+								}
+
+								@Override
+								public boolean isRelativeToPathVariable() {
+									return false;
+								}
+							}));
 						}
 
 					}
