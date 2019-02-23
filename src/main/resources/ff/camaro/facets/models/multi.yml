@@ -7,6 +7,8 @@ files:
      to: src/test/ff/ff/test/FFJsTestSuite.java
    - file: /ff/camaro/test/FFDartTestSuite.txt
      to: src/test/ff/ff/test/FFDartTestSuite.java
-          
+   - file: /ff/camaro/test/FFPythonTestSuite.txt
+     to: src/test/ff/ff/test/FFPythonTestSuite.java
+      
 commands: [ $clear, multi ]
       
