@@ -232,7 +232,32 @@ tasks:
    ff_test:
       depends: [ "ff_java_test", "ff_js_test", "ff_dart_test", "ff_python_test"]
       log-end: "Test executed"
-      
+   show_ff_python_test_report:
+      class: $Browse
+      group: report
+      description: Python Test Report
+      uri: file://$build_dir$/reports/tests/ff_python_test/index.html
+   show_ff_dart_test_report:
+      class: $Browse
+      group: report
+      description: Dart Test Report
+      uri: file://$build_dir$/reports/tests/ff_dart_test/index.html
+   show_ff_java_test_report:
+      class: $Browse
+      group: report
+      description: Java Test Report
+      uri: file://$build_dir$/reports/tests/ff_java_test/index.html      
+   show_ff_js_test_report:
+      class: $Browse
+      group: report
+      description: Js Test Report
+      uri: file://$build_dir$/reports/tests/ff_js_test/index.html
+   show_ff_coverage_report:
+      class: $Browse
+      group: report
+      description: Coverage Test Report
+      uri: file://$build_dir$/reports/jacoco/html/index.html
+                     
 facets: [ $clear, multi ]
 
 artifacts: 
