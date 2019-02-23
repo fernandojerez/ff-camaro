@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import ff.crl.test.FFTestEvent;
 import ff.crl.test.FFTestSuite;
-import ff.dart.charger.test.FFPythonTestEvent;
+import ff.python.charger.test.FFPythonTestEvent;
 
 public class FFPythonTestSuite extends FFTestSuite {
 
