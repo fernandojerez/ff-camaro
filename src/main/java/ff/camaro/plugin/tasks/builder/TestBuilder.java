@@ -57,6 +57,7 @@ public class TestBuilder extends TaskBuilder {
 				suites.put("java", "FFJavaTestSuite");
 				suites.put("js", "FFJsTestSuite");
 				suites.put("dart", "FFDartTestSuite");
+				suites.put("python", "FFPythonTestSuite");
 
 				final Set<String> excludes = new HashSet<>();
 				for (final Map.Entry<String, String> entry : suites.entrySet()) {
