@@ -1,0 +1,74 @@
+use: multi
+      
+tasks: 
+   ff_python_compile: $remove
+   ff_python_test_compile: $remove
+   ff_java_compile: $remove
+   ff_java_test_compile: $remove
+   java_jar: $remove
+   python_jar: $remove
+   ff_java_test: $remove
+   ff_python_test: $remove
+   show_ff_python_test_report: $remove
+   show_ff_java_test_report: $remove      
+   show_ff_coverage_report: $remove
+   ff_compile:
+      depends: ["ff_macros_compile", "ff_js_compile", "ff_dart_compile"]
+      log-end: "Source compiled"
+   ff_jar:
+      depends: ["jar", "js_jar", "dart_jar"]
+      log-end: "Jar generated"
+   ff_test:
+      depends: [ "ff_js_test", "ff_dart_test"]
+      log-end: "Test executed"
+
+dependencies:
+   dart:
+      - "ff.dart:charger:+"
+      - "ff:charger:+:dart"
+   python: $remove
+   js: 
+      - "ff.js:charger:+"
+      - "ff:charger:+:js"
+   java: $remove
+   implementation:
+      - "ff:charger:+"
+      - "ff:crl:+"
+   macros:
+      - "ff:charger:+:java"
+      - "ff.java:charger:+"
+   testImplementation:
+      - "ff.js:charger:+"
+      - "ff.java:charger:+" 
+      - "ff.dart:charger:+"
+      - "ff.python:charger:+"
+   base_test:
+      - "org.junit.jupiter:junit-jupiter-api:5.4.0"
+      - "org.junit.jupiter:junit-jupiter-params:5.4.0"
+      - "org.junit.jupiter:junit-jupiter-engine:5.4.0"
+   js_test:
+      - "org.seleniumhq.selenium:selenium-java:3.141.59"
+      - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+
+configurations:
+   java: $remove
+   python: $remove
+   java_test: $remove
+   python_test: $remove
+   
+sources:
+   interfaces/python: $remove
+   interfaces/java: $remove
+
+eclipse:
+   interfaces/java: $remove
+   interfaces/python: $remove
+
+facets: [ $clear, multi_ui ]
+
+artifacts: 
+   publish:
+      - $clear
+      - $task macros_jar
+      - $task js_jar
+      - $task dart_jar

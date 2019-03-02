@@ -53,12 +53,10 @@ sources:
    interfaces/dart: { test: false }
    interfaces/python: { test: false }
    interfaces/java: { test: false }
-   js: { test: false }
    resources: { test: false }
 
 eclipse:
    ff: { test: true, output: true }
-   js: { test: false, output: false }
    macros: { test: false, output: false }
    resources: { test: false, output: false }
    interfaces/java: { test: false, output: true }
