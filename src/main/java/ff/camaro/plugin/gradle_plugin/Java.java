@@ -44,7 +44,7 @@ public class Java implements GradlePlugin {
 		project.getPluginManager().apply(JacocoPlugin.class);
 
 		final JacocoPluginExtension extension = project.getExtensions().getByType(JacocoPluginExtension.class);
-		extension.setToolVersion("0.8.2");
+		extension.setToolVersion("0.8.3");
 
 		final JacocoReport report = (JacocoReport) project.getTasks().getByName("jacocoTestReport");
 		final JacocoReportsContainer reports = report.getReports();
