@@ -78,35 +78,41 @@ tasks:
       output: ff_js
       source: ff
       configuration: js
+      interfaces: interfaces/js
    ff_js_test_compile:
       use: ff_js_compile
       source: ff
       output: ff_js
       test: true
+      interfaces: interfaces/js
       configuration: [ js, js_test ]
    ff_dart_compile:
       use: ff_dart_compile
       output: ff_dart
       source: ff
       configuration: dart
+      interfaces: interfaces/dart
    ff_dart_test_compile:
       use: ff_dart_compile
       source: ff
       output: ff_dart
       compilation_type: APPLICATION
       test: true
+      interfaces: interfaces/dart
       configuration: [ dart, dart_test ]      
    ff_python_compile:
       use: ff_python_compile
       output: ff_python
       source: ff
       configuration: python
+      interfaces: interfaces/python
    ff_python_test_compile:
       use: ff_python_compile
       source: ff
       output: ff_python
       compilation_type: APPLICATION
       test: true
+      interfaces: interfaces/python
       configuration: [ python, python_test ]
    ff_java_compile:
       use: ff_compile

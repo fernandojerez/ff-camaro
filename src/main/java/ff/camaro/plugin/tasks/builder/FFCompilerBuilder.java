@@ -4,7 +4,9 @@ import java.io.File;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.tasks.SourceSet;
 
+import ff.camaro.ConfigLoader;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.FFCompiler;
 
@@ -29,6 +31,11 @@ public class FFCompilerBuilder extends TaskBuilder {
 				compiler.setOutput(new File(buildDir, getString("outputDir")));
 				compiler.setSourceSet(getString("sourceSet"));
 				compiler.setConfiguration(getList("configuration").toArray(new String[0]));
+				final String interfaces = getString("interfaces");
+				if (interfaces != null) {
+					compiler.setInterfaces(new File(buildDir,
+							ConfigLoader.output_path(project, interfaces, SourceSet.MAIN_SOURCE_SET_NAME)));
+				}
 				if ("true".equals(getString("test"))) {
 					compiler.setModuleOutputDir(new File(buildDir, getString("moduleOutputDir")));
 				}

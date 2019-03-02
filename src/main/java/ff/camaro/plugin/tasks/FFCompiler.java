@@ -22,6 +22,7 @@ public class FFCompiler extends CamaroTask {
 	private File definitionOutput;
 	private File macroOutput;
 	private File output;
+	private File interfaces;
 	private String compilerClass;
 	private String folder;
 	private String sourceSet;
@@ -51,6 +52,11 @@ public class FFCompiler extends CamaroTask {
 				files.addAll(getProject().getConfigurations().getByName(str).resolve());
 			}
 			classpathFiles = files;
+		}
+
+		if (interfaces != null) {
+			System.out.println("Interfaces en javascript " + interfaces);
+			classpathFiles.add(interfaces);
 		}
 
 		final Set<URL> urls = new HashSet<>();
@@ -155,6 +161,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setFolder(final String folder) {
 		this.folder = folder;
+	}
+
+	public void setInterfaces(final File interfaces) {
+		this.interfaces = interfaces;
 	}
 
 	public void setMacroOutput(final File macroOutput) {
