@@ -124,6 +124,7 @@ tasks:
       source: ff
       output: ff_java
       test: true
+      interfaces: interfaces/java
       configuration: [ java, java_test ]
    java_jar:
       class: $Jar
