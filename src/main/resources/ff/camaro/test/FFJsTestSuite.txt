@@ -4,13 +4,18 @@ import java.io.File;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
-
+import ff.js.charger.test.TestFileServer;
 import ff.crl.test.FFTestEvent;
 import ff.crl.test.FFTestSuite;
 import ff.js.charger.test.FFJsTestEvent;
 
 public class FFJsTestSuite extends FFTestSuite {
 
+	public static void main(final String[] args) throws Exception {
+		final TestFileServer server = new TestFileServer();
+		server.start(8787);
+	}
+	
 	@Test
 	public void dummy() {
 		return;
