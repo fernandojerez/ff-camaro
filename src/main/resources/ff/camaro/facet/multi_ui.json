@@ -1,6 +1,7 @@
 {
 	"menu": {
 		"Publish": "ff_compile,classes,ff_test,ff_jar,ff_publish",
+		"Fast Publish": "ff_compile,classes,ff_jar,ff_publish",
 		"FF compile": "ff_compile,classes",
 		"Test": "ff_test_clean,testClasses,ff_compile,ff_test",
 		"Clean": "clean",
