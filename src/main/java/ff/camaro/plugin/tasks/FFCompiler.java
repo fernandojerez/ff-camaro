@@ -55,7 +55,6 @@ public class FFCompiler extends CamaroTask {
 		}
 
 		if (interfaces != null) {
-			System.out.println("Interfaces en javascript " + interfaces);
 			classpathFiles.add(interfaces);
 		}
 
