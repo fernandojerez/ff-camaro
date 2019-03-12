@@ -45,10 +45,11 @@ public class TestBuilder extends TaskBuilder {
 						files.addAll(project.getConfigurations().getByName(flang + "_test").resolve());
 						files.add(
 								new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "ff_" + flang)));
+						files.add(new File(project.getBuildDir(),
+								ConfigLoader.output_main_path(project, "interfaces\\" + flang)));
 						files.add(
 								new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff_" + flang)));
 						files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff")));
-
 						test.setClasspath(project.files(files.toArray()));
 					}
 				});
