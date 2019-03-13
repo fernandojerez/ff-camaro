@@ -23,6 +23,7 @@ public class FFCompiler extends CamaroTask {
 	private File macroOutput;
 	private File output;
 	private File interfaces;
+	private File macros;
 	private String compilerClass;
 	private String folder;
 	private String sourceSet;
@@ -56,6 +57,10 @@ public class FFCompiler extends CamaroTask {
 
 		if (interfaces != null) {
 			classpathFiles.add(interfaces);
+		}
+
+		if (macros != null) {
+			classpathFiles.add(macros);
 		}
 
 		final Set<URL> urls = new HashSet<>();
@@ -168,6 +173,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setMacroOutput(final File macroOutput) {
 		this.macroOutput = macroOutput;
+	}
+
+	public void setMacros(final File macros) {
+		this.macros = macros;
 	}
 
 	public void setModuleOutputDir(final File file) {

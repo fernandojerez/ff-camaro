@@ -229,7 +229,7 @@ tasks:
       lang: python
       depends: ["ff_python_test_compile"]
    ff_compile:
-      depends: ["ff_macros_compile", "ff_java_compile", "ff_js_compile", "ff_dart_compile", "ff_python_compile"]
+      depends: [ "ff_java_compile", "ff_js_compile", "ff_dart_compile", "ff_python_compile"]
       log-end: "Source compiled"
    ff_jar:
       depends: ["jar", "js_jar", "java_jar", "dart_jar", "python_jar"]
