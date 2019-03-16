@@ -19,10 +19,10 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    compile group: 'org.snakeyaml', name: 'snakeyaml-engine', version: '1.0' 
     compileOnly 'org.apache.maven:maven-model:3.5.2'
-	compileOnly 'org.apache.maven:maven-model-builder:3.5.2'
-} 
+	compileOnly 'org.apache.maven:maven-model-builder:3.5.2' 
+	compile 'org.snakeyaml:snakeyaml-engine:1.0' 
+}
 
 jar {
 	manifest {
