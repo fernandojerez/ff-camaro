@@ -39,6 +39,9 @@ public class FFCompilerBuilder extends TaskBuilder {
 				if (!"macros".equals(getString("source"))) {
 					compiler.setMacros(new File(buildDir,
 							ConfigLoader.output_path(project, "macros", SourceSet.MAIN_SOURCE_SET_NAME)));
+				} else {
+					compiler.setMacros(new File(buildDir,
+							ConfigLoader.output_path(project, "ff_java", SourceSet.MAIN_SOURCE_SET_NAME)));
 				}
 				if ("true".equals(getString("test"))) {
 					compiler.setModuleOutputDir(new File(buildDir, getString("moduleOutputDir")));

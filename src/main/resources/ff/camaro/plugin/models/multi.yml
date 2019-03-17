@@ -71,6 +71,7 @@ tasks:
       use: ff_compile
       source: macros
       configuration: macros
+      interfaces: interfaces/java
    ff_js_compile:
       use: ff_js_compile
       output: ff_js

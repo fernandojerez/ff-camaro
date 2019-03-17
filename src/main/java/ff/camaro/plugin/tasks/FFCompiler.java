@@ -61,6 +61,8 @@ public class FFCompiler extends CamaroTask {
 
 		if (macros != null) {
 			classpathFiles.add(macros);
+		} else {
+
 		}
 
 		final Set<URL> urls = new HashSet<>();
