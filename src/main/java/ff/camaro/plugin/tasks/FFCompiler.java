@@ -21,6 +21,7 @@ public class FFCompiler extends CamaroTask {
 	private File analizedOutput;
 	private File definitionOutput;
 	private File macroOutput;
+	private File javaOutput;
 	private File output;
 	private File interfaces;
 	private File macros;
@@ -59,12 +60,6 @@ public class FFCompiler extends CamaroTask {
 			classpathFiles.add(interfaces);
 		}
 
-		if (macros != null) {
-			classpathFiles.add(macros);
-		} else {
-
-		}
-
 		final Set<URL> urls = new HashSet<>();
 		for (final File f : classpathFiles) {
 			urls.add(f.toURI().toURL());
@@ -77,7 +72,16 @@ public class FFCompiler extends CamaroTask {
 			urls.add(moduleOutputDir.toURI().toURL());
 		}
 
+		if (macros != null) {
+			if (javaOutput == null) {
+				classpathFiles.add(macros);
+			}
+		}
+
 		final URLClassLoader loader = getClassLoader(urls);
+		final URLClassLoader macro_loader = javaOutput != null
+				? new URLClassLoader(new URL[] { javaOutput.toURI().toURL(), macros.toURI().toURL() }, loader)
+				: loader;
 		final File[] sources = ff_set.getFf().getSrcDirs().toArray(new File[0]);
 
 		final File output = this.output != null ? this.output : ff_set.getFf().getOutputDir();
@@ -95,8 +99,9 @@ public class FFCompiler extends CamaroTask {
 				.invoke(ff_compiler, type);
 
 		ff_compiler_class
-				.getMethod("setup", ClassLoader.class, File.class, File.class, File.class, File.class, File[].class)//
-				.invoke(ff_compiler, loader, output, definitionOutput, macros, analized, sources);
+				.getMethod("setup", ClassLoader.class, ClassLoader.class, File.class, File.class, File.class,
+						File.class, File[].class)//
+				.invoke(ff_compiler, macro_loader, loader, output, definitionOutput, macros, analized, sources);
 
 		final Method compile = ff_compiler.getClass().getMethod("compile", File.class);
 		try {
@@ -171,6 +176,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setInterfaces(final File interfaces) {
 		this.interfaces = interfaces;
+	}
+
+	public void setJavaOutput(final File javaOutput) {
+		this.javaOutput = javaOutput;
 	}
 
 	public void setMacroOutput(final File macroOutput) {
