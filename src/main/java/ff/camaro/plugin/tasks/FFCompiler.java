@@ -60,6 +60,12 @@ public class FFCompiler extends CamaroTask {
 			classpathFiles.add(interfaces);
 		}
 
+		if (macros != null) {
+			if (javaOutput == null) {
+				classpathFiles.add(macros);
+			}
+		}
+
 		final Set<URL> urls = new HashSet<>();
 		for (final File f : classpathFiles) {
 			urls.add(f.toURI().toURL());
@@ -72,16 +78,11 @@ public class FFCompiler extends CamaroTask {
 			urls.add(moduleOutputDir.toURI().toURL());
 		}
 
-		if (macros != null) {
-			if (javaOutput == null) {
-				classpathFiles.add(macros);
-			}
-		}
-
 		final URLClassLoader loader = getClassLoader(urls);
 		final URLClassLoader macro_loader = javaOutput != null
 				? new URLClassLoader(new URL[] { javaOutput.toURI().toURL(), macros.toURI().toURL() }, loader)
 				: loader;
+
 		final File[] sources = ff_set.getFf().getSrcDirs().toArray(new File[0]);
 
 		final File output = this.output != null ? this.output : ff_set.getFf().getOutputDir();
