@@ -10,17 +10,80 @@ dependencies:
 
 sources:
    ff: { test: true }
+   macros: { test: false }
+   interfaces/java: { test: false }
 
 eclipse:
    ff: { test: true, output: false }
+   macros: { test: false, output: false }
+   interfaces/java: { test: false, output: true }
    
 tasks: 
-   ff_compile:
+   ff_macros_compile:
+      use: ff_compile
+      source: macros
+      configuration: macros
+      interfaces: interfaces/java
+   ff_java_compile:
       use: ff_compile
       source: ff
-   ff_test_compile:
+      output: ff_java
+      configuration: java
+   ff_java_test_compile:
       use: ff_compile
       source: ff
+      output: ff_java
       test: true
+      interfaces: interfaces/java
+      configuration: [ compile testImplementation ]
+   java_jar:
+      class: $Jar
+      group: ff
+      description: Generate Java FF jar
+      classifier: 
+      extension: jar
+      from:
+         ff_java:
+            type: output
+            include: [ "**/*.class" ]
+         interfaces/java:
+            type: output
+            include: [ "**/*.class", "**/*" ]
+            exclude: [ "**/*.java" ]
+   macros_jar:
+       class: $Jar
+       group: ff
+       description: Generate Macros FF jar
+       extension: jar
+       from:
+          macros:
+             type: output
+             include: [ "**/*.class" ]
+   ff_publish:
+      class: $Publish
+      configuration: publish
+      publish_to:
+         local: $local
+   ff_java_test:
+      class: $Test
+      group: ff
+      description: Execute Java Test
+      lang: java
+      depends: ["ff_java_test_compile"]
+   show_ff_java_test_report:
+      class: $Browse
+      group: report
+      description: Java Test Report
+      uri: file://$build_dir$/reports/tests/ff_java_test/index.html
+   show_ff_coverage_report:
+      class: $Browse
+      group: report
+      description: Coverage Test Report
+      uri: file://$build_dir$/reports/jacoco/html/index.html
 
 facets: [ $clear, java ]
+
+artifacts: 
+   publish:
+      - $task macros_jar
+      - $task java_jar
