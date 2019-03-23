@@ -137,7 +137,34 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 										throw new GradleException("FF module not found " + code.substring(0, ix));
 									}
 									final String pck = String.valueOf(obj_pck);
-									final Class<?> module = loader.loadClass(pck);
+									Class<?> module = null;
+									if (module == null) {
+										try {
+											module = loader.loadClass(pck);
+										} catch (final Exception e) {
+										}
+									}
+									if (module == null) {
+										try {
+											module = loader.loadClass(pck + ".Module");
+										} catch (final Exception e) {
+										}
+									}
+									if (module == null) {
+										try {
+											final int lix = pck.lastIndexOf(".");
+											if (lix != -1) {
+												final String lastName = pck.substring(lix + 1);
+												module = loader
+														.loadClass(pck + "." + Character.toUpperCase(lastName.charAt(0))
+																+ lastName.substring(1));
+											}
+										} catch (final Exception e) {
+										}
+									}
+									if (module == null) {
+										throw new ClassNotFoundException("Class not found " + pck);
+									}
 									final String function = code.substring(ix + 1);
 									boolean process = true;
 									if (process) {
