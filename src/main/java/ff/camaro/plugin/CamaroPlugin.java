@@ -138,9 +138,42 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 									}
 									final String pck = String.valueOf(obj_pck);
 									final Class<?> module = loader.loadClass(pck);
-									module.getMethod(code.substring(ix + 1), String.class, String.class).invoke(null,
-											project.getRootDir().getAbsolutePath(),
-											project.getBuildDir().getAbsolutePath());
+									final String function = code.substring(ix + 1);
+									boolean process = true;
+									if (process) {
+										try {
+											module.getMethod(function, Project.class).invoke(null, project);
+											process = false;
+										} catch (final NoSuchMethodException e) {
+										}
+									}
+									if (process) {
+										try {
+											module.getMethod(function, String.class, String.class).invoke(null,
+													project.getRootDir().getAbsolutePath(),
+													project.getBuildDir().getAbsolutePath());
+											process = false;
+										} catch (final NoSuchMethodException e) {
+										}
+									}
+									if (process) {
+										try {
+											module.getMethod(function, String.class).invoke(null,
+													project.getRootDir().getAbsolutePath());
+											process = false;
+										} catch (final NoSuchMethodException e) {
+										}
+									}
+									if (process) {
+										try {
+											module.getMethod(function).invoke(null);
+											process = false;
+										} catch (final NoSuchMethodException e) {
+										}
+									}
+									if (process) {
+										throw new NoSuchMethodException(module.getName() + "#" + function);
+									}
 								}
 							} catch (final Exception e) {
 								throw new RuntimeException(e);
