@@ -5,7 +5,7 @@ configurations:
    js: [  ]
    dart: [  ]
    python: [ ]
-   macros: [  ]
+   macros: [ ]
    base_test: [ ]
    java_test: [ java, base_test ]
    js_test: [ js, base_test ]

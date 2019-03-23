@@ -43,6 +43,8 @@ dependencies:
       - "org.junit.jupiter:junit-jupiter-params:5.4.0"
    testRuntimeOnly:
       - "org.junit.jupiter:junit-jupiter-engine:5.4.0"
+   kitt:
+      - "ff:kitt:+:java"
       
 artifacts:
    archives:

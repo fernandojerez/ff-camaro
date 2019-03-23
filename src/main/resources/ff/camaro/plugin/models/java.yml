@@ -2,13 +2,13 @@ use: base_camaro
 
 configurations:
    publish: [ ]
+   macros: [ ]
    java: [ compileClasspath ]
    java_test: [ java, testCompileClasspath ]
 
 dependencies:
    implementation:
       - "ff.java:charger:+"
-      - "ff.java:charger.extra:+"
       - "ff:charger:+"
       - "ff:charger:+:java"
       - "ff:crl:+"
@@ -45,7 +45,7 @@ tasks:
       class: $Jar
       group: ff
       description: Generate Java FF jar
-      classifier: 
+      classifier: java
       extension: jar
       from:
          ff_java:
