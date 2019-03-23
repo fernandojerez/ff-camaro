@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.gradle.api.Project;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
@@ -18,7 +21,8 @@ import groovy.json.JsonSlurper;
 
 public abstract class Facet extends Configurator {
 
-	public void apply(final Project project, final Map<String, Object> config) throws IOException {
+	public void apply(final Project project, final Map<String, Object> config, final Map<String, Object> kitt)
+			throws IOException {
 		System.out.println(getConfiguration());
 		setup(project, ConfigLoader.facet.load(project, getConfiguration()));
 
@@ -38,6 +42,9 @@ public abstract class Facet extends Configurator {
 		for (final String command : commands) {
 			final Map<String, Object> base = loadJson("/ff/camaro/facet/" + command + ".json");
 			config.putAll(base);
+
+			final Map<String, Object> yml = loadYml("/ff/camaro/facet/kitt/" + command + ".yml");
+			kitt.putAll(yml);
 		}
 
 		final List<Map<String, String>> files = getList("files");
@@ -81,6 +88,17 @@ public abstract class Facet extends Configurator {
 	protected Map<String, Object> loadJson(final String route) {
 		final JsonSlurper sluper = new JsonSlurper();
 		return (Map<String, Object>) sluper.parse(getClass().getResource(route));
+	}
+
+	@SuppressWarnings("unchecked")
+	protected Map<String, Object> loadYml(final String route) throws IOException {
+		final LoadSettings settings = new LoadSettingsBuilder().setLabel("KITT").build();
+		final Load load = new Load(settings);
+		Map<String, Object> cfg = null;
+		try (InputStream in = getClass().getResourceAsStream(route)) {
+			cfg = (Map<String, Object>) load.loadFromInputStream(in);
+		}
+		return cfg;
 	}
 
 }

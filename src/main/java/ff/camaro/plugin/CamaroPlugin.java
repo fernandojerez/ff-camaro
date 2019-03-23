@@ -1,13 +1,20 @@
 package ff.camaro.plugin;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Rule;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -24,6 +31,9 @@ import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.Upload;
 import org.gradle.jvm.tasks.Jar;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
@@ -91,6 +101,63 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	@Override
 	public final void apply(final Project target) {
+		// configure rules
+		target.getTasks().addRule(new Rule() {
+
+			@Override
+			public void apply(final String text) {
+				if (text.startsWith("kitt_")) {
+					target.getTasks().create(text, new Action<Task>() {
+
+						@SuppressWarnings("unchecked")
+						@Override
+						public void execute(final Task t) {
+							try {
+								final Configuration kitt_conf = project.getConfigurations().getByName("kitt");
+								final Set<File> files = kitt_conf.resolve();
+								final Set<URL> urls = new HashSet<>();
+								for (final File f : files) {
+									urls.add(f.toURI().toURL());
+								}
+								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
+									final LoadSettings settings = new LoadSettingsBuilder().setLabel("KITT").build();
+									final Load load = new Load(settings);
+									Map<String, Object> cfg = null;
+									try (FileInputStream in = new FileInputStream(project.file("kitt.yml"))) {
+										cfg = (Map<String, Object>) load.loadFromInputStream(in);
+									}
+									final String code = text.substring("kitt_".length());
+									final int ix = code.indexOf("#");
+									if (ix == -1) {
+										throw new GradleException("kitt task need a package: pck#function");
+									}
+
+									final Object obj_pck = cfg.get(code.substring(0, ix));
+									if (obj_pck == null) {
+										throw new GradleException("FF module not found " + code.substring(0, ix));
+									}
+									final String pck = String.valueOf(obj_pck);
+									final Class<?> module = loader.loadClass(pck);
+									module.getMethod(code.substring(ix + 1), String.class, String.class).invoke(null,
+											project.getRootDir().getAbsolutePath(),
+											project.getBuildDir().getAbsolutePath());
+								}
+							} catch (final Exception e) {
+								throw new RuntimeException(e);
+							}
+						}
+
+					});
+
+				}
+			}
+
+			@Override
+			public String getDescription() {
+				return "Execute KITT tasks";
+			}
+
+		});
 		final String file = System.getenv("FF_BUILD_DIR");
 		final File ffBuildDir = new File(file);
 		final File buildDir = new File(ffBuildDir, target.getName() + "/build");

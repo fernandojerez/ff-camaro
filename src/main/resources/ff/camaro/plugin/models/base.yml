@@ -35,6 +35,7 @@ configurations:
    testRuntimeClasspath: [ testRuntimeOnly, testImplementation, testCompileClasspath ]
    archives: [ ]
    default: [ runtime ]
+   kitt: [ ]
 
 dependencies:
    testImplementation:
