@@ -1,5 +1,10 @@
 use: base_camaro
 
+configurations:
+   publish: [ ]
+   java: [ compileClasspath ]
+   java_test: [ java, testCompileClasspath ]
+
 dependencies:
    implementation:
       - "ff.java:charger:+"
@@ -35,7 +40,7 @@ tasks:
       output: ff_java
       test: true
       interfaces: interfaces/java
-      configuration: [ compile testImplementation ]
+      configuration: [ testRuntimeClasspath ]
    java_jar:
       class: $Jar
       group: ff
