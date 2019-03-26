@@ -7,11 +7,21 @@ configurations:
    java_test: [ java, testCompileClasspath ]
 
 dependencies:
-   implementation:
+   java:
       - "ff.java:charger:+"
+      - "ff:charger:+:java"
+   testImplementation:
+      - "org.junit.jupiter:junit-jupiter-api:5.4.0"
+      - "org.junit.jupiter:junit-jupiter-params:5.4.0"
+      - "org.junit.jupiter:junit-jupiter-engine:5.4.0"
+   implementation:
       - "ff:charger:+"
+      - "ff.java:charger:+"
       - "ff:charger:+:java"
       - "ff:crl:+"
+   macros:
+      - "ff:charger:+:java"
+      - "ff.java:charger:+"
 
 sources:
    ff: { test: true }
@@ -22,7 +32,9 @@ eclipse:
    ff: { test: true, output: false }
    macros: { test: false, output: false }
    interfaces/java: { test: false, output: true }
-   
+  
+eclipse_build: [ ff_java ]
+
 tasks: 
    ff_macros_compile:
       use: ff_compile
