@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -40,8 +42,12 @@ public class Artifacts {
 
 	public void load(final String path) throws IOException {
 		final InputStream stream = new FileInputStream(path);
+		load_from_reader(new InputStreamReader(stream));
+	}
+
+	public void load_from_reader(final Reader stream) throws IOException {
 		if (stream != null) {
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			final BufferedReader reader = new BufferedReader(stream);
 			String line = null;
 			boolean transitive = true;
 			String org = "";
@@ -124,5 +130,9 @@ public class Artifacts {
 			}
 			reader.close();
 		}
+	}
+
+	public void load_from_string(final String content) throws IOException {
+		load_from_reader(new StringReader(content));
 	}
 }
