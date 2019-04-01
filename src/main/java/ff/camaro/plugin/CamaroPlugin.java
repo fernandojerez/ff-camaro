@@ -117,6 +117,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 								final Set<File> files = kitt_conf.resolve();
 								final Set<URL> urls = new HashSet<>();
 								for (final File f : files) {
+									System.out.println("libraries are " + f);
 									urls.add(f.toURI().toURL());
 								}
 								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
@@ -166,17 +167,18 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 										throw new ClassNotFoundException("Class not found " + pck);
 									}
 									final String function = code.substring(ix + 1);
+									Object result = null;
 									boolean process = true;
 									if (process) {
 										try {
-											module.getMethod(function, Project.class).invoke(null, project);
+											result = module.getMethod(function, Project.class).invoke(null, project);
 											process = false;
 										} catch (final NoSuchMethodException e) {
 										}
 									}
 									if (process) {
 										try {
-											module.getMethod(function, String.class, String.class).invoke(null,
+											result = module.getMethod(function, String.class, String.class).invoke(null,
 													project.getRootDir().getAbsolutePath(),
 													project.getBuildDir().getAbsolutePath());
 											process = false;
@@ -185,7 +187,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 									}
 									if (process) {
 										try {
-											module.getMethod(function, String.class).invoke(null,
+											result = module.getMethod(function, String.class).invoke(null,
 													project.getRootDir().getAbsolutePath());
 											process = false;
 										} catch (final NoSuchMethodException e) {
@@ -193,7 +195,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 									}
 									if (process) {
 										try {
-											module.getMethod(function).invoke(null);
+											result = module.getMethod(function).invoke(null);
 											process = false;
 										} catch (final NoSuchMethodException e) {
 										}
@@ -201,6 +203,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 									if (process) {
 										throw new NoSuchMethodException(module.getName() + "#" + function);
 									}
+									loader.loadClass("ff.kitt.Utils").getMethod("waitUntil", Object.class).invoke(null,
+											result);
 								}
 							} catch (final Exception e) {
 								throw new RuntimeException(e);

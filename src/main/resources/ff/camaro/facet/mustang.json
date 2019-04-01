@@ -5,7 +5,6 @@
 		"Build": "ff_compile,build",
 		"Run Server": "stop_server,run_server",
 		"Stop Server": "stop_server",
-		"Update Camaro": "update_camaro",
 		"Clean": "clean"
 	}
 }

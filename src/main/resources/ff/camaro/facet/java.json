@@ -6,7 +6,6 @@
 		"Coverage": "ff_test_clean,testClasses,ff_java_compile,ff_macros_compile,ff_java_test,ff_java_test_report",
 		"Test": "ff_test_clean,testClasses,ff_java_compile,ff_macros_compile,ff_java_test,ff_java_test_report",
 		"Clean": "clean",
-		"Update Camaro": "update_camaro",
 		"Test Reports": {
 			"Java": "show_ff_java_test_report",
 			"Coverage Report": "show_ff_coverage_report"

@@ -10,5 +10,5 @@ files:
    - file: /ff/camaro/test/FFPythonTestSuite.txt
      to: src/test/ff/ff/test/FFPythonTestSuite.java
       
-commands: [ $clear, multi ]
+commands: [ $clear, camaro, multi ]
       

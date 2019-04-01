@@ -1,4 +1,4 @@
 use: base
 
-commands: [ $clear, dart ]
+commands: [ $clear, camaro, dart ]
       

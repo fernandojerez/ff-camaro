@@ -45,6 +45,8 @@ dependencies:
       - "org.junit.jupiter:junit-jupiter-engine:5.4.0"
    kitt:
       - "ff:kitt:+:java"
+      - "ff.java:charger:+"
+      - "ff:charger:+:java"
       
 artifacts:
    archives:

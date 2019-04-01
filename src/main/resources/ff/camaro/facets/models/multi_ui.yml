@@ -6,4 +6,4 @@ files:
    - file: /ff/camaro/test/FFDartTestSuite.txt
      to: src/test/ff/ff/test/FFDartTestSuite.java
       
-commands: [ $clear, multi_ui ]
+commands: [ $clear, camaro, multi_ui ]

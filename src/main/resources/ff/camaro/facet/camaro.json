@@ -1,0 +1,8 @@
+{
+	"menu": {
+		"Update Camaro": "update_camaro",
+		"kitt": {
+			"kill gradle processes": "kitt_kitt#kill_gradle_processes"
+		}
+	}
+}

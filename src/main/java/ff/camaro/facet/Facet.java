@@ -41,10 +41,10 @@ public abstract class Facet extends Configurator {
 		final List<String> commands = getList("commands");
 		for (final String command : commands) {
 			final Map<String, Object> base = loadJson("/ff/camaro/facet/" + command + ".json");
-			config.putAll(base);
+			merge_two_maps(config, base);
 
 			final Map<String, Object> yml = loadYml("/ff/camaro/facet/kitt/" + command + ".yml");
-			kitt.putAll(yml);
+			merge_two_maps(kitt, yml);
 		}
 
 		final List<Map<String, String>> files = getList("files");
@@ -99,6 +99,22 @@ public abstract class Facet extends Configurator {
 			cfg = (Map<String, Object>) load.loadFromInputStream(in);
 		}
 		return cfg;
+	}
+
+	@SuppressWarnings("unchecked")
+	protected void merge_two_maps(final Map<String, Object> config, final Map<String, Object> base) {
+		for (final Map.Entry<String, Object> entry : base.entrySet()) {
+			final Object result = config.get(entry.getKey());
+			if (result == null) {
+				config.put(entry.getKey(), entry.getValue());
+				continue;
+			}
+			if (result instanceof Map) {
+				merge_two_maps((Map<String, Object>) result, (Map<String, Object>) entry.getValue());
+				continue;
+			}
+			config.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 }
