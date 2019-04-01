@@ -117,7 +117,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 								final Set<File> files = kitt_conf.resolve();
 								final Set<URL> urls = new HashSet<>();
 								for (final File f : files) {
-									System.out.println("libraries are " + f);
 									urls.add(f.toURI().toURL());
 								}
 								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
