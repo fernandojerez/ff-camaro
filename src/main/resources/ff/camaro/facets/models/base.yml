@@ -7,6 +7,10 @@ files:
      to: .settings/org.eclipse.jdt.core.prefs
    - file: /ff/camaro/eclipse/org.eclipse.jdt.ui.prefs
      to: .settings/org.eclipse.jdt.ui.prefs
+   - file: /ff/camaro/eclipse/org.eclipse.core.runtime.prefs
+     to: .settings/org.eclipse.core.runtime.prefs
+   - file: /ff/camaro/eclipse/org.eclipse.ltk.core.refactoring.prefs
+     to: .settings/org.eclipse.ltk.core.refactoring.prefs
    - file: /ff/camaro/gradle/gradle-wrapper.properties
      to: gradle/wrapper/gradle-wrapper.properties
    - file: /ff/camaro/eclipse/gitignore.txt

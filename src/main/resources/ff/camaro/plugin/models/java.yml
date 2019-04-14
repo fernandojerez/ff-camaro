@@ -11,9 +11,9 @@ dependencies:
       - "ff.java:charger:+"
       - "ff:charger:+:java"
    testImplementation:
-      - "org.junit.jupiter:junit-jupiter-api:5.4.0"
-      - "org.junit.jupiter:junit-jupiter-params:5.4.0"
-      - "org.junit.jupiter:junit-jupiter-engine:5.4.0"
+      - "org.junit.jupiter:junit-jupiter-api:5.4.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.4.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.4.1"
    implementation:
       - "ff:charger:+"
       - "ff.java:charger:+"
