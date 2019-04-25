@@ -24,8 +24,8 @@ public class Java implements GradlePlugin {
 		project.getPluginManager().apply(JavaPlugin.class);
 
 		final JavaPluginConvention javaSettings = project.getConvention().getPlugin(JavaPluginConvention.class);
-		javaSettings.setSourceCompatibility(JavaVersion.VERSION_11);
-		javaSettings.setTargetCompatibility(JavaVersion.VERSION_11);
+		javaSettings.setSourceCompatibility(JavaVersion.VERSION_12);
+		javaSettings.setTargetCompatibility(JavaVersion.VERSION_12);
 
 		final JavaCompile compile = (JavaCompile) project.getTasks().getByName("compileJava");
 		compile.getOptions().setEncoding("UTF-8");

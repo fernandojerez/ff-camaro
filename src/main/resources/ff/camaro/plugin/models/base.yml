@@ -1,6 +1,11 @@
 plugins: [ camaro, java, eclipse, maven ]
 
 tasks:
+   debug_on:
+      group: ff
+      description: Indicate that the build has debug enabled
+      log-end: Using debug
+      
    ff-publish:
       group: ff
       description: Build and Publish the artifact
@@ -43,6 +48,9 @@ dependencies:
       - "org.junit.jupiter:junit-jupiter-params:5.4.1"
    testRuntimeOnly:
       - "org.junit.jupiter:junit-jupiter-engine:5.4.1"
+   compileOnly:
+      - "org.junit.jupiter:junit-jupiter-api:5.4.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.4.1"
    kitt:
       - "ff:kitt:+:java"
       - "ff.java:charger:+"
