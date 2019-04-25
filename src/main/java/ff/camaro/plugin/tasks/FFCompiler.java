@@ -7,6 +7,7 @@ import java.net.URLClassLoader;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
@@ -48,6 +49,7 @@ public class FFCompiler extends CamaroTask {
 
 		final Set<File> classes = main_set.getOutput().getClassesDirs().getFiles();
 		Set<File> classpathFiles = main_set.getCompileClasspath().getFiles();
+		final Set<URL> macroFiles = new HashSet<>();
 		if (configuration != null && configuration.length > 0) {
 			final Set<File> files = new HashSet<>();
 			for (final String str : configuration) {
@@ -58,11 +60,13 @@ public class FFCompiler extends CamaroTask {
 
 		if (interfaces != null) {
 			classpathFiles.add(interfaces);
+			macroFiles.add(interfaces.toURI().toURL());
 		}
 
 		if (macros != null) {
 			if (javaOutput == null) {
 				classpathFiles.add(macros);
+				macroFiles.add(macros.toURI().toURL());
 			}
 		}
 
@@ -78,10 +82,25 @@ public class FFCompiler extends CamaroTask {
 			urls.add(moduleOutputDir.toURI().toURL());
 		}
 
-		final URLClassLoader loader = getClassLoader(urls);
-		final URLClassLoader macro_loader = javaOutput != null
-				? new URLClassLoader(new URL[] { javaOutput.toURI().toURL(), macros.toURI().toURL() }, loader)
-				: loader;
+		final URLClassLoader baseLibs = getClassLoader();
+		final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]), baseLibs);
+
+		if (javaOutput != null) {
+			macroFiles.add(javaOutput.toURI().toURL());
+			macroFiles.add(macros.toURI().toURL());
+		}
+
+		try {
+			final Configuration conf = getProject().getConfigurations().getByName("macros");
+			for (final File file : conf.getFiles()) {
+				macroFiles.add(file.toURI().toURL());
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+
+		final URLClassLoader macro_loader = macroFiles.isEmpty() ? baseLibs
+				: new URLClassLoader(macroFiles.toArray(new URL[0]), baseLibs);
 
 		final File[] sources = ff_set.getFf().getSrcDirs().toArray(new File[0]);
 
