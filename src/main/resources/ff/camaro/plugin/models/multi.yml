@@ -39,9 +39,9 @@ dependencies:
       - "ff.dart:charger:+"
       - "ff.python:charger:+"
    base_test:
-      - "org.junit.jupiter:junit-jupiter-api:5.4.1"
-      - "org.junit.jupiter:junit-jupiter-params:5.4.1"
-      - "org.junit.jupiter:junit-jupiter-engine:5.4.1"
+      - "org.junit.jupiter:junit-jupiter-api:5.4.2"
+      - "org.junit.jupiter:junit-jupiter-params:5.4.2"
+      - "org.junit.jupiter:junit-jupiter-engine:5.4.2"
    js_test:
       - "org.seleniumhq.selenium:selenium-java:3.141.59"
       - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
