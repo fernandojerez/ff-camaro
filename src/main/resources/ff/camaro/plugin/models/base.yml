@@ -46,12 +46,15 @@ dependencies:
    testImplementation:
       - "org.junit.jupiter:junit-jupiter-api:5.4.2"
       - "org.junit.jupiter:junit-jupiter-params:5.4.2"
+      - "org.junit.platform:junit-platform-commons:1.4.2"
    testRuntimeOnly:
       - "org.junit.jupiter:junit-jupiter-engine:5.4.2"
+      - "org.junit.platform:junit-platform-commons:1.4.2"
    compileOnly:
       - "org.junit.jupiter:junit-jupiter-api:5.4.2"
       - "org.junit.jupiter:junit-jupiter-params:5.4.2"
       - "org.junit.jupiter:junit-jupiter-engine:5.4.2"
+      - "org.junit.platform:junit-platform-commons:1.4.2"
    kitt:
       - "ff:kitt:+:java"
       - "ff.java:charger:+"
