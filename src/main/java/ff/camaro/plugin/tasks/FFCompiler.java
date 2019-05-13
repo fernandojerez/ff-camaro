@@ -1,6 +1,7 @@
 package ff.camaro.plugin.tasks;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -129,6 +130,13 @@ public class FFCompiler extends CamaroTask {
 				if (Boolean.FALSE.equals(compile.invoke(ff_compiler, source_dir))) {
 					throw new StopActionException("Failed to compile ff sources");
 				}
+			}
+		} catch (final InvocationTargetException e) {
+			final Throwable t = e.getCause();
+			if (t instanceof Error) {
+				throw (Error) t;
+			} else {
+				throw (Exception) t;
 			}
 		} finally {
 			if (Boolean.FALSE.equals(ff_compiler.getClass().getMethod("end").invoke(ff_compiler))) {
