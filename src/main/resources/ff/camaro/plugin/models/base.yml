@@ -41,8 +41,11 @@ configurations:
    archives: [ ]
    default: [ runtime ]
    kitt: [ ]
+   macros: [ ]
 
 dependencies:
+   macros: 
+      - "ff:charger:+:java"
    testImplementation:
       - "org.junit.jupiter:junit-jupiter-api:5.4.2"
       - "org.junit.jupiter:junit-jupiter-params:5.4.2"

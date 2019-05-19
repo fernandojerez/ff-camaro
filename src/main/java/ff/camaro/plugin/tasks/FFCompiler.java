@@ -92,6 +92,16 @@ public class FFCompiler extends CamaroTask {
 		}
 
 		try {
+			if (getProject().getName().equals("ff@charger")) {
+				String getenv = System.getenv("FF_REPO");
+				if (getenv.startsWith("file://")) {
+					getenv = getenv.substring("file://".length());
+				}
+				final File charger = new File(getenv + "/ff/charger/0.0.1/charger-0.0.1-java.jar");
+				if (charger.exists()) {
+					macroFiles.add(charger.toURI().toURL());
+				}
+			}
 			final Configuration conf = getProject().getConfigurations().getByName("macros");
 			for (final File file : conf.getFiles()) {
 				macroFiles.add(file.toURI().toURL());
