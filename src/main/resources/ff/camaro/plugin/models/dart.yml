@@ -28,7 +28,7 @@ tasks:
       source: ff
       test: true
    ff_macros_compile:
-      use: ff_compile
+      use: ff_macros_compile
       source: macros
    jar:
       class: $ChangeJar

@@ -68,7 +68,7 @@ eclipse_build: [ ff_java ]
    
 tasks: 
    ff_macros_compile:
-      use: ff_compile
+      use: ff_macros_compile
       source: macros
       configuration: macros
       interfaces: interfaces/java
