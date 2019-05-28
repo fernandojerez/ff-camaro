@@ -1,0 +1,20 @@
+#Properties: 
+#test: Compile test source
+#source: Source to compile defined in source section
+test_str: _test
+test_set: test
+main_set: main
+none: none
+output: $format {source}
+main_output: $output_main_path output
+test_output: $output_test_path output
+
+class: $FFCompiler
+analizedOutput: $format analized{test?test_str}/{output} 
+macroOutput: $format macros{test?test_str}/{output}
+compilerClass: ff.lang.compiler.camaro.FFMacroCamaroCompiler
+sourceSet: $format {test?test_set:main_set}
+folder: $format {source}
+outputDir: $format {test?test_output:main_output}
+definitionOutput: $format {definition?outputDir:none}
+moduleOutputDir: $output_main_path output
