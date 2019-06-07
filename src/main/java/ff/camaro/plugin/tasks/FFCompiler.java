@@ -59,6 +59,11 @@ public class FFCompiler extends CamaroTask {
 			classpathFiles = files;
 		}
 
+		final Set<File> macroConf = getProject().getConfigurations().getByName("macros").resolve();
+		for (final File f : macroConf) {
+			macroFiles.add(f.toURI().toURL());
+		}
+
 		if (interfaces != null) {
 			classpathFiles.add(interfaces);
 			macroFiles.add(interfaces.toURI().toURL());
