@@ -1,39 +1,20 @@
-use: base_camaro
+use: multi
 
-configurations:
-   plugin: [ ]
-   server: [ ]
-   implementation: [ server, plugin ]
-   
 dependencies:
-   server:
+   implementation:
       - "ff:mustang:+"
-      - "ff.java:charger.extra:+"
-      - "com.h2database:h2:+"
-
-sources:
-   ff: { test: true }
-
-eclipse:
-   ff: { test: true, output: false }
-
-tasks: 
-   ff_compile:
-      use: ff_compile
-      source: ff
-   ff_test_compile:
-      use: ff_compile
-      source: ff
-      test: true
-   run_server:
-      class: RunServer
-      group: ff
-      description: Start service
-   stop_server:
-      class: StopServer
-      group: ff
-      description: Stop service
-      log-end: Service stopped
+      - "ff:mustang:+:java"
+   macros:
+      - "ff:mustang:+"
+      - "ff:mustang:+:java"
+   dart:
+      - "ff:mustang:+:dart"
+   python:
+      - "ff:mustang:+:python"
+   js: 
+      - "ff:mustang:+:js"
+   java:
+      - "ff:mustang:+:java"
 
 facets: [ $clear, mustang ]
 
