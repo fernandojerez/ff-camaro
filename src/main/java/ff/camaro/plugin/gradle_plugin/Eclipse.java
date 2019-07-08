@@ -68,7 +68,7 @@ public class Eclipse implements GradlePlugin {
 		});
 
 		final EclipseClasspath classpath = model.getClasspath();
-		classpath.setDefaultOutputDir(new File("build/classes"));
+		classpath.setDefaultOutputDir(new File("build/eclipse_classes"));
 		classpath.file(new Action<XmlFileContentMerger>() {
 			@Override
 			public void execute(final XmlFileContentMerger merger) {
