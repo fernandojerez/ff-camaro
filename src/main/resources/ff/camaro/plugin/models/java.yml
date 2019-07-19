@@ -30,12 +30,18 @@ dependencies:
    dart: $remove
    python: $remove
    js: $remove
+   
+   js_test: $remove
+   dart_test: $remove
+   python_test: $remove
+   
    java: 
       - "ff.java:charger:+;default"
       - "ff:charger:+:java"
    implementation:
-      - "ff:charger:+"
       - "ff:crl:+"
+      - "ff:charger:+"
+      - "ff:charger:+:java"
    macros:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
@@ -72,4 +78,4 @@ facets: [ $clear, java ]
 artifacts: 
    - $clear
    - $task macros_jar;macros
-   - $task java_jar;js
+   - $task java_jar;java
