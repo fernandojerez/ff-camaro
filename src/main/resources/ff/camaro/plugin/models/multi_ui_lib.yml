@@ -23,13 +23,7 @@ tasks:
       log-end: "Test executed"
 
 dependencies:
-   dart:
-      - "ff.dart:charger:+"
-      - "ff:charger:+:dart"
    python: $remove
-   js: 
-      - "ff.js:charger:+"
-      - "ff:charger:+:js"
    java: $remove
    implementation:
       - "ff:charger:+"
@@ -46,9 +40,6 @@ dependencies:
       - "org.junit.jupiter:junit-jupiter-api:5.5.0"
       - "org.junit.jupiter:junit-jupiter-params:5.5.0"
       - "org.junit.jupiter:junit-jupiter-engine:5.5.0"
-   js_test:
-      - "org.seleniumhq.selenium:selenium-java:3.141.59"
-      - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
 
 configurations:
    java: $remove

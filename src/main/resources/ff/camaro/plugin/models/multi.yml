@@ -21,7 +21,7 @@ dependencies:
       - "ff.python:charger:+;compile"
       - "ff:charger:+:python"
    js:
-      - "ff.js:charger:+;compile"
+      - "ff.js:charger:+;default"
       - "ff:charger:+:js"
    java:
       - "com.squareup.okhttp3:okhttp:3.14.2;none"
