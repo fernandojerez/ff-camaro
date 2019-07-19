@@ -1,4 +1,4 @@
-plugins: [ camaro, java, eclipse, maven ]
+plugins: [ camaro, java, eclipse, ivy ]
 
 tasks:
    debug_on:
@@ -9,7 +9,7 @@ tasks:
    ff-publish:
       group: ff
       description: Build and Publish the artifact
-      depends: [ testing, uploadArchives ]
+      depends: [ testing, publish ]
       log-end: App build and uploaded
 
    testing:
@@ -31,12 +31,15 @@ configurations:
    compileOnly: [ ]
    compileClasspath: [ compileOnly, implementation ]
    annotationProcessor: [ ]
+   runtime: []
+   compile: []
    runtimeOnly: [ ]
    runtimeClasspath: [ runtimeOnly, implementation ]
    testImplementation: [ implementation ]
    testCompileOnly: [ ]
    testCompileClasspath: [ testCompileOnly, testImplementation ]
    testRuntimeOnly: [ runtimeOnly ]
+   testRuntime: []
    testRuntimeClasspath: [ testRuntimeOnly, testImplementation, testCompileClasspath ]
    archives: [ ]
    default: [ runtime ]
@@ -45,7 +48,7 @@ configurations:
 
 dependencies:
    macros: 
-      - "ff:charger:+:java"
+      - "ff:charger:+"
    testImplementation:
       - "org.junit.jupiter:junit-jupiter-api:5.5.0"
       - "org.junit.jupiter:junit-jupiter-params:5.5.0"
@@ -64,5 +67,4 @@ dependencies:
       - "ff:charger:+:java"
       
 artifacts:
-   archives:
-      - $task jar
+   - $task jar

@@ -2,8 +2,10 @@ package ff.camaro;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Util {
 
@@ -33,5 +35,13 @@ public class Util {
 			map.put(String.valueOf(props[i]), props[i + 1]);
 		}
 		return map;
+	}
+
+	public static <T> Set<T> set(final T... values) {
+		final Set<T> list = new HashSet<>();
+		for (final T val : values) {
+			list.add(val);
+		}
+		return list;
 	}
 }

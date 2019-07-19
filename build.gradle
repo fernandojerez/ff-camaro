@@ -8,7 +8,7 @@
 
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'ivy-publish'
 
 sourceCompatibility = 12
 targetCompatibility = 12
@@ -36,37 +36,28 @@ if(System.env.FF_BUILD_DIR != null){
 	project.buildDir = new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build')
 }
 
-artifacts {
-	archives jar
+publishing {
+	publications {
+		ivy(IvyPublication) {
+			from components.java
+			organisation = project_group
+			module = project_name
+			version = project_version
+		}
+	}
+	repositories {
+		String usrHome = System.getProperty("user.home")
+		String repoUrl = "file://" + usrHome + "/.ff"
+		if(System.env.FF_REPO != null){
+			if(!System.env.FF_REPO.contains('://')){
+				repoUrl = 'file://' + System.env.FF_REPO
+			}else{
+				repoUrl = System.env.FF_REPO
+			}
+		}
+		
+		ivy {
+			url = repoUrl
+		}
+	}
 }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-        	String usrHome = System.getProperty("user.home")
-        	String repoUrl = "file://" + usrHome + "/.ff"
-        	if(System.env.FF_REPO != null){
-        		if(!System.env.FF_REPO.contains('://')){
-        			repoUrl = 'file://' + System.env.FF_REPO
-        		}else{
-        			repoUrl = System.env.FF_REPO
-        		}
-        	}
-            repository(url: repoUrl)
-            pom.groupId = project_group
-            pom.artifactId = project_name
-            pom.version = project_version 
-        }
-    }
-}
-
-task publish {
-	group 'FF'
-	description 'Publish module'
-	doLast {
-        println 'Module published'
-    }
-}
-
-publish.dependsOn build
-publish.dependsOn uploadArchives

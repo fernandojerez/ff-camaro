@@ -6,3 +6,8 @@ configurations:
 dependencies:
    camaro: 
       - "ff:ff:+"
+      - "ff:crl:+"
+      - "ff.java:charger:+"
+      - "ff.dart:charger:+"
+      - "ff.js:charger:+"
+      - "ff.python:charger:+"

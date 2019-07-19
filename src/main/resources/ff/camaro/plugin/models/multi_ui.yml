@@ -1,3 +1,16 @@
 use: multi_ui_lib
 
+dependencies:
+   dart:
+      - "ff:viper:+:dart"
+      - "ff:mustang:+:dart"
+   js: 
+      - "ff:viper:+:js"
+      - "ff:mustang:+:js"
+   macros:
+      - "ff:viper:+"
+      - "ff:mustang:+"
+   js_test:
+      - "ff:viper:+:js"
+
 facets: [ $clear, multi_ui ]

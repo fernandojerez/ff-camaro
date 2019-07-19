@@ -90,7 +90,7 @@ public class FFCompiler extends CamaroTask {
 
 		final URLClassLoader baseLibs = getClassLoader();
 		final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]), baseLibs);
-
+		Thread.currentThread().setContextClassLoader(loader);
 		if (javaOutput != null) {
 			macroFiles.add(javaOutput.toURI().toURL());
 			macroFiles.add(macros.toURI().toURL());

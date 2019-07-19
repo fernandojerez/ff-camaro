@@ -12,20 +12,22 @@ configurations:
    dart_test: [ dart, base_test ]
    python_test: [ python, base_test ]
    macros_test: [ macros, base_test ]
-   publish: [ ]
    
 dependencies:
    dart:
-      - "ff.dart:charger:+"
+      - "ff.dart:charger:+;compile"
       - "ff:charger:+:dart"
    python:
-      - "ff.python:charger:+"
+      - "ff.python:charger:+;compile"
       - "ff:charger:+:python"
-   js: 
-      - "ff.js:charger:+"
+   js:
+      - "ff.js:charger:+;compile"
       - "ff:charger:+:js"
    java:
-      - "ff.java:charger:+"
+      - "com.squareup.okhttp3:okhttp:3.14.2;none"
+      - "org.bouncycastle:bcprov-jdk15on:1.62;none"
+      - "de.mkammerer:argon2-jvm:2.5;none"
+      - "ff.java:charger:+;default"
       - "ff:charger:+:java"
    implementation:
       - "ff:charger:+"
@@ -40,12 +42,13 @@ dependencies:
       - "ff.dart:charger:+"
       - "ff.python:charger:+"
    base_test:
+      - "ff:crl:+;default"
       - "org.junit.jupiter:junit-jupiter-api:5.5.0"
       - "org.junit.jupiter:junit-jupiter-params:5.5.0"
       - "org.junit.jupiter:junit-jupiter-engine:5.5.0"
    js_test:
-      - "org.seleniumhq.selenium:selenium-java:3.141.59"
-      - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59"
+      - "org.seleniumhq.selenium:selenium-java:3.141.59;default"
+      - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59;default"
 
 sources:
    ff: { test: true }
@@ -201,11 +204,6 @@ tasks:
           macros:
              type: output
              include: [ "**/*.class" ]
-   ff_publish:
-      class: $Publish
-      configuration: publish
-      publish_to:
-         local: $local
    ff_java_test:
       class: $Test
       group: ff
@@ -230,6 +228,11 @@ tasks:
       description: Execute Python Test
       lang: python
       depends: ["ff_python_test_compile"]
+   ff_publish:
+      group: ff
+      description: Build and Publish the artifact
+      depends: [ publish ]
+      log-end: App build and uploaded
    ff_compile:
       depends: [ "ff_java_compile", "ff_js_compile", "ff_dart_compile", "ff_python_compile"]
       log-end: "Source compiled"
@@ -268,10 +271,10 @@ tasks:
 facets: [ $clear, multi ]
 
 artifacts: 
-   publish:
-      - $task macros_jar
-      - $task java_jar
-      - $task js_jar
-      - $task dart_jar
-      - $task python_jar
+   - $clear
+   - $task macros_jar;macros
+   - $task java_jar;java
+   - $task js_jar;js
+   - $task dart_jar;dart
+   - $task python_jar;python
 

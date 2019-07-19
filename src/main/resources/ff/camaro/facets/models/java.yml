@@ -1,8 +1,0 @@
-use: base
-
-files:
-   - file: /ff/camaro/test/FFJavaTestSuite.txt
-     to: src/test/ff/ff/test/FFJavaTestSuite.java
-
-commands: [ $clear, camaro, java ]
-      

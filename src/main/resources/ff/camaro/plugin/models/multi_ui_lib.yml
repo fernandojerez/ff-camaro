@@ -67,8 +67,7 @@ eclipse:
 facets: [ $clear, multi_ui_lib ]
 
 artifacts: 
-   publish:
-      - $clear
-      - $task macros_jar
-      - $task js_jar
-      - $task dart_jar
+   - $clear
+   - $task macros_jar;macros
+   - $task js_jar;js
+   - $task dart_jar;dart
