@@ -73,6 +73,12 @@ public class Artifacts {
 				String _name = "";
 				String _version = "";
 				String _classifiers = "";
+				String cfg = null;
+				final int cfgIx = line.indexOf("|");
+				if (cfgIx != -1) {
+					cfg = line.substring(0, cfgIx);
+					line = line.substring(cfgIx + 1);
+				}
 				if (line.startsWith("-")) {
 					transitive = false;
 					line = line.substring(1);
@@ -113,8 +119,8 @@ public class Artifacts {
 				if (_name.length() == 0) {
 					continue;
 				}
-				final Artifact artifact = new Artifact(name, org, version, transitive, classifiers);
-				final String artifactKey = org + "@" + name;
+				final Artifact artifact = new Artifact(name, org, version, transitive, classifiers, cfg);
+				final String artifactKey = (cfg != null ? cfg + "|" : "") + org + "@" + name;
 				List<Artifact> artifactsList = artifacts.get(artifactKey);
 				if (artifactsList == null) {
 					artifactsList = new LinkedList<>();

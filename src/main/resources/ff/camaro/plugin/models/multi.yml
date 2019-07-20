@@ -29,6 +29,7 @@ dependencies:
       - "de.mkammerer:argon2-jvm:2.5;none"
       - "ff.java:charger:+;default"
       - "ff:charger:+:java"
+      - "ff:crl:+;default"
    implementation:
       - "ff:charger:+"
       - "ff:crl:+"
