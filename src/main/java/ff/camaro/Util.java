@@ -37,6 +37,7 @@ public class Util {
 		return map;
 	}
 
+	@SafeVarargs
 	public static <T> Set<T> set(final T... values) {
 		final Set<T> list = new HashSet<>();
 		for (final T val : values) {
