@@ -47,6 +47,12 @@ public class FFCompilerBuilder extends TaskBuilder {
 				}
 				if ("true".equals(getString("test"))) {
 					compiler.setModuleOutputDir(new File(buildDir, getString("moduleOutputDir")));
+				} else {
+					if (!"macros".equals(getString("source"))) {
+						if ("APPLICATION".equals(getString("compilation_type"))) {
+							compiler.setDepsOutput(new File(buildDir, getString("depsOutput")));
+						}
+					}
 				}
 			}
 

@@ -1,0 +1,6 @@
+#Name of the app
+name: viper 
+#Organisation or package id
+org: ff.viper
+#Main file. Dart file with the run method
+main: 

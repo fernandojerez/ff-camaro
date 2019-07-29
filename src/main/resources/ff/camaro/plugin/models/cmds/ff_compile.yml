@@ -10,7 +10,8 @@ main_output: $output_main_path output
 test_output: $output_test_path output
 
 class: $FFCompiler
-analizedOutput: $format analized{test?test_str}/{output} 
+analizedOutput: $format analized{test?test_str}/{output}
+depsOutput: $format deps{test?test_str}/{output}
 macroOutput: $format macros{test?test_str}/{output}
 compilerClass: ff.lang.compiler.camaro.FFJavaCamaroCompiler
 sourceSet: $format {test?test_set:main_set}

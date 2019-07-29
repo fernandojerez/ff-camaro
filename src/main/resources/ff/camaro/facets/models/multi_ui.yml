@@ -5,5 +5,7 @@ files:
      to: src/test/ff/ff/test/FFJsTestSuite.java
    - file: /ff/camaro/test/FFDartTestSuite.txt
      to: src/test/ff/ff/test/FFDartTestSuite.java
-      
+   - file: /ff/camaro/viper/viper.yml
+     to: viper.yml
+        
 commands: [ $clear, camaro, multi_ui ]

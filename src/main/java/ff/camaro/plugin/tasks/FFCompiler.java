@@ -25,6 +25,7 @@ public class FFCompiler extends CamaroTask {
 	private File macroOutput;
 	private File javaOutput;
 	private File output;
+	private File depsOutput;
 	private File interfaces;
 	private File macros;
 	private String compilerClass;
@@ -121,10 +122,14 @@ public class FFCompiler extends CamaroTask {
 		final File[] sources = ff_set.getFf().getSrcDirs().toArray(new File[0]);
 
 		final File output = this.output != null ? this.output : ff_set.getFf().getOutputDir();
+		final File depsOutput = getDepsOutput();
 		final File definitionOutput = getDefinitionOutput();
 		final File macros = getMacroOutput();
 		final File analized = getAnalizedOutput();
 
+		if (depsOutput != null) {
+			depsOutput.mkdirs();
+		}
 		macros.mkdirs();
 		analized.mkdirs();
 
@@ -136,8 +141,9 @@ public class FFCompiler extends CamaroTask {
 
 		ff_compiler_class
 				.getMethod("setup", ClassLoader.class, ClassLoader.class, File.class, File.class, File.class,
-						File.class, File[].class)//
-				.invoke(ff_compiler, macro_loader, loader, output, definitionOutput, macros, analized, sources);
+						File.class, File.class, File[].class)//
+				.invoke(ff_compiler, macro_loader, loader, output, depsOutput, definitionOutput, macros, analized,
+						sources);
 
 		final Method compile = ff_compiler.getClass().getMethod("compile", File.class);
 		try {
@@ -170,6 +176,10 @@ public class FFCompiler extends CamaroTask {
 
 	public File getDefinitionOutput() {
 		return definitionOutput;
+	}
+
+	public File getDepsOutput() {
+		return depsOutput;
 	}
 
 	public String getFolder() {
@@ -211,6 +221,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setDefinitionOutput(final File definitionOutput) {
 		this.definitionOutput = definitionOutput;
+	}
+
+	public void setDepsOutput(final File depsOutput) {
+		this.depsOutput = depsOutput;
 	}
 
 	public void setFolder(final String folder) {

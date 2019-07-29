@@ -1,5 +1,15 @@
 use: multi_ui_lib
 
+tasks:
+   ff_dart_compile:
+      use: ff_dart_compile
+      output: ff_dart
+      source: ff
+      configuration: dart
+      compilation_type: APPLICATION
+      test: false
+      interfaces: interfaces/dart
+      
 dependencies:
    dart:
       - "ff:viper:+:dart"
