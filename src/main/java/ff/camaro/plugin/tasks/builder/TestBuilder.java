@@ -35,7 +35,9 @@ public class TestBuilder extends TaskBuilder {
 				}
 				test.useJUnitPlatform();
 				test.getSystemProperties().put("ff.test.lang", lang);
-
+				if (!"java".equals(lang)) {
+					test.setFailFast(true);
+				}
 				final String flang = lang;
 				project.afterEvaluate(new Action<Project>() {
 
@@ -85,8 +87,9 @@ public class TestBuilder extends TaskBuilder {
 		};
 		project.getTasks().create(taskName, Test.class, action);
 		final String lang = getString("lang");
+
+		project.getTasks().maybeCreate("ff_test_clean", FFCleanTest.class);
 		if ("java".equals(lang)) {
-			project.getTasks().create("ff_test_clean", FFCleanTest.class);
 			project.getTasks().create(taskName + "_report", JacocoReport.class, new Action<JacocoReport>() {
 
 				@Override
