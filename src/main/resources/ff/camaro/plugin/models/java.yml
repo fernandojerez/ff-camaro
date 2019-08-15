@@ -35,6 +35,8 @@ dependencies:
    dart_test: $remove
    python_test: $remove
    
+   testImplementation: $remove
+   
    java: 
       - "ff.java:charger:+;default"
       - "ff:charger:+:java"
@@ -45,11 +47,6 @@ dependencies:
    macros:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
-   testImplementation:
-      - "ff.js:charger:+"
-      - "ff.java:charger:+" 
-      - "ff.dart:charger:+"
-      - "ff.python:charger:+"
    base_test:
       - "org.junit.jupiter:junit-jupiter-api:5.5.0"
       - "org.junit.jupiter:junit-jupiter-params:5.5.0"
