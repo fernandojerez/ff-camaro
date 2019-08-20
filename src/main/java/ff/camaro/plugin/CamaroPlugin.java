@@ -443,6 +443,12 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 						if (cfg.getName().equals("kitt")) {
 							continue;
 						}
+						if (cfg.getName().equals("jacocoAgent")) {
+							continue;
+						}
+						if (cfg.getName().equals("jacocoAnt")) {
+							continue;
+						}
 						final DependencySet dependencies = cfg.getDependencies();
 						for (final Dependency dep : dependencies) {
 							final Map<String, Object> attrs = Util.map("org", dep.getGroup(), //

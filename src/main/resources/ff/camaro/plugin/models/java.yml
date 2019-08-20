@@ -48,9 +48,9 @@ dependencies:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
    base_test:
-      - "org.junit.jupiter:junit-jupiter-api:5.5.0"
-      - "org.junit.jupiter:junit-jupiter-params:5.5.0"
-      - "org.junit.jupiter:junit-jupiter-engine:5.5.0"
+      - "org.junit.jupiter:junit-jupiter-api:5.5.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.5.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.5.1"
 
 configurations:
    js: $remove
