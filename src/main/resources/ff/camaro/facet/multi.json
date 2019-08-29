@@ -3,6 +3,7 @@
 		"Publish": "ff_macros_compile,ff_compile,classes,ff_test,ff_jar,ff_publish",
 		"Fast Publish": "ff_macros_compile,ff_compile,classes,ff_jar,ff_publish",
 		"FF compile": "ff_macros_compile,ff_compile,classes",
+		"FF compile macros": "ff_macros_compile",
 		"Coverage": "ff_test_clean,testClasses,ff_macros_compile,ff_compile,ff_java_test,ff_java_test_report",
 		"Test": "ff_test_clean,testClasses,ff_macros_compile,ff_compile,ff_test,ff_java_test_report",
 		"Clean": "clean",

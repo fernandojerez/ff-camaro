@@ -10,7 +10,7 @@ import org.gradle.api.Task;
 import ff.camaro.Configurator;
 import ff.camaro.plugin.tasks.UpdateCamaro;
 
-public class Camaro implements GradlePlugin {
+public class Camaro extends GradlePlugin {
 
 	@Override
 	public void apply(final Project prj, final Configurator configurator) {

@@ -5,7 +5,7 @@ import org.gradle.api.publish.maven.plugins.MavenPublishPlugin;
 
 import ff.camaro.Configurator;
 
-public class Maven implements GradlePlugin {
+public class Maven extends GradlePlugin {
 
 	@Override
 	public void apply(final Project prj, final Configurator configurator) {

@@ -25,7 +25,7 @@ import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
 
-public class Eclipse implements GradlePlugin {
+public class Eclipse extends GradlePlugin {
 
 	protected void addEclipseSourceFolder(final Classpath cp, final String path, final boolean test) {
 		cp.getEntries().add(new SourceFolder(ConfigLoader.src_path(path, SourceSet.MAIN_SOURCE_SET_NAME),

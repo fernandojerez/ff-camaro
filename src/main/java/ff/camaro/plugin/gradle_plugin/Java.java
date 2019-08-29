@@ -17,7 +17,7 @@ import org.gradle.testing.jacoco.tasks.JacocoReportsContainer;
 
 import ff.camaro.Configurator;
 
-public class Java implements GradlePlugin {
+public class Java extends GradlePlugin {
 
 	@Override
 	public void apply(final Project project, final Configurator configurator) {

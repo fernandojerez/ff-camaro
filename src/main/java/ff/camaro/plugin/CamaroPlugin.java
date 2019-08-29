@@ -23,6 +23,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.DependencyArtifact;
 import org.gradle.api.artifacts.DependencySet;
+import org.gradle.api.artifacts.ExcludeRule;
 import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
@@ -478,6 +479,19 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 									artifactAttrs.put("name", artifact.getName());
 									artifactAttrs.put("type", artifact.getType());
 									depNode.appendNode("artifact", artifactAttrs);
+								}
+								final Set<ExcludeRule> rules = mdep.getExcludeRules();
+								for (final ExcludeRule rule : rules) {
+									final Map<String, Object> excludeAttrs = new HashMap<>();
+									final String group = rule.getGroup();
+									if (group != null) {
+										excludeAttrs.put("org", group);
+									}
+									final String module = rule.getModule();
+									if (module != null) {
+										excludeAttrs.put("module", module);
+									}
+									depNode.appendNode("exclude", excludeAttrs);
 								}
 							} else {
 								continue;
