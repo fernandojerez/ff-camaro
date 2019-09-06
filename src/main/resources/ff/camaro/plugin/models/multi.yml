@@ -29,8 +29,12 @@ dependencies:
       - "ff:charger:+:java"
       - "ff:crl:+;default"
    implementation:
-      - "ff:charger:+"
+      - "ff:charger:+:java"
       - "ff:crl:+"
+      - "ff.java:charger:+"
+      - "ff.dart:charger:+"
+      - "ff.js:charger:+"
+      - "ff.python:charger:+"
    macros:
       - "ff:charger:+"
       - "ff:charger:+:java"
