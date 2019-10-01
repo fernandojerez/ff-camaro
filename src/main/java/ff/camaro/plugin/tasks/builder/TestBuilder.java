@@ -33,6 +33,10 @@ public class TestBuilder extends TaskBuilder {
 				if (lang == null) {
 					lang = "java";
 				}
+				String browser = getString("browser");
+				if (browser == null) {
+					browser = "";
+				}
 				test.useJUnitPlatform();
 				test.getSystemProperties().put("ff.test.lang", lang);
 				if (!"java".equals(lang)) {
@@ -59,14 +63,19 @@ public class TestBuilder extends TaskBuilder {
 				});
 
 				final Map<String, String> suites = new HashMap<>();
+				suites.put("chrome", "FFChromeTestSuite");
+				suites.put("firefox", "FFFirefoxTestSuite");
+				suites.put("edge", "FFEdgeTestSuite");
 				suites.put("java", "FFJavaTestSuite");
-				suites.put("js", "FFJsTestSuite");
 				suites.put("dart", "FFDartTestSuite");
 				suites.put("python", "FFPythonTestSuite");
 
 				final Set<String> excludes = new HashSet<>();
 				for (final Map.Entry<String, String> entry : suites.entrySet()) {
 					if (entry.getKey().equals(lang)) {
+						continue;
+					}
+					if (entry.getKey().equals(browser)) {
 						continue;
 					}
 					excludes.add("ff/test/" + entry.getValue() + ".class");

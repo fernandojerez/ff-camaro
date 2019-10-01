@@ -10,7 +10,7 @@ import ff.crl.test.FFTestSuite;
 import ff.js.charger.test.FFJsTestEvent;
 import ff.js.charger.test.TestFileServer;
 
-public class FFJsTestSuite extends FFTestSuite {
+public class FFChromeTestSuite extends FFTestSuite {
 
 	public static void main(final String[] args) throws Exception {
 		final TestFileServer server = new TestFileServer();
@@ -45,7 +45,7 @@ public class FFJsTestSuite extends FFTestSuite {
 
 	@Override
 	protected FFTestEvent getTestEvent() {
-		return new FFJsTestEvent();
+		return new FFJsTestEvent("chrome");
 	}
 
 	@Override

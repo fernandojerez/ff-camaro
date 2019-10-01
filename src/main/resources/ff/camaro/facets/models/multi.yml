@@ -3,8 +3,12 @@ use: base
 files:
    - file: /ff/camaro/test/FFJavaTestSuite.txt
      to: src/test/ff/ff/test/FFJavaTestSuite.java
-   - file: /ff/camaro/test/FFJsTestSuite.txt
-     to: src/test/ff/ff/test/FFJsTestSuite.java
+   - file: /ff/camaro/test/FFChromeTestSuite.txt
+     to: src/test/ff/ff/test/FFChromeTestSuite.java
+   - file: /ff/camaro/test/FFFirefoxTestSuite.txt
+     to: src/test/ff/ff/test/FFFirefoxTestSuite.java
+   - file: /ff/camaro/test/FFEdgeTestSuite.txt
+     to: src/test/ff/ff/test/FFEdgeTestSuite.java
    - file: /ff/camaro/test/FFDartTestSuite.txt
      to: src/test/ff/ff/test/FFDartTestSuite.java
    - file: /ff/camaro/test/FFPythonTestSuite.txt

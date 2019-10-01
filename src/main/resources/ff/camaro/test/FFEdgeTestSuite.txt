@@ -1,0 +1,56 @@
+package ff.test;
+
+import java.io.File;
+import java.nio.file.Path;
+
+import org.junit.jupiter.api.Test;
+
+import ff.crl.test.FFTestEvent;
+import ff.crl.test.FFTestSuite;
+import ff.js.charger.test.FFJsTestEvent;
+import ff.js.charger.test.TestFileServer;
+
+public class FFEdgeTestSuite extends FFTestSuite {
+
+	public static void main(final String[] args) throws Exception {
+		final TestFileServer server = new TestFileServer();
+		server.start(8787);
+		server.setFileFinder(path -> {
+			final String projectName = "#project.name#";
+			final String build_dir = System.getenv("FF_BUILD_DIR");
+			String resolve = "";
+			if (build_dir != null) {
+				resolve = build_dir + "/" + projectName + "/";
+			}
+			try {
+				final File testFile = new File(resolve + "build/classes/ff_js/test" + path);
+				if (testFile.exists()) {
+					return testFile.toURI().toURL();
+				}
+				final File mainFile = new File(resolve + "build/classes/ff_js/main" + path);
+				if (mainFile.exists()) {
+					return mainFile.toURI().toURL();
+				}
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
+	}
+	
+	@Test
+	public void dummy() {
+		return;
+	}
+
+	@Override
+	protected FFTestEvent getTestEvent() {
+		return new FFJsTestEvent("edge");
+	}
+
+	@Override
+	protected Path getTestPath() {
+		return new File("src/test/ff").toPath();
+	}
+
+}

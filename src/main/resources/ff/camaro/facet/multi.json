@@ -10,7 +10,12 @@
 		"Test Reports": {
 			"Python": "show_ff_python_test_report",
 			"Java": "show_ff_java_test_report",
-			"Js": "show_ff_js_test_report",
+			"Js": {
+				"All": "show_ff_js_test_report",
+				"Chrome": "show_ff_js_chrome_test_report",
+				"Firefox": "show_ff_js_firefox_test_report",
+				"Edge": "show_ff_js_edge_test_report"
+			},
 			"Dart": "show_ff_dart_test_report",
 			"Coverage Report": "show_ff_coverage_report"
 		}

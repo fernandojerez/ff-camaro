@@ -214,10 +214,28 @@ tasks:
       lang: java
       depends: ["ff_java_test_compile"]
    ff_js_test:
+      depends: [ "ff_js_chrome_test", "ff_js_firefox_test", "ff_js_edge_test"]
+      log-end: "Js Test executed"
+   ff_js_chrome_test:
       class: $Test
       group: ff
-      description: Execute Js Test
+      description: Execute Chrome Js Test
       lang: js
+      browser: chrome
+      depends: ["ff_js_test_compile"]
+   ff_js_firefox_test:
+      class: $Test
+      group: ff
+      description: Execute Firefox Js Test
+      lang: js
+      browser: firefox
+      depends: ["ff_js_test_compile"]
+   ff_js_edge_test:
+      class: $Test
+      group: ff
+      description: Execute Edge Js Test
+      lang: js
+      browser: edge
       depends: ["ff_js_test_compile"]
    ff_dart_test:
       class: $Test
@@ -260,11 +278,24 @@ tasks:
       group: report
       description: Java Test Report
       uri: file://$build_dir$/reports/tests/ff_java_test/index.html      
-   show_ff_js_test_report:
+   show_ff_js_chrome_test_report:
       class: $Browse
       group: report
       description: Js Test Report
-      uri: file://$build_dir$/reports/tests/ff_js_test/index.html
+      uri: file://$build_dir$/reports/tests/ff_js_chrome_test/index.html
+   show_ff_js_firefox_test_report:
+      class: $Browse
+      group: report
+      description: Js Test Report
+      uri: file://$build_dir$/reports/tests/ff_js_firefox_test/index.html
+   show_ff_js_edge_test_report:
+      class: $Browse
+      group: report
+      description: Js Test Report
+      uri: file://$build_dir$/reports/tests/ff_js_edge_test/index.html
+   show_ff_js_test_report:
+      depends: [ "show_ff_js_chrome_test_report", "show_ff_js_firefox_test_report", "show_ff_js_edge_test_report" ]
+      log-end: "Test executed"
    show_ff_coverage_report:
       class: $Browse
       group: report
