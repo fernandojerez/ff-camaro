@@ -11,6 +11,9 @@ tasks:
    dart_jar: $remove
    python_jar: $remove
    ff_js_test: $remove
+   ff_js_edge_test: $remove
+   ff_js_chrome_test: $remove
+   ff_js_firefox_test: $remove
    ff_dart_test: $remove
    ff_python_test: $remove
    show_ff_python_test_report: $remove
