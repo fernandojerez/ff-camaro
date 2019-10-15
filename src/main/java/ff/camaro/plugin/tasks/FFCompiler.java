@@ -34,6 +34,7 @@ public class FFCompiler extends CamaroTask {
 	private String[] configuration;
 	private File moduleOutputDir;
 	private String type;
+	private boolean macro;
 
 	public FFCompiler() {
 		setGroup("ff");
@@ -73,8 +74,20 @@ public class FFCompiler extends CamaroTask {
 		if (macros != null) {
 			if (javaOutput == null) {
 				classpathFiles.add(macros);
+			}
+			if (!isMacro()) {
 				macroFiles.add(macros.toURI().toURL());
 			}
+		}
+
+		final File output = this.output != null ? this.output : ff_set.getFf().getOutputDir();
+		final File depsOutput = getDepsOutput();
+		final File definitionOutput = getDefinitionOutput();
+		final File macros = getMacroOutput();
+		final File analized = getAnalizedOutput();
+
+		if (isMacro()) {
+			macroFiles.add(output.toURI().toURL());
 		}
 
 		final Set<URL> urls = new HashSet<>();
@@ -120,12 +133,6 @@ public class FFCompiler extends CamaroTask {
 				: new URLClassLoader(macroFiles.toArray(new URL[0]), baseLibs);
 
 		final File[] sources = ff_set.getFf().getSrcDirs().toArray(new File[0]);
-
-		final File output = this.output != null ? this.output : ff_set.getFf().getOutputDir();
-		final File depsOutput = getDepsOutput();
-		final File definitionOutput = getDefinitionOutput();
-		final File macros = getMacroOutput();
-		final File analized = getAnalizedOutput();
 
 		if (depsOutput != null) {
 			depsOutput.mkdirs();
@@ -198,6 +205,10 @@ public class FFCompiler extends CamaroTask {
 		return sourceSet;
 	}
 
+	public boolean isMacro() {
+		return macro;
+	}
+
 	public void setAnalizedOutput(final File analizedOutput) {
 		this.analizedOutput = analizedOutput;
 	}
@@ -237,6 +248,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setJavaOutput(final File javaOutput) {
 		this.javaOutput = javaOutput;
+	}
+
+	public void setMacro(final boolean b) {
+		macro = b;
 	}
 
 	public void setMacroOutput(final File macroOutput) {
