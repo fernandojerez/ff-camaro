@@ -18,10 +18,10 @@ repositories {
 }
 
 dependencies {
-    compile gradleApi()
+    implementation gradleApi()
     compileOnly 'org.apache.maven:maven-model:3.5.2'
 	compileOnly 'org.apache.maven:maven-model-builder:3.5.2' 
-	compile 'org.snakeyaml:snakeyaml-engine:1.0' 
+	implementation 'org.snakeyaml:snakeyaml-engine:1.0' 
 }
 
 jar {
