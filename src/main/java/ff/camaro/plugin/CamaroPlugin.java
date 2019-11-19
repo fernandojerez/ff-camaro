@@ -90,6 +90,16 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		this.objectFactory = objectFactory;
 	}
 
+	private void add_target_configuration(final ModuleDependency dep, final DependencyHandler d, final String dConf,
+			final String conf) {
+		if (dep.getArtifacts() != null && dep.getArtifacts().size() > 0) {
+			final Dependency dep2 = d.add(dConf, dep.getGroup() + ":" + dep.getName() + ":" + dep.getVersion());
+			((ModuleDependency) dep2).setTargetConfiguration(conf);
+		} else {
+			dep.setTargetConfiguration(conf);
+		}
+	}
+
 	private void addFFMainSourceSet(final Project prj, final String name, final boolean test) {
 		final DependencyHandler dependencies = prj.getDependencies();
 		final JavaPluginConvention javaConvenion = prj.getConvention().getPlugin(JavaPluginConvention.class);
@@ -313,11 +323,11 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					final Dependency dep = d.add(entry.getKey(), dependency);
 					if (conf != null) {
 						if (!"none".equals(conf)) {
-							((ModuleDependency) dep).setTargetConfiguration(conf);
+							add_target_configuration((ModuleDependency) dep, d, entry.getKey(), conf);
 						}
 					} else {
 						if (CamaroPlugin.group_configurations.contains(entry.getKey())) {
-							((ModuleDependency) dep).setTargetConfiguration(entry.getKey());
+							add_target_configuration((ModuleDependency) dep, d, entry.getKey(), entry.getKey());
 						}
 					}
 				}

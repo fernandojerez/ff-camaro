@@ -11,6 +11,9 @@ import java.util.Set;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.StopActionException;
 import org.gradle.api.tasks.TaskAction;
@@ -20,20 +23,49 @@ import ff.camaro.FFSourceSet;
 
 public class FFCompiler extends CamaroTask {
 
+	@Optional
+	@InputDirectory
 	private File analizedOutput;
+	@Optional
+	@InputDirectory
 	private File definitionOutput;
+	@Optional
+	@InputDirectory
 	private File macroOutput;
+	@Optional
+	@InputDirectory
 	private File javaOutput;
+	@Optional
+	@InputDirectory
 	private File output;
+	@Optional
+	@InputDirectory
 	private File depsOutput;
+	@Optional
+	@InputDirectory
 	private File interfaces;
+	@Optional
+	@InputDirectory
 	private File macros;
+	@Optional
+	@Input
 	private String compilerClass;
+	@Optional
+	@Input
 	private String folder;
+	@Optional
+	@Input
 	private String sourceSet;
+	@Optional
+	@Input
 	private String[] configuration;
+	@Optional
+	@InputDirectory
 	private File moduleOutputDir;
+	@Optional
+	@Input
 	private String type;
+	@Input
 	private boolean macro;
 
 	public FFCompiler() {
@@ -181,6 +213,10 @@ public class FFCompiler extends CamaroTask {
 		return compilerClass;
 	}
 
+	public String[] getConfiguration() {
+		return configuration;
+	}
+
 	public File getDefinitionOutput() {
 		return definitionOutput;
 	}
@@ -193,8 +229,24 @@ public class FFCompiler extends CamaroTask {
 		return folder;
 	}
 
+	public File getInterfaces() {
+		return interfaces;
+	}
+
+	public File getJavaOutput() {
+		return javaOutput;
+	}
+
 	public File getMacroOutput() {
 		return macroOutput;
+	}
+
+	public File getMacros() {
+		return macros;
+	}
+
+	public File getModuleOutputDir() {
+		return moduleOutputDir;
 	}
 
 	public File getOutput() {
@@ -203,6 +255,10 @@ public class FFCompiler extends CamaroTask {
 
 	public String getSourceSet() {
 		return sourceSet;
+	}
+
+	public String getType() {
+		return type;
 	}
 
 	public boolean isMacro() {
