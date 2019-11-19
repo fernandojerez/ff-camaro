@@ -12,7 +12,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.StopActionException;
@@ -24,28 +23,28 @@ import ff.camaro.FFSourceSet;
 public class FFCompiler extends CamaroTask {
 
 	@Optional
-	@InputDirectory
+
 	private File analizedOutput;
 	@Optional
-	@InputDirectory
+
 	private File definitionOutput;
 	@Optional
-	@InputDirectory
+
 	private File macroOutput;
 	@Optional
-	@InputDirectory
+
 	private File javaOutput;
 	@Optional
-	@InputDirectory
+
 	private File output;
 	@Optional
-	@InputDirectory
+
 	private File depsOutput;
 	@Optional
-	@InputDirectory
+
 	private File interfaces;
 	@Optional
-	@InputDirectory
+
 	private File macros;
 	@Optional
 	@Input
@@ -60,7 +59,6 @@ public class FFCompiler extends CamaroTask {
 	@Input
 	private String[] configuration;
 	@Optional
-	@InputDirectory
 	private File moduleOutputDir;
 	@Optional
 	@Input
