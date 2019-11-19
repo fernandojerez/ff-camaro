@@ -60,4 +60,4 @@ publishing {
 			url = repoUrl
 		}
 	}
-}
+} 

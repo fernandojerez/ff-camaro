@@ -50,6 +50,8 @@ dependencies:
    macros:
       - "ff:charger:+:java"
       - "ff.java:charger:+"
+   java_test:
+      - $clear
 
 configurations:
    js: $remove

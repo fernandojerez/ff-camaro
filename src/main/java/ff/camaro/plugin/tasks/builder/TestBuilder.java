@@ -91,6 +91,7 @@ public class TestBuilder extends TaskBuilder {
 				final JacocoTaskExtension jacoco = test.getExtensions().getByType(JacocoTaskExtension.class);
 				jacoco.setDestinationFile(new File(project.getBuildDir(), "jacoco/java/test.exec"));
 				jacoco.setEnabled(lang.equals("java"));
+				jacoco.getExcludes().add("**launcher**");
 			}
 
 		};

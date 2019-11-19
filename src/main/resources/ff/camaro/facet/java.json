@@ -1,13 +1,18 @@
 {
 	"menu": {
+		"Update Camaro": "update_camaro",
+		"kitt": {
+			"set as workdir": "kitt_kitt#set_kitt_workdir"
+		},
+		"Coverage": "ff_test_clean,testClasses,ff_macros_compile,ff_java_compile,ff_java_test,ff_java_test_report",
 		"Publish": "ff_macros_compile,ff_compile,classes,ff_test,ff_jar,ff_publish",
 		"Fast Publish": "ff_macros_compile,ff_compile,classes,ff_jar,ff_publish",
 		"FF compile": "ff_macros_compile,ff_compile,classes",
 		"Test": "ff_test_clean,testClasses,ff_compile,ff_test",
 		"Clean": "clean",
 		"Test Reports": {
-			"Js": "show_ff_js_test_report",
-			"Dart": "show_ff_dart_test_report"
+			"Java": "show_ff_java_test_report",
+			"Coverage Report": "show_ff_coverage_report"
 		}
 	}
 }
