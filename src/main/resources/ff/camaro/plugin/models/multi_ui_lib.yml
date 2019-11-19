@@ -25,6 +25,7 @@ tasks:
 dependencies:
    python: $remove
    java: $remove
+   java_test: $remove
    implementation:
       - "ff:charger:+"
       - "ff:crl:+"
