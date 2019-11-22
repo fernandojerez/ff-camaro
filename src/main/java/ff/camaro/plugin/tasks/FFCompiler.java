@@ -173,14 +173,19 @@ public class FFCompiler extends CamaroTask {
 		final Class<?> ff_compiler_class = loader.loadClass(getCompilerClass());
 		final Object ff_compiler = ff_compiler_class.getConstructor().newInstance();
 
+		final Object profile = ff_compiler_class.getMethod("getProfile", String.class) //
+				.invoke(ff_compiler, "MASTER");
+
+		System.out.println("Compiling using profile: " + profile);
+
 		ff_compiler_class.getMethod("setType", String.class) //
 				.invoke(ff_compiler, type);
 
 		ff_compiler_class
-				.getMethod("setup", ClassLoader.class, ClassLoader.class, File.class, File.class, File.class,
-						File.class, File.class, File[].class)//
-				.invoke(ff_compiler, macro_loader, loader, output, depsOutput, definitionOutput, macros, analized,
-						sources);
+				.getMethod("setup", profile.getClass(), ClassLoader.class, ClassLoader.class, File.class, File.class,
+						File.class, File.class, File.class, File[].class)//
+				.invoke(ff_compiler, profile, macro_loader, loader, output, depsOutput, definitionOutput, macros,
+						analized, sources);
 
 		final Method compile = ff_compiler.getClass().getMethod("compile", File.class);
 		try {
