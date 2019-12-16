@@ -11,11 +11,6 @@ import ff.java.charger.test.FFJavaTestEvent;
 
 public class FFJavaTestSuite extends FFTestSuite {
 
-	@Test
-	public void dummy() {
-		return;
-	}
-
 	@Override
 	protected FFTestEvent getTestEvent() {
 		return new FFJavaTestEvent();

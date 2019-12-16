@@ -37,11 +37,6 @@ public class FFEdgeTestSuite extends FFTestSuite {
 			return null;
 		});
 	}
-	
-	@Test
-	public void dummy() {
-		return;
-	}
 
 	@Override
 	protected FFTestEvent getTestEvent() {

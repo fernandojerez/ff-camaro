@@ -11,11 +11,6 @@ import ff.python.charger.test.FFPythonTestEvent;
 
 public class FFPythonTestSuite extends FFTestSuite {
 
-	@Test
-	public void dummy() {
-		return;
-	}
-
 	@Override
 	protected FFTestEvent getTestEvent() {
 		String projectName = "#project.name#";
