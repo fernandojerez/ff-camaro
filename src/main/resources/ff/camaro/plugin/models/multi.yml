@@ -24,7 +24,7 @@ dependencies:
       - "ff.js:charger:+;default"
       - "ff:charger:+:js"
    java:
-      - "com.squareup.okhttp3:okhttp:3.14.4;none"
+      - "com.squareup.okhttp3:okhttp:3.14.6;none"
       - "ff.java:charger:+;default"
       - "ff:charger:+:java"
       - "ff:crl:+;default"
