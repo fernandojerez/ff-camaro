@@ -56,8 +56,6 @@ dependencies:
    js_test:
       - "org.seleniumhq.selenium:selenium-java:3.141.59;default"
       - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59;default"
-   java_test:
-      - "ff:kitt:+:java"
 
 sources:
    ff: { test: true }
