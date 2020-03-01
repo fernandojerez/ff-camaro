@@ -24,7 +24,7 @@ dependencies:
       - "ff.js:charger:+;default"
       - "ff:charger:+:js"
    java:
-      - "com.squareup.okhttp3:okhttp:3.14.6;none"
+      - "com.squareup.okhttp3:okhttp:3.14.7;none"
       - "ff.java:charger:+;default"
       - "ff:charger:+:java"
       - "ff:crl:+;default"
@@ -69,7 +69,7 @@ sources:
 eclipse:
    ff: { test: true, output: true }
    macros: { test: false, output: false }
-   resources: { test: false, output: false }
+   resources: { test: false, output: true }
    interfaces/java: { test: false, output: true }
    interfaces/js: { test: false, output: true }
    interfaces/dart: { test: false, output: true }
