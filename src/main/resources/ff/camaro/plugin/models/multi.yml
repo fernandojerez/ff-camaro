@@ -46,9 +46,9 @@ dependencies:
       - "ff.python:charger:+"
    base_test:
       - "ff:crl:+;default"
-      - "org.junit.jupiter:junit-jupiter-api:5.6.0"
-      - "org.junit.jupiter:junit-jupiter-params:5.6.0"
-      - "org.junit.jupiter:junit-jupiter-engine:5.6.0"
+      - "org.junit.jupiter:junit-jupiter-api:5.6.1"
+      - "org.junit.jupiter:junit-jupiter-params:5.6.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.6.1"
       - "ff.js:charger:+"
       - "ff.java:charger:+" 
       - "ff.dart:charger:+"
