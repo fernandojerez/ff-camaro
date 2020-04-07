@@ -51,9 +51,9 @@ public class Eclipse extends GradlePlugin {
 		project.getPluginManager().apply(EclipsePlugin.class);
 
 		final EclipseModel model = project.getExtensions().getByType(EclipseModel.class);
-		model.getJdt().setJavaRuntimeName("JavaSE-13");
-		model.getJdt().setSourceCompatibility(JavaVersion.VERSION_13);
-		model.getJdt().setTargetCompatibility(JavaVersion.VERSION_13);
+		model.getJdt().setJavaRuntimeName("JavaSE-14");
+		model.getJdt().setSourceCompatibility(JavaVersion.VERSION_14);
+		model.getJdt().setTargetCompatibility(JavaVersion.VERSION_14);
 
 		model.project(new Action<EclipseProject>() {
 
