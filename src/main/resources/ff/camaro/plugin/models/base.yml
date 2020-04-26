@@ -50,18 +50,18 @@ dependencies:
    macros: 
       - "ff:charger:+"
    testImplementation:
-      - "org.junit.jupiter:junit-jupiter-api:5.6.1"
-      - "org.junit.jupiter:junit-jupiter-params:5.6.1"
-      - "org.junit.platform:junit-platform-commons:1.6.1"
+      - "org.junit.jupiter:junit-jupiter-api:5.6.2"
+      - "org.junit.jupiter:junit-jupiter-params:5.6.2"
+      - "org.junit.platform:junit-platform-commons:1.6.2"
    testRuntimeOnly:
-      - "org.junit.jupiter:junit-jupiter-engine:5.6.1"
-      - "org.junit.platform:junit-platform-commons:1.6.1"
+      - "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+      - "org.junit.platform:junit-platform-commons:1.6.2"
    compileOnly:
       - "ff:crl:+;default"
-      - "org.junit.jupiter:junit-jupiter-api:5.6.1"
-      - "org.junit.jupiter:junit-jupiter-params:5.6.1"
-      - "org.junit.jupiter:junit-jupiter-engine:5.6.1"
-      - "org.junit.platform:junit-platform-commons:1.6.1"
+      - "org.junit.jupiter:junit-jupiter-api:5.6.2"
+      - "org.junit.jupiter:junit-jupiter-params:5.6.2"
+      - "org.junit.jupiter:junit-jupiter-engine:5.6.2"
+      - "org.junit.platform:junit-platform-commons:1.6.2"
    kitt:
       - "ff:kitt:+:java"
       - "ff.java:charger:+"
