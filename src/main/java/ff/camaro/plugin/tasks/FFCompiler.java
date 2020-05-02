@@ -158,7 +158,6 @@ public class FFCompiler extends CamaroTask {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-
 		final URLClassLoader macro_loader = macroFiles.isEmpty() ? baseLibs
 				: new URLClassLoader(macroFiles.toArray(new URL[0]), baseLibs);
 
