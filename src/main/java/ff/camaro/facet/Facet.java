@@ -47,11 +47,15 @@ public abstract class Facet extends Configurator {
 			merge_two_maps(kitt, yml);
 		}
 
+		String gradleVersion = System.getenv("FF_GRADLE_VERSION");
+		if (gradleVersion == null) {
+			gradleVersion = "6.4";
+		}
 		final List<Map<String, String>> files = getList("files");
 		for (final Map<String, String> file : files) {
 			copyTextFile(file.get("file"), new File(projectDir, file.get("to")), "#project.name#",
 					props.getProperty("project_group") + "@" + props.getProperty("project_name"), "#FF_JAVA_HOME#",
-					System.getenv("FF_JAVA_HOME").replace("\\", "/"));
+					System.getenv("FF_JAVA_HOME").replace("\\", "/"), "#GRADLE_VERSION#", gradleVersion);
 		}
 
 		copyTextFile("/ff/camaro/eclipse/project.txt", new File(projectDir, ".project"), "#ProjectName#",
