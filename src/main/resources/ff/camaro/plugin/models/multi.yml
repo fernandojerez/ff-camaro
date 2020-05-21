@@ -1,13 +1,17 @@
 use: base_camaro
 
 configurations:
+   compileOnly: [ java_libs, jetty, undertow ]
+   jetty: [ ]
+   undertow: [ ]
+   java_libs: [ ]
    java: [  ]
    js: [  ]
    dart: [  ]
    python: [ ]
    macros: [ ]
    base_test: [ ]
-   java_test: [ java, base_test ]
+   java_test: [ java, java_libs, base_test, jetty, undertow ]
    js_test: [ js, base_test ]
    dart_test: [ dart, base_test ]
    python_test: [ python, base_test ]
@@ -23,11 +27,13 @@ dependencies:
    js:
       - "ff.js:charger:+;default"
       - "ff:charger:+:js"
-   java:
+   java_libs:
       - "com.squareup.okhttp3:okhttp:3.14.7;none"
       - "ff.java:charger:+;default"
-      - "ff:charger:+:java"
+      - "ff:charger:+;java_libs"
       - "ff:crl:+;default"
+   java:      
+      - "ff:charger:+:java"      
    implementation:
       - "ff:charger:+:java"
       - "ff:crl:+"
@@ -38,6 +44,7 @@ dependencies:
    macros:
       - "ff:charger:+"
       - "ff:charger:+:java"
+      - "ff:charger:+;java_libs"
       - "ff.java:charger:+"
    testImplementation:
       - "ff.js:charger:+"
@@ -81,7 +88,7 @@ tasks:
    ff_macros_compile:
       use: ff_macros_compile
       source: macros
-      configuration: macros
+      configuration: [ macros, java_libs ]
       interfaces: interfaces/java
    ff_js_compile:
       use: ff_js_compile
@@ -128,7 +135,7 @@ tasks:
       use: ff_compile
       source: ff
       output: ff_java
-      configuration: java
+      configuration: [ java, java_libs ]
    ff_java_test_compile:
       use: ff_compile
       source: ff

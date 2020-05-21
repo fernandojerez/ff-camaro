@@ -31,6 +31,7 @@ dependencies:
       - "ff:crl:+"
    macros:
       - "ff:charger:+:java"
+      - "ff:charger:+;java_libs"
       - "ff.java:charger:+"
    testImplementation:
       - "ff.js:charger:+"

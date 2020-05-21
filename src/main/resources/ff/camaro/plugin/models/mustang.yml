@@ -15,6 +15,8 @@ dependencies:
       - "ff:mustang:+:js"
    java:
       - "ff:mustang:+:java"
-
+   java_libs:
+      - "ff:mustang:+;java_libs"
+      
 facets: [ $clear, mustang ]
 
