@@ -284,6 +284,15 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			@Override
 			public void execute(final MavenArtifactRepository repo) {
 				repo.setUrl(Util.getFFRepo() + "/repo");
+//				repo.metadataSources(new Action<MetadataSources>() {
+//
+//					@Override
+//					public void execute(final MetadataSources sources) {
+//						sources.mavenPom();
+//						sources.artifact();
+//					}
+//
+//				});
 			}
 		}));
 		repositories.add(repositories.ivy(new Action<IvyArtifactRepository>() {
