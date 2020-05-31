@@ -169,7 +169,7 @@ public class FFCompiler extends CamaroTask {
 		macros.mkdirs();
 		analized.mkdirs();
 
-		final Class<?> ff_compiler_class = loader.loadClass(getCompilerClass());
+		final Class<?> ff_compiler_class = macro_loader.loadClass(getCompilerClass());
 		final Object ff_compiler = ff_compiler_class.getConstructor().newInstance();
 
 		final Object profile = ff_compiler_class.getMethod("getProfile", String.class) //
@@ -182,9 +182,9 @@ public class FFCompiler extends CamaroTask {
 
 		ff_compiler_class
 				.getMethod("setup", profile.getClass(), ClassLoader.class, ClassLoader.class, File.class, File.class,
-						File.class, File.class, File.class, File[].class)//
+						File.class, File.class, File.class, File.class)//
 				.invoke(ff_compiler, profile, macro_loader, loader, output, depsOutput, definitionOutput, macros,
-						analized, sources);
+						analized, sources[0]);
 
 		final Method compile = ff_compiler.getClass().getMethod("compile", File.class);
 		try {
