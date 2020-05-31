@@ -38,6 +38,10 @@ dependencies:
       - "ff.java:charger:+" 
       - "ff.dart:charger:+"
       - "ff.python:charger:+"
+   dart:
+      - "ff:mustang:+:dart"
+   js: 
+      - "ff:mustang:+:js"
 
 configurations:
    java: $remove
