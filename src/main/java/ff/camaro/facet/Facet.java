@@ -6,11 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.snakeyaml.engine.v1.api.Load;
 import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
@@ -49,7 +55,7 @@ public abstract class Facet extends Configurator {
 
 		String gradleVersion = System.getenv("FF_GRADLE_VERSION");
 		if (gradleVersion == null) {
-			gradleVersion = "6.4";
+			gradleVersion = get_gradle_version();
 		}
 		final List<Map<String, String>> files = getList("files");
 		for (final Map<String, String> file : files) {
@@ -85,6 +91,24 @@ public abstract class Facet extends Configurator {
 				stream.print(strResult);
 				stream.close();
 			}
+		}
+	}
+
+	private String get_gradle_version() {
+		try {
+			final Configuration kitt_conf = project.getConfigurations().getByName("kitt");
+			final Set<File> files = kitt_conf.resolve();
+			final Set<URL> urls = new HashSet<>();
+			for (final File f : files) {
+				urls.add(f.toURI().toURL());
+			}
+			try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
+				final Class<?> module = loader.loadClass("ff.kitt.gradle");
+				final Method method = module.getMethod("version");
+				return (String) method.invoke(null);
+			}
+		} catch (final Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 

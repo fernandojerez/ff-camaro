@@ -63,6 +63,7 @@ dependencies:
       - "org.junit.jupiter:junit-jupiter-engine:5.6.2"
       - "org.junit.platform:junit-platform-commons:1.6.2"
    kitt:
+      - "ff:crl:+"
       - "ff:kitt:+:java"
       - "ff.java:charger:+"
       - "ff:charger:+:java"
