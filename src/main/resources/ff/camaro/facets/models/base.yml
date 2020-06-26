@@ -19,7 +19,5 @@ files:
      to: .gitignore
    - file: /ff/camaro/eclipse/hgignore.txt
      to: .hgignore
-   - file: /ff/camaro/eclipse/camaro.yml
-     to: camaro.yml
           
 commands: [ camaro, base ]

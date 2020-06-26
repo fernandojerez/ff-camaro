@@ -1,7 +1,6 @@
 package ff.camaro.plugin;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -43,9 +42,6 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.jvm.tasks.Jar;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 import ff.camaro.ArtifactInfo;
 import ff.camaro.ConfigLoader;
@@ -55,6 +51,7 @@ import ff.camaro.Util;
 import ff.camaro.plugin.gradle_plugin.GradlePlugin;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.builder.TaskBuilder;
+import groovy.json.JsonSlurper;
 import groovy.util.Node;
 import groovy.util.NodeList;
 
@@ -161,25 +158,23 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 						@Override
 						public void execute(final Task t) {
 							try {
+								final String code = text.substring("kitt_".length());
+								final int ix = code.indexOf("#");
+								if (ix == -1) {
+									throw new GradleException("kitt task need a package: pck#function");
+								}
 								final Configuration kitt_conf = project.getConfigurations().getByName("kitt");
 								final Set<File> files = kitt_conf.resolve();
 								final Set<URL> urls = new HashSet<>();
 								for (final File f : files) {
 									urls.add(f.toURI().toURL());
 								}
-								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
-									final LoadSettings settings = new LoadSettingsBuilder().setLabel("KITT").build();
-									final Load load = new Load(settings);
-									Map<String, Object> cfg = null;
-									try (FileInputStream in = new FileInputStream(project.file("kitt.yml"))) {
-										cfg = (Map<String, Object>) load.loadFromInputStream(in);
-									}
-									final String code = text.substring("kitt_".length());
-									final int ix = code.indexOf("#");
-									if (ix == -1) {
-										throw new GradleException("kitt task need a package: pck#function");
-									}
 
+								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
+									final JsonSlurper sluper = new JsonSlurper();
+									final Map<String, Object> camaro_cfg = (Map<String, Object>) sluper
+											.parse(project.file("camaro.build.json"));
+									final Map<String, Object> cfg = (Map<String, Object>) camaro_cfg.get("kitt");
 									final Object obj_pck = cfg.get(code.substring(0, ix));
 									if (obj_pck == null) {
 										throw new GradleException("FF module not found " + code.substring(0, ix));
