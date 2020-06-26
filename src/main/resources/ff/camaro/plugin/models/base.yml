@@ -18,6 +18,18 @@ tasks:
       depends: [ build, jacocoTestReport ]
       log-end: App build and jacoco report generated
    
+   show_coverage_report:
+      class: $Browse
+      group: report
+      description: Coverage Test Report
+      uri: file://$build_dir$/jacocoHtml/index.html
+   
+   show_test_report:
+      class: $Browse
+      group: report
+      description: Test Report
+      uri: file://$build_dir$/reports/tests/test/index.html
+         
    jar: 
       class: $ChangeJar
    

@@ -36,6 +36,8 @@ public class Java extends GradlePlugin {
 
 		final Test test = (Test) project.getTasks().getByName("test");
 		test.useJUnitPlatform();
+		test.setIgnoreFailures(true);
+		test.setFailFast(false);
 
 		setup_jacoco(project);
 	}
