@@ -21,10 +21,11 @@ public class FFCompilerBuilder extends TaskBuilder {
 				final File buildDir = project.getBuildDir();
 				BaseTask.base_setup(compiler, getDefinition(), getConfiguration());
 				compiler.setAnalizedOutput(new File(buildDir, getString("analizedOutput")));
-				compiler.setCompilerClass(getString("compilerClass"));
-				if (!getString("definitionOutput").equals("none")) {
-					compiler.setDefinitionOutput(new File(buildDir, getString("definitionOutput")));
+				final String language = getString("language");
+				if (!("java".equals(language) || "macros".equals(language))) {
+					compiler.setDefinitionOutput(new File(buildDir, getString("outputDir")));
 				}
+				compiler.setLanguage(language);
 				compiler.setCompilationType(getString("compilation_type"));
 				compiler.setFolder(getString("folder"));
 				compiler.setMacroOutput(new File(buildDir, getString("macroOutput")));

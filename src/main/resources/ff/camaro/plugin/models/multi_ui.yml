@@ -2,7 +2,8 @@ use: multi_ui_lib
 
 tasks:
    ff_dart_compile:
-      use: ff_dart_compile
+      use: ff_compile
+      language: dart
       output: ff_dart
       source: ff
       configuration: dart

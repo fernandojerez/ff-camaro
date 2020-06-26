@@ -48,9 +48,6 @@ public class FFCompiler extends CamaroTask {
 	private File macros;
 	@Optional
 	@Input
-	private String compilerClass;
-	@Optional
-	@Input
 	private String folder;
 	@Optional
 	@Input
@@ -65,6 +62,8 @@ public class FFCompiler extends CamaroTask {
 	private String type;
 	@Input
 	private boolean macro;
+	@Input
+	private String language;
 
 	public FFCompiler() {
 		setGroup("ff");
@@ -169,8 +168,9 @@ public class FFCompiler extends CamaroTask {
 		macros.mkdirs();
 		analized.mkdirs();
 
-		final Class<?> ff_compiler_class = macro_loader.loadClass(getCompilerClass());
-		final Object ff_compiler = ff_compiler_class.getConstructor().newInstance();
+		final Class<?> ff_compiler_class = macro_loader.loadClass("ff.lang.compiler.camaro.FFCamaroCompiler");
+		final Object ff_compiler = ff_compiler_class.getMethod("create", String.class).invoke(null,
+				language.toUpperCase());
 
 		final Object profile = ff_compiler_class.getMethod("getProfile", String.class) //
 				.invoke(ff_compiler, "MASTER");
@@ -209,10 +209,6 @@ public class FFCompiler extends CamaroTask {
 
 	public File getAnalizedOutput() {
 		return analizedOutput;
-	}
-
-	public String getCompilerClass() {
-		return compilerClass;
 	}
 
 	public String[] getConfiguration() {
@@ -280,10 +276,6 @@ public class FFCompiler extends CamaroTask {
 
 	}
 
-	public void setCompilerClass(final String compilerClass) {
-		this.compilerClass = compilerClass;
-	}
-
 	public void setConfiguration(final String[] configuration) {
 		this.configuration = configuration;
 	}
@@ -306,6 +298,10 @@ public class FFCompiler extends CamaroTask {
 
 	public void setJavaOutput(final File javaOutput) {
 		this.javaOutput = javaOutput;
+	}
+
+	public void setLanguage(final String language) {
+		this.language = language;
 	}
 
 	public void setMacro(final boolean b) {

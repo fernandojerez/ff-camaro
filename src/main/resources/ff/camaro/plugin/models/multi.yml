@@ -84,30 +84,35 @@ eclipse_build: [ ff_java ]
 tasks: 
    ff_macros_compile:
       use: ff_macros_compile
+      language: macros
       source: macros
       configuration: [ macros, java_libs ]
       interfaces: interfaces/java
    ff_js_compile:
-      use: ff_js_compile
+      use: ff_compile
+      language: js
       output: ff_js
       source: ff
       configuration: js
       interfaces: interfaces/js
    ff_js_test_compile:
-      use: ff_js_compile
+      use: ff_compile
+      language: js
       source: ff
       output: ff_js
       test: true
       interfaces: interfaces/js
       configuration: [ js, js_test ]
    ff_dart_compile:
-      use: ff_dart_compile
+      use: ff_compile
+      language: dart
       output: ff_dart
       source: ff
       configuration: dart
       interfaces: interfaces/dart
    ff_dart_test_compile:
-      use: ff_dart_compile
+      use: ff_compile
+      language: dart
       source: ff
       output: ff_dart
       compilation_type: APPLICATION
@@ -115,13 +120,15 @@ tasks:
       interfaces: interfaces/dart
       configuration: [ dart, dart_test ]      
    ff_python_compile:
-      use: ff_python_compile
+      use: ff_compile
+      language: python
       output: ff_python
       source: ff
       configuration: python
       interfaces: interfaces/python
    ff_python_test_compile:
-      use: ff_python_compile
+      use: ff_compile
+      language: python
       source: ff
       output: ff_python
       compilation_type: APPLICATION
@@ -130,11 +137,13 @@ tasks:
       configuration: [ python, python_test ]
    ff_java_compile:
       use: ff_compile
+      language: java
       source: ff
       output: ff_java
       configuration: [ java, java_libs ]
    ff_java_test_compile:
       use: ff_compile
+      language: java
       source: ff
       output: ff_java
       test: true
