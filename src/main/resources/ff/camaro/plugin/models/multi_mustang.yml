@@ -1,0 +1,9 @@
+use: multi
+
+configurations:
+   compileOnly: [ java_libs, jetty, undertow ]
+   jetty: [ ]
+   undertow: [ ]   
+   java_test: [ java, java_libs, base_test, jetty, undertow ]
+   
+facets: [ $clear, multi ]
