@@ -1,9 +1,7 @@
 use: base_camaro
 
 configurations:
-   compileOnly: [ java_libs, jetty, undertow ]
-   jetty: [ ]
-   undertow: [ ]
+   compileOnly: [ java_libs ]
    java_libs: [ ]
    java: [  ]
    js: [  ]
@@ -11,7 +9,7 @@ configurations:
    python: [ ]
    macros: [ ]
    base_test: [ ]
-   java_test: [ java, java_libs, base_test, jetty, undertow ]
+   java_test: [ java, java_libs, base_test ]
    js_test: [ js, base_test ]
    dart_test: [ dart, base_test ]
    python_test: [ python, base_test ]

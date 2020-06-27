@@ -19,6 +19,8 @@ import org.gradle.api.tasks.TaskAction;
 
 import ff.camaro.CamaroTask;
 import ff.camaro.FFSourceSet;
+import ff.camaro.plugin.CamaroMetadata;
+import ff.camaro.plugin.CamaroPlugin;
 
 public class FFCompiler extends CamaroTask {
 
@@ -71,7 +73,12 @@ public class FFCompiler extends CamaroTask {
 
 	@TaskAction
 	public void compile() throws Exception {
-		compile(sourceSet, folder);
+		final CamaroMetadata metadata = CamaroPlugin.metadata(getProject());
+		if (metadata.isLanguageEnabled(language)) {
+			compile(sourceSet, folder);
+		} else {
+			System.out.println("Language disabled in camaro.build.json");
+		}
 	}
 
 	void compile(final String sourceset, final String lang) throws Exception {

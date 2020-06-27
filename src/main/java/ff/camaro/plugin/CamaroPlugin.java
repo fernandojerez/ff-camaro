@@ -6,6 +6,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +49,8 @@ import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
 import ff.camaro.FFSourceSet;
 import ff.camaro.Util;
+import ff.camaro.artifact.Artifact;
+import ff.camaro.artifact.Artifacts;
 import ff.camaro.plugin.gradle_plugin.GradlePlugin;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.builder.TaskBuilder;
@@ -56,6 +59,8 @@ import groovy.util.Node;
 import groovy.util.NodeList;
 
 public abstract class CamaroPlugin extends Configurator implements Plugin<Project> {
+
+	private static final String CAMARO = "__camaro__";
 
 	public static Set<String> group_configurations = Util.set("macros", "java", "dart", "python", "js", //
 			"macro_test", "java_test", "dart_test", "python_test", "js_test");
@@ -81,10 +86,55 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> camaro_build(final Project target) {
+		final File camaro_build = new File(target.getProjectDir(), "camaro.build.json");
+		if (camaro_build.exists()) {
+			final JsonSlurper sluper = new JsonSlurper();
+			final Map<String, Object> result = (Map<String, Object>) sluper.parse(camaro_build);
+			return result;
+		}
+		final JsonSlurper sluper = new JsonSlurper();
+		final Map<String, Object> result = (Map<String, Object>) sluper.parseText("{\r\n" + //
+				"				\"kitt\": {\r\n" + //
+				"					\"kitt\": \"ff.kitt\"\r\n" + //
+				"				},\r\n" + //
+				"				\"languages\": [],\r\n" + //
+				"				\"dependencies\": {},\r\n" + //
+				"				\"props\": {}	\r\n" + //
+				"			}");
+		return result;
+	}
+
+	public static CamaroMetadata metadata(final Project prj) {
+		return (CamaroMetadata) prj.getConvention().findByName(CamaroPlugin.CAMARO);
+	}
+
 	private final ObjectFactory objectFactory;
 
 	public CamaroPlugin(final ObjectFactory objectFactory) {
 		this.objectFactory = objectFactory;
+	}
+
+	protected ModuleDependency add_dependency(final Project project, final Map<String, Object> props, final String cfg,
+			final Artifact artifact) {
+		final DependencyHandler d = project.getDependencies();
+		final String classifier = artifact.getClassifierString();
+		final Dependency dep = d.add(cfg, artifact.getOrg() + ":" + artifact.getName() + ":" + artifact.getVersion()
+				+ (classifier != null ? ":" + classifier : ""));
+		final ModuleDependency moduleDependency = (ModuleDependency) dep;
+		if (artifact.getCfg() != null) {
+			add_target_configuration(moduleDependency, d, cfg, artifact.getCfg());
+		}
+		moduleDependency.setTransitive(artifact.isTransitive());
+		return moduleDependency;
+	}
+
+	protected ModuleDependency add_dependency(final Project project, final Map<String, Object> props, final String cfg,
+			final String dependency) {
+		final String line = replace_str(dependency, props);
+		final Artifact artifact = Artifacts.parse(line);
+		return add_dependency(project, props, cfg, artifact);
 	}
 
 	private void add_target_configuration(final ModuleDependency dep, final DependencyHandler d, final String dConf,
@@ -144,8 +194,19 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public final void apply(final Project target) {
+		final CamaroMetadata metadata = new CamaroMetadata();
+		target.getConvention().add(CamaroPlugin.CAMARO, metadata);
+		final Map<String, Object> camaro_build = CamaroPlugin.camaro_build(target);
+		final List<String> languages = (List<String>) camaro_build.get("languages");
+		for (final String str : languages) {
+			if (str.startsWith("-")) {
+				continue;
+			}
+			metadata.enabled_languages(str);
+		}
 		// configure rules
 		target.getTasks().addRule(new Rule() {
 
@@ -154,7 +215,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				if (text.startsWith("kitt_")) {
 					target.getTasks().create(text, new Action<Task>() {
 
-						@SuppressWarnings("unchecked")
 						@Override
 						public void execute(final Task t) {
 							try {
@@ -171,9 +231,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 								}
 
 								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
-									final JsonSlurper sluper = new JsonSlurper();
-									final Map<String, Object> camaro_cfg = (Map<String, Object>) sluper
-											.parse(project.file("camaro.build.json"));
+									final Map<String, Object> camaro_cfg = CamaroPlugin.camaro_build(project);
 									final Map<String, Object> cfg = (Map<String, Object>) camaro_cfg.get("kitt");
 									final Object obj_pck = cfg.get(code.substring(0, ix));
 									if (obj_pck == null) {
@@ -311,6 +369,13 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					cfgs.add(c.maybeCreate(e));
 				}
 				cinstance.extendsFrom(cfgs.toArray(new Configuration[0]));
+				if (entry.getKey().equals("camaro")) {
+					continue;
+				}
+				if (entry.getKey().equals("kitt")) {
+					continue;
+				}
+				metadata.getConfigurations().add(entry.getKey());
 			}
 
 			final Map<String, Object> dependencies = getMap("dependencies");
@@ -337,9 +402,51 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				}
 			}
 
+			final Map<String, Object> props = (Map<String, Object>) camaro_build.get("props");
+			final Map<String, Object> custom_deps = (Map<String, Object>) camaro_build.get("dependencies");
+			for (final Map.Entry<String, Object> custom_cfg : custom_deps.entrySet()) {
+				final List<Object> deps = (List<Object>) custom_cfg.getValue();
+				for (final Object dep : deps) {
+					if (dep instanceof String) {
+						add_dependency(project, props, custom_cfg.getKey(), (String) dep);
+					} else {
+						final List<Object> list_dep = (List<Object>) dep;
+						final Iterator<Object> iterator = list_dep.iterator();
+						final String line = next_item(iterator);
+						final Artifact artifact = Artifacts.parse(replace_str(line, props));
+						ModuleDependency module_dep = null;
+						if (artifact.is_complete()) {
+							module_dep = add_dependency(target, props, custom_cfg.getKey(), artifact);
+							final String is_exclude = next_item(iterator);
+							if ("exclude".equals(is_exclude)) {
+								apply_excludes(props, iterator, module_dep);
+							}
+						} else {
+							while (true) {
+								final String sline = next_item(iterator);
+								if (sline == null) {
+									break;
+								}
+								if ("exclude".equals(sline)) {
+									if (module_dep == null) {
+										break;
+									}
+									apply_excludes(props, iterator, module_dep);
+								}
+								final Artifact sArtifact = Artifacts.parse(replace_str(sline, props));
+								final Artifact mArtifact = merge_artifact(artifact, sArtifact);
+								if (mArtifact.is_complete()) {
+									module_dep = add_dependency(target, props, custom_cfg.getKey(), mArtifact);
+								}
+							}
+						}
+
+					}
+				}
+			}
+
 			final Map<String, Object> tasks = getMap("tasks");
 			for (final Map.Entry<String, Object> entry : tasks.entrySet()) {
-				@SuppressWarnings("unchecked")
 				final Map<String, Object> task = (Map<String, Object>) entry.getValue();
 				final String clazz = toString(task.get("class"));
 				if (clazz == null) {
@@ -353,14 +460,12 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					});
 				} else {
 					if (clazz.startsWith("$")) {
-						@SuppressWarnings("unchecked")
 						final Class<? extends TaskBuilder> cls = (Class<? extends TaskBuilder>) Class
 								.forName("ff.camaro.plugin.tasks.builder." + clazz.substring(1).trim() + "Builder");
 						final TaskBuilder builder = cls.getConstructor().newInstance();
 						builder.setDefinition(task, this);
 						builder.define(project, entry.getKey());
 					} else {
-						@SuppressWarnings("unchecked")
 						final Class<? extends BaseTask> cls = (Class<? extends BaseTask>) Class
 								.forName("ff.camaro.plugin.tasks." + clazz.trim());
 						project.getTasks().create(entry.getKey(), cls, new Action<BaseTask>() {
@@ -377,7 +482,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 			final Map<String, Object> sources = getMap("sources");
 			for (final Map.Entry<String, Object> entry : sources.entrySet()) {
-				@SuppressWarnings("unchecked")
 				final Map<String, Object> source = (Map<String, Object>) entry.getValue();
 				addFFMainSourceSet(project, entry.getKey(), test(source.get("test")));
 			}
@@ -446,7 +550,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 			publication.getDescriptor().withXml(new Action<XmlProvider>() {
 
-				@SuppressWarnings({ "unchecked", "rawtypes" })
+				@SuppressWarnings({ "rawtypes" })
 				@Override
 				public void execute(final XmlProvider xml) {
 					final NodeList list = (NodeList) xml.asNode().get("dependencies");
@@ -528,9 +632,58 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		}
 	}
 
+	private void apply_excludes(final Map<String, Object> props, final Iterator<Object> iterator,
+			final ModuleDependency module_dep) {
+		while (true) {
+			final String exclude = next_item(iterator);
+			if (exclude == null) {
+				break;
+			}
+			final Artifact eArtifact = Artifacts.parse(replace_str(exclude, props));
+			final Map<String, String> rule = new HashMap<>();
+			if (eArtifact.getOrg() != null && eArtifact.getOrg().length() > 0) {
+				rule.put("group", eArtifact.getOrg());
+			}
+			if (eArtifact.getName() != null && eArtifact.getName().length() > 0) {
+				rule.put("module", eArtifact.getName());
+			}
+			module_dep.exclude(rule);
+		}
+	}
+
 	public abstract String getConfiguration();
 
 	private GradlePlugin loadGradlePlugin(final String plugin) throws Exception {
 		return loadClass("ff.camaro.plugin.gradle_plugin", plugin);
+	}
+
+	private Artifact merge_artifact(final Artifact artifact, final Artifact sArtifact) {
+		return new Artifact(nvl(sArtifact.getName(), artifact.getName()), //
+				nvl(sArtifact.getOrg(), artifact.getOrg()), //
+				nvl(sArtifact.getVersion(), artifact.getVersion()), //
+				artifact.isTransitive(), //
+				nvl(sArtifact.getClassifierString(), artifact.getClassifierString()), //
+				nvl(sArtifact.getCfg(), artifact.getCfg()));
+	}
+
+	protected String next_item(final Iterator<Object> iterator) {
+		if (iterator.hasNext()) {
+			return (String) iterator.next();
+		}
+		return null;
+	}
+
+	private String nvl(final String val1, final String val2) {
+		if (val1 == null || val1.length() == 0) {
+			return val2;
+		}
+		return val1;
+	}
+
+	protected String replace_str(String txt, final Map<String, Object> props) {
+		for (final Map.Entry<String, Object> entry : props.entrySet()) {
+			txt = txt.replace("${" + entry.getKey() + "}", String.valueOf(entry.getValue()));
+		}
+		return txt;
 	}
 }

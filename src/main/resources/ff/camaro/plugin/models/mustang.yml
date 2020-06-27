@@ -17,6 +17,12 @@ dependencies:
       - "ff:mustang:+:java"
    java_libs:
       - "ff:mustang:+;java_libs"
-      
+
+configurations:	
+   compileOnly: [ java_libs, jetty, undertow ]
+   jetty: [ ]
+   undertow: [ ]   
+   java_test: [ java, java_libs, base_test, jetty, undertow ]
+   
 facets: [ $clear, mustang ]
 

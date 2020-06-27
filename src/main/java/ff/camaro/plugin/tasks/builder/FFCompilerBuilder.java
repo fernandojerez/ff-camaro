@@ -7,6 +7,7 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
 import ff.camaro.ConfigLoader;
+import ff.camaro.plugin.CamaroPlugin;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.FFCompiler;
 
@@ -14,6 +15,8 @@ public class FFCompilerBuilder extends TaskBuilder {
 
 	@Override
 	public void define(final Project project, final String taskName) {
+		final String language = getString("language");
+		CamaroPlugin.metadata(project).getLanguages().add(language);
 		project.getTasks().create(taskName, FFCompiler.class, new Action<FFCompiler>() {
 
 			@Override
@@ -21,7 +24,6 @@ public class FFCompilerBuilder extends TaskBuilder {
 				final File buildDir = project.getBuildDir();
 				BaseTask.base_setup(compiler, getDefinition(), getConfiguration());
 				compiler.setAnalizedOutput(new File(buildDir, getString("analizedOutput")));
-				final String language = getString("language");
 				if (!("java".equals(language) || "macros".equals(language))) {
 					compiler.setDefinitionOutput(new File(buildDir, getString("outputDir")));
 				}
