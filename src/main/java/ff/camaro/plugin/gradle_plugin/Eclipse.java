@@ -1,6 +1,7 @@
 package ff.camaro.plugin.gradle_plugin;
 
 import java.io.File;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,13 +18,12 @@ import org.gradle.plugins.ide.eclipse.model.ClasspathEntry;
 import org.gradle.plugins.ide.eclipse.model.EclipseClasspath;
 import org.gradle.plugins.ide.eclipse.model.EclipseModel;
 import org.gradle.plugins.ide.eclipse.model.EclipseProject;
-import org.gradle.plugins.ide.eclipse.model.FileReference;
-import org.gradle.plugins.ide.eclipse.model.Library;
 import org.gradle.plugins.ide.eclipse.model.Link;
 import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
+import groovy.util.Node;
 
 public class Eclipse extends GradlePlugin {
 
@@ -72,6 +72,7 @@ public class Eclipse extends GradlePlugin {
 		classpath.file(new Action<XmlFileContentMerger>() {
 			@Override
 			public void execute(final XmlFileContentMerger merger) {
+				System.out.println("The merger is " + merger.getClass());
 				merger.whenMerged(new Action<>() {
 					@Override
 					public void execute(final Object item) {
@@ -107,32 +108,29 @@ public class Eclipse extends GradlePlugin {
 
 						final List<String> builds = configurator.getList("eclipse_build");
 						for (final String path : builds) {
-							final File output_path = new File(project.getBuildDir(), "classes/" + path + "/main");
-							System.out.println(output_path.getAbsolutePath());
-							cp.getEntries().add(new Library(new FileReference() {
+							cp.getEntries().add(new ClasspathEntry() {
 
 								@Override
-								public File getFile() {
-									return output_path;
+								public void appendNode(final Node node) {
+									System.out.println("Build the entry");
+									final Map<String, String> attrs = new LinkedHashMap<>();
+									attrs.put("kind", "lib");
+									attrs.put("path", "build/classes/" + path + "/main");
+									node.appendNode("classpathentry", attrs);
+									System.out.println(node);
 								}
 
 								@Override
-								public String getJarURL() {
-									return null;
+								public String getKind() {
+									return "lib";
 								}
 
 								@Override
-								public String getPath() {
-									return output_path.getAbsolutePath();
+								public String toString() {
+									return "lib to " + "build/classes/" + path + "/main";
 								}
-
-								@Override
-								public boolean isRelativeToPathVariable() {
-									return false;
-								}
-							}));
+							});
 						}
-
 					}
 				});
 			}
