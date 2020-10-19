@@ -1,0 +1,74 @@
+plugins: [camaro, java, eclipse, ivy]
+
+tasks:
+  debug_on:
+    group: ff
+    description: Indicate that the build has debug enabled
+    log-end: Using debug
+
+  ff-publish:
+    group: ff
+    description: Build and Publish the artifact
+    depends: [testing, publish]
+    log-end: App build and uploaded
+
+  testing:
+    group: ff
+    description: Build and Test the artifact
+    depends: [build, jacocoTestReport]
+    log-end: App build and jacoco report generated
+
+  show_coverage_report:
+    class: $Browse
+    group: report
+    description: Coverage Test Report
+    uri: file://$build_dir$/jacocoHtml/index.html
+
+  show_test_report:
+    class: $Browse
+    group: report
+    description: Test Report
+    uri: file://$build_dir$/reports/tests/test/index.html
+
+  jar:
+    class: $ChangeJar
+
+publish_to:
+  local: $local
+
+files: [base]
+
+configurations:
+  api: []
+  implementation: [api]
+  compileOnlyApi: []
+  compileOnly: [compileOnlyApi]
+  compileClasspath: [compileOnly, implementation]
+  annotationProcessor: []
+  runtimeOnly: []
+  runtimeClasspath: [runtimeOnly, implementation]
+  testImplementation: [implementation]
+  testCompileOnly: []
+  testCompileClasspath: [testCompileOnly, testImplementation]
+  testRuntimeOnly: [runtimeOnly]
+  testRuntime: []
+  testRuntimeClasspath: [testRuntimeOnly, testImplementation]
+  archives: []
+  default: [implementation]
+
+dependencies:
+  testImplementation:
+    - "org.junit.jupiter:junit-jupiter-api:5.7.0"
+    - "org.junit.jupiter:junit-jupiter-params:5.7.0"
+    - "org.junit.platform:junit-platform-commons:1.7.0"
+  testRuntimeOnly:
+    - "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    - "org.junit.platform:junit-platform-commons:1.7.0"
+  compileOnly:
+    - "org.junit.jupiter:junit-jupiter-api:5.7.0"
+    - "org.junit.jupiter:junit-jupiter-params:5.7.0"
+    - "org.junit.jupiter:junit-jupiter-engine:5.7.0"
+    - "org.junit.platform:junit-platform-commons:1.7.0"
+
+artifacts:
+  - $task jar

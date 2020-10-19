@@ -12,7 +12,7 @@ import java.util.Set;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-import ff.camaro.Configurator;
+import ff.camaro.Store;
 import ff.camaro.facet.Facet;
 import ff.camaro.plugin.CamaroMetadata;
 import ff.camaro.plugin.CamaroPlugin;
@@ -45,7 +45,7 @@ public class UpdateCamaro extends DefaultTask {
 		}
 		final Map<String, Object> camaro_build_map = CamaroPlugin.camaro_build(getProject());
 		for (final String facet : facets) {
-			final Facet f = (Facet) Class.forName("ff.camaro.facet." + Configurator.capitalize(facet) + "Facet")
+			final Facet f = (Facet) Class.forName("ff.camaro.facet." + Store.capitalize(facet) + "Facet")
 					.getConstructor().newInstance();
 			f.apply(getProject(), base_map, (Map<String, Object>) camaro_build_map.get("kitt"));
 		}

@@ -13,7 +13,7 @@ public class FFBasePlugin extends CamaroPlugin {
 
 	@Override
 	public String getConfiguration() {
-		return "base_camaro";
+		return "base";
 	}
 
 }

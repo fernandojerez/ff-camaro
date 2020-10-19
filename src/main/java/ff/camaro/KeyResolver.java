@@ -3,6 +3,13 @@ package ff.camaro;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Utility class to find a key into the configurations loaded using the use
+ * section
+ *
+ * @author fernandojerez
+ *
+ */
 public class KeyResolver {
 
 	private final Stack<Map<String, Object>> maps;

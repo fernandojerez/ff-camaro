@@ -1,79 +1,74 @@
 use: multi
-      
-tasks: 
-   ff_python_compile: $remove
-   ff_python_test_compile: $remove
-   ff_js_compile: $remove
-   ff_js_test_compile: $remove
-   ff_dart_compile: $remove
-   ff_dart_test_compile: $remove
-   js_jar: $remove
-   dart_jar: $remove
-   python_jar: $remove
-   ff_js_test: $remove
-   ff_js_edge_test: $remove
-   ff_js_chrome_test: $remove
-   ff_js_firefox_test: $remove
-   ff_dart_test: $remove
-   ff_python_test: $remove
-   show_ff_python_test_report: $remove
-   show_ff_js_test_report: $remove
-   show_ff_dart_test_report: $remove      
-   ff_compile:
-      depends: [$clear, "ff_macros_compile", "ff_java_compile"]
-      log-end: "Source compiled"
-   ff_jar:
-      depends: [$clear,  "jar", "java_jar"]
-      log-end: "Jar generated"
-   ff_test:
-      depends: [ $clear,  "ff_java_test"]
-      log-end: "Test executed"
+
+tasks:
+  ff_python_compile: $remove
+  ff_python_test_compile: $remove
+  ff_js_compile: $remove
+  ff_js_test_compile: $remove
+  ff_dart_compile: $remove
+  ff_dart_test_compile: $remove
+  js_jar: $remove
+  dart_jar: $remove
+  python_jar: $remove
+  ff_js_test: $remove
+  ff_js_edge_test: $remove
+  ff_js_chrome_test: $remove
+  ff_js_firefox_test: $remove
+  ff_dart_test: $remove
+  ff_python_test: $remove
+  show_ff_python_test_report: $remove
+  show_ff_js_test_report: $remove
+  show_ff_dart_test_report: $remove
+  ff_compile:
+    depends: [$clear, "ff_macros_compile", "ff_java_compile"]
+    log-end: "Source compiled"
+  ff_jar:
+    depends: [$clear, "jar", "java_jar"]
+    log-end: "Jar generated"
+  ff_test:
+    depends: [$clear, "ff_java_test"]
+    log-end: "Test executed"
 
 dependencies:
-   dart: $remove
-   python: $remove
-   js: $remove
-   
-   js_test: $remove
-   dart_test: $remove
-   python_test: $remove
-   
-   testImplementation: $remove
-   
-   java: 
-      - "ff.java:charger:+;default"
-      - "ff:charger:+:java"
-   implementation:
-      - "ff:crl:+"
-      - "ff:charger:+"
-      - "ff:charger:+:java"
-   macros:
-      - "ff:charger:+:java"
-      - "ff.java:charger:+"
-   java_test:
-      - $clear
+  dart: $remove
+  python: $remove
+  js: $remove
+
+  js_test: $remove
+  dart_test: $remove
+  python_test: $remove
+
+  testImplementation: $remove
+
+  java:
+    - "ff.java:charger:+;default"
+    - "ff:charger:+:java"
+  implementation:
+    - "ff:crl:+"
+    - "ff:charger:+"
+    - "ff:charger:+:java"
+  macros:
+    - "ff:charger:+:java"
+    - "ff.java:charger:+"
+  java_test:
+    - $clear
 
 configurations:
-   js: $remove
-   dart: $remove
-   python: $remove
-   js_test: $remove
-   dart_test: $remove
-   python_test: $remove
-   
+  js: $remove
+  dart: $remove
+  python: $remove
+  js_test: $remove
+  dart_test: $remove
+  python_test: $remove
+
 sources:
-   interfaces/python: $remove
-   interfaces/js: $remove
-   interfaces/dart: $remove
+  interfaces/python: $remove
+  interfaces/js: $remove
+  interfaces/dart: $remove
 
-eclipse:
-   interfaces/js: $remove
-   interfaces/dart: $remove
-   interfaces/python: $remove
+facets: [$clear, java]
 
-facets: [ $clear, java ]
-
-artifacts: 
-   - $clear
-   - $task macros_jar;macros
-   - $task java_jar;java
+artifacts:
+  - $clear
+  - $task macros_jar;macros
+  - $task java_jar;java

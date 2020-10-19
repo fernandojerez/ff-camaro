@@ -14,59 +14,41 @@ import org.gradle.jvm.tasks.Jar;
 
 import ff.camaro.ArtifactInfo;
 import ff.camaro.ConfigLoader;
-import ff.camaro.plugin.tasks.BaseTask;
+import ff.camaro.MapStore;
 
-public class JarBuilder extends TaskBuilder {
-
-	public boolean create() {
-		return true;
-	}
+public class JarBuilder extends TaskBuilder<Jar> {
 
 	@Override
-	public void define(final Project project, final String taskName) {
-		final Action<Jar> action = new Action<>() {
-
-			@Override
-			public void execute(final Jar jar) {
-				BaseTask.base_setup(jar, getDefinition(), getConfiguration());
-				final Map<String, Object> from = getMap("from");
-				for (final Map.Entry<String, Object> entry : from.entrySet()) {
-					@SuppressWarnings("unchecked")
-					final Map<String, Object> f = (Map<String, Object>) entry.getValue();
-					jar.from("output".equals(f.get("type")) ? //
+	public void configure(final Project project, final String taskName, final Jar jar) {
+		final Map<String, Object> from = config.getMap("from");
+		for (final Map.Entry<String, Object> entry : from.entrySet()) {
+			@SuppressWarnings("unchecked")
+			final MapStore f = new MapStore((Map<String, Object>) entry.getValue());
+			jar.from("output".equals(f.getString("type")) ? //
 					new File(project.getBuildDir(), ConfigLoader.output_main_path(project, entry.getKey()))
 							.getAbsolutePath() //
-							: ConfigLoader.src_main_path(entry.getKey()), new Action<CopySpec>() {
-								@Override
-								public void execute(final CopySpec spec) {
-									final List<String> include = getList(f, "include");
-									spec.include(include.toArray(new String[0]));
+					: ConfigLoader.src_main_path(entry.getKey()), new Action<CopySpec>() {
+						@Override
+						public void execute(final CopySpec spec) {
+							final List<String> include = f.getList("include");
+							spec.include(include.toArray(new String[0]));
 
-									final List<String> exclude = getList(f, "exclude");
-									spec.exclude(exclude.toArray(new String[0]));
-								}
-							});
-				}
-				final String classifier = getString("classifier");
-				if (classifier != null) {
-					jar.getArchiveClassifier().set(classifier);
-					jar.getManifest().attributes(getManifestAttributes(project, "-" + classifier));
-				} else {
-					jar.getManifest().attributes(getManifestAttributes(project, ""));
-				}
-
-				final String extension = getString("extension");
-				if (extension != null) {
-					jar.getArchiveExtension().set(extension);
-				}
-
-			}
-
-		};
-		if (!create()) {
-			action.execute((Jar) project.getTasks().findByName(taskName));
+							final List<String> exclude = f.getList("exclude");
+							spec.exclude(exclude.toArray(new String[0]));
+						}
+					});
+		}
+		final String classifier = config.getString("classifier");
+		if (classifier != null) {
+			jar.getArchiveClassifier().set(classifier);
+			jar.getManifest().attributes(getManifestAttributes(project, "-" + classifier));
 		} else {
-			project.getTasks().create(taskName, Jar.class, action);
+			jar.getManifest().attributes(getManifestAttributes(project, ""));
+		}
+
+		final String extension = config.getString("extension");
+		if (extension != null) {
+			jar.getArchiveExtension().set(extension);
 		}
 	}
 
@@ -83,5 +65,10 @@ public class JarBuilder extends TaskBuilder {
 		jarAttributes.put("Implementation-Version", info.getVersion());
 		jarAttributes.put("Generated", new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(new Date()));
 		return jarAttributes;
+	}
+
+	@Override
+	public Class<Jar> getTaskClass() {
+		return Jar.class;
 	}
 }

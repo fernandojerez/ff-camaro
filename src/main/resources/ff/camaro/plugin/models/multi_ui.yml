@@ -1,27 +1,22 @@
 use: multi_ui_lib
 
 tasks:
-   ff_dart_compile:
-      use: ff_compile
-      language: dart
-      output: ff_dart
-      source: ff
-      configuration: dart
-      compilation_type: APPLICATION
-      test: false
-      interfaces: interfaces/dart
-      
-dependencies:
-   dart:
-      - "ff:viper:+:dart"
-      - "ff:mustang:+:dart"
-   js: 
-      - "ff:viper:+:js"
-      - "ff:mustang:+:js"
-   macros:
-      - "ff:viper:+"
-      - "ff:mustang:+"
-   js_test:
-      - "ff:viper:+:js"
+  ff_dart_compile:
+    class: $FFCompiler
+    language: dart
+    compilation_type: APPLICATION
 
-facets: [ $clear, multi_ui ]
+dependencies:
+  dart:
+    - "ff:viper:+:dart"
+    - "ff:mustang:+:dart"
+  js:
+    - "ff:viper:+:js"
+    - "ff:mustang:+:js"
+  macros:
+    - "ff:viper:+"
+    - "ff:mustang:+"
+  js_test:
+    - "ff:viper:+:js"
+
+facets: [$clear, multi_ui]

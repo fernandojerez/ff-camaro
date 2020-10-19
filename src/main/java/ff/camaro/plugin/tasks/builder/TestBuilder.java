@@ -13,90 +13,73 @@ import org.gradle.testing.jacoco.plugins.JacocoTaskExtension;
 import org.gradle.testing.jacoco.tasks.JacocoReport;
 
 import ff.camaro.ConfigLoader;
-import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.FFCleanTest;
 
-public class TestBuilder extends TaskBuilder {
-
-	public boolean create() {
-		return true;
-	}
+public class TestBuilder extends TaskBuilder<Test> {
 
 	@Override
-	public void define(final Project project, final String taskName) {
-		final Action<Test> action = new Action<>() {
+	public void configure(final Project project, final String taskName, final Test test) {
+		String lang = config.getString("lang");
+		if (lang == null) {
+			lang = "java";
+		}
+		String browser = config.getString("browser");
+		if (browser == null) {
+			browser = "";
+		}
+		test.useJUnitPlatform();
+		test.getSystemProperties().put("ff.test.lang", lang);
+		if (!"java".equals(lang)) {
+			test.setFailFast(true);
+		}
+		final String flang = lang;
+		project.afterEvaluate(new Action<Project>() {
 
 			@Override
-			public void execute(final Test test) {
-				BaseTask.base_setup(test, getDefinition(), getConfiguration());
-				String lang = getString("lang");
-				if (lang == null) {
-					lang = "java";
-				}
-				String browser = getString("browser");
-				if (browser == null) {
-					browser = "";
-				}
-				test.useJUnitPlatform();
-				test.getSystemProperties().put("ff.test.lang", lang);
-				if (!"java".equals(lang)) {
-					test.setFailFast(true);
-				}
-				final String flang = lang;
-				project.afterEvaluate(new Action<Project>() {
+			public void execute(final Project arg0) {
+				final Set<File> files = new HashSet<>();
+				files.addAll(project.getConfigurations().getByName(flang + "_test").resolve());
+				files.add(new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "ff_" + flang)));
+				files.add(new File(project.getBuildDir(),
+						ConfigLoader.output_main_path(project, "interfaces\\" + flang)));
+				files.add(new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "macros")));
+				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff_" + flang)));
+				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff")));
 
-					@Override
-					public void execute(final Project arg0) {
-						final Set<File> files = new HashSet<>();
-						files.addAll(project.getConfigurations().getByName(flang + "_test").resolve());
-						files.add(
-								new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "ff_" + flang)));
-						files.add(new File(project.getBuildDir(),
-								ConfigLoader.output_main_path(project, "interfaces\\" + flang)));
-						files.add(new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "macros")));
-						files.add(
-								new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff_" + flang)));
-						files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff")));
-
-						test.setClasspath(project.files(files.toArray()));
-					}
-				});
-
-				final Map<String, String> suites = new HashMap<>();
-				suites.put("chrome", "FFChromeTestSuite");
-				suites.put("firefox", "FFFirefoxTestSuite");
-				suites.put("edge", "FFEdgeTestSuite");
-				suites.put("java", "FFJavaTestSuite");
-				suites.put("dart", "FFDartTestSuite");
-				suites.put("python", "FFPythonTestSuite");
-
-				final Set<String> excludes = new HashSet<>();
-				for (final Map.Entry<String, String> entry : suites.entrySet()) {
-					if (entry.getKey().equals(lang)) {
-						continue;
-					}
-					if (entry.getKey().equals(browser)) {
-						continue;
-					}
-					excludes.add("ff/test/" + entry.getValue() + ".class");
-					excludes.add("ff/test/" + entry.getValue() + ".java");
-				}
-
-				test.setExcludes(excludes);
-				test.setTestClassesDirs(
-						project.files(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff"))));
-				test.getTestLogging().setShowStandardStreams(true);
-				test.getTestLogging().setShowStackTraces(true);
-
-				final JacocoTaskExtension jacoco = test.getExtensions().getByType(JacocoTaskExtension.class);
-				jacoco.setDestinationFile(new File(project.getBuildDir(), "jacoco/java/test.exec"));
-				jacoco.setEnabled(lang.equals("java"));
-				jacoco.getExcludes().add("**launcher**");
+				test.setClasspath(project.files(files.toArray()));
 			}
+		});
 
-		};
-		project.getTasks().create(taskName, Test.class, action);
-		final String lang = getString("lang");
+		final Map<String, String> suites = new HashMap<>();
+		suites.put("chrome", "FFChromeTestSuite");
+		suites.put("firefox", "FFFirefoxTestSuite");
+		suites.put("edge", "FFEdgeTestSuite");
+		suites.put("java", "FFJavaTestSuite");
+		suites.put("dart", "FFDartTestSuite");
+		suites.put("python", "FFPythonTestSuite");
+
+		final Set<String> excludes = new HashSet<>();
+		for (final Map.Entry<String, String> entry : suites.entrySet()) {
+			if (entry.getKey().equals(lang)) {
+				continue;
+			}
+			if (entry.getKey().equals(browser)) {
+				continue;
+			}
+			excludes.add("ff/test/" + entry.getValue() + ".class");
+			excludes.add("ff/test/" + entry.getValue() + ".java");
+		}
+
+		test.setExcludes(excludes);
+		test.setTestClassesDirs(
+				project.files(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff"))));
+		test.getTestLogging().setShowStandardStreams(true);
+		test.getTestLogging().setShowStackTraces(true);
+
+		final JacocoTaskExtension jacoco = test.getExtensions().getByType(JacocoTaskExtension.class);
+		jacoco.setDestinationFile(new File(project.getBuildDir(), "jacoco/java/test.exec"));
+		jacoco.setEnabled(lang.equals("java"));
+		jacoco.getExcludes().add("**launcher**");
 
 		project.getTasks().maybeCreate("ff_test_clean", FFCleanTest.class);
 		if ("java".equals(lang)) {
@@ -118,7 +101,11 @@ public class TestBuilder extends TaskBuilder {
 
 			});
 		}
+	}
 
+	@Override
+	public Class<Test> getTaskClass() {
+		return Test.class;
 	}
 
 }

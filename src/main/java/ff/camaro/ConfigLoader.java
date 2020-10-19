@@ -18,10 +18,24 @@ import org.snakeyaml.engine.v1.api.LoadSettings;
 import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 import org.snakeyaml.engine.v1.common.FlowStyle;
 
+/**
+ * Camaro configuration files are yaml files. there are two types of stores:
+ * <br/>
+ *
+ * 1. plugins: they define folder structure, dependencies, configurations,
+ * project, the configuration files reside into a package
+ * "ff.camaro.plugins.models" <br/>
+ * 2. files: they define files like metadata configuration files, camaro.json
+ * files. The configuration files reside into a package "ff.camaro.files.models"
+ * <br/>
+ *
+ * @author fernandojerez
+ *
+ */
 public class ConfigLoader {
 
-	public static ConfigLoader plugin = new ConfigLoader("/ff/camaro/plugin");
-	public static ConfigLoader facet = new ConfigLoader("/ff/camaro/facets");
+	public static final ConfigLoader plugin = new ConfigLoader("/ff/camaro/plugin");
+	public static final ConfigLoader facet = new ConfigLoader("/ff/camaro/files");
 
 	public static String eclipse_output_path(final String name, final String sourceSet) {
 		return "build/classes/" + name + "/" + sourceSet;
@@ -61,25 +75,44 @@ public class ConfigLoader {
 	}
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * Load a configuration file and the use section and merge the files
+	 *
+	 * if the file is a fragment merge the process is: <br/>
+	 * 1. load the configuration <br/>
+	 * 2. merge the use <br/>
+	 * 3. merge the configuration again <br/>
+	 *
+	 * if the file is a project model: <br/>
+	 * 1. create a empty configuration<br/>
+	 * 2. merge the use section <br/>
+	 * 3. merge the configuration <br/>
+	 *
+	 * @param prj      the gradle project reference
+	 * @param resolver the collection of configurations loaded
+	 * @param name     the name of the configuration file
+	 * @param fragment if a fragment file or model file
+	 * @return
+	 */
 	public Map<String, Object> load(final Project prj, final KeyResolver resolver, final String name,
-			final boolean cmd) {
+			final boolean fragment) {
 		final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro").build();
 		final Load load = new Load(settings);
 		final Map<String, Object> cfg = (Map<String, Object>) load.loadFromInputStream(ConfigLoader.class
-				.getResourceAsStream(pck_resolver + "/models/" + (cmd ? "cmds/" : "") + name + ".yml"));
+				.getResourceAsStream(pck_resolver + "/models/" + (fragment ? "fragment/" : "") + name + ".yml"));
 		final List<String> uses = value(cfg, "use", true);
-		final Map<String, Object> first = cmd ? new LinkedHashMap<>() : new HashMap<>();
-		if (cmd) {
+		final Map<String, Object> first = fragment ? new LinkedHashMap<>() : new HashMap<>();
+		if (fragment) {
 			first.putAll(cfg);
 		}
 		for (final String use : uses) {
-			if (cmd) {
-				first.putAll(load(prj, resolver, use, cmd));
+			if (fragment) {
+				first.putAll(load(prj, resolver, use, fragment));
 			} else {
-				merge(prj, resolver, first, load(prj, resolver, use, cmd));
+				merge(prj, resolver, first, load(prj, resolver, use, fragment));
 			}
 		}
-		if (cmd) {
+		if (fragment) {
 			first.putAll(cfg);
 		} else {
 			merge(prj, resolver, first, cfg);
@@ -87,6 +120,13 @@ public class ConfigLoader {
 		return first;
 	}
 
+	/**
+	 * Load a model configuration file
+	 *
+	 * @param prj  the gradle project
+	 * @param name the name of the file
+	 * @return
+	 */
 	public Map<String, Object> load(final Project prj, final String name) {
 		final KeyResolver resolver = new KeyResolver();
 		return load(prj, resolver, name, false);

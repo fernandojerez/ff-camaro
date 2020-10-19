@@ -3,19 +3,12 @@ package ff.camaro.plugin.tasks;
 import java.awt.Desktop;
 import java.net.URI;
 
-import org.gradle.api.tasks.TaskAction;
-
-import ff.camaro.CamaroTask;
-
-public class Browse extends CamaroTask {
+public class Browse extends BaseTask {
 
 	public String uri;
 
-	public Browse() {
-	}
-
-	@TaskAction
-	public void perform() throws Exception {
+	@Override
+	public void execute() throws Exception {
 		Desktop.getDesktop().browse(URI.create(uri.replace("\\", "/")));
 	}
 

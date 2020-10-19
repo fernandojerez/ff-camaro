@@ -30,7 +30,7 @@ public abstract class Facet extends Configurator {
 	public void apply(final Project project, final Map<String, Object> config, final Map<String, Object> kitt)
 			throws IOException {
 		System.out.println(getConfiguration());
-		setup(project, ConfigLoader.facet.load(project, getConfiguration()));
+		init(project, ConfigLoader.facet.load(project, getConfiguration()));
 
 		final File projectDir = project.getProjectDir();
 		final Properties props = new Properties();

@@ -1,67 +1,53 @@
 package ff.camaro.plugin.tasks.builder;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.plugin.CamaroPlugin;
-import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.FFCompiler;
 
-public class FFCompilerBuilder extends TaskBuilder {
+public class FFCompilerBuilder extends TaskBuilder<FFCompiler> {
 
 	@Override
-	public void define(final Project project, final String taskName) {
-		final String language = getString("language");
+	public void configure(final Project project, final String taskName, final FFCompiler compiler) {
+		final String language = config.getString("language", null);
+		final boolean isMacros = "macros".equals(language);
+		final String finalLanguage = isMacros ? "java" : language;
+		final boolean testMode = "true".equals(config.getString("test"));
+		final String compilationType = config.getString("compilation_type", "LIBRARY");
+
+		final List<String> configurations = config.getList("configuration");
+		configurations.add(language);
+		if (testMode) {
+			configurations.add(language + "_test");
+		}
+		if (project.getConfigurations().findByName(finalLanguage + "_libs") != null) {
+			configurations.add(finalLanguage + "_libs");
+		}
+		final String interfaces = config.getString("interfaces", "interfaces/" + finalLanguage);
+
+		// add to camaro.build.json metadata file
 		CamaroPlugin.metadata(project).getLanguages().add(language);
-		project.getTasks().create(taskName, FFCompiler.class, new Action<FFCompiler>() {
+		final File buildDir = project.getBuildDir();
 
-			@Override
-			public void execute(final FFCompiler compiler) {
-				final File buildDir = project.getBuildDir();
-				BaseTask.base_setup(compiler, getDefinition(), getConfiguration());
-				compiler.setAnalizedOutput(new File(buildDir, getString("analizedOutput")));
-				if (!("java".equals(language) || "macros".equals(language))) {
-					compiler.setDefinitionOutput(new File(buildDir, getString("outputDir")));
-				}
-				compiler.setLanguage(language);
-				compiler.setCompilationType(getString("compilation_type"));
-				compiler.setFolder(getString("folder"));
-				compiler.setMacroOutput(new File(buildDir, getString("macroOutput")));
-				compiler.setOutput(new File(buildDir, getString("outputDir")));
-				compiler.setSourceSet(getString("sourceSet"));
-				compiler.setConfiguration(getList("configuration").toArray(new String[0]));
-				final String interfaces = getString("interfaces");
-				if (interfaces != null) {
-					compiler.setInterfaces(new File(buildDir,
-							ConfigLoader.output_path(project, interfaces, SourceSet.MAIN_SOURCE_SET_NAME)));
-				}
-				if (!"macros".equals(getString("source"))) {
-					compiler.setMacros(new File(buildDir,
-							ConfigLoader.output_path(project, "macros", SourceSet.MAIN_SOURCE_SET_NAME)));
-					compiler.setJavaOutput(new File(buildDir,
-							ConfigLoader.output_path(project, "ff_java", SourceSet.MAIN_SOURCE_SET_NAME)));
-					compiler.setMacro(false);
-				} else {
-					compiler.setMacros(new File(buildDir,
-							ConfigLoader.output_path(project, "ff_java", SourceSet.MAIN_SOURCE_SET_NAME)));
-					compiler.setMacro(true);
-				}
-				if ("true".equals(getString("test"))) {
-					compiler.setModuleOutputDir(new File(buildDir, getString("moduleOutputDir")));
-				} else {
-					if (!"macros".equals(getString("source"))) {
-						if ("APPLICATION".equals(getString("compilation_type"))) {
-							compiler.setDepsOutput(new File(buildDir, getString("depsOutput")));
-						}
-					}
-				}
-			}
+		compiler.setLanguage(language);
+		compiler.setMacroMode(isMacros);
+		compiler.setTestMode(testMode);
+		compiler.setCompilationType(compilationType);
+		compiler.setConfiguration(new HashSet<>(configurations).toArray(new String[0]));
+		compiler.setInterfaces(
+				new File(buildDir, ConfigLoader.output_path(project, interfaces, SourceSet.MAIN_SOURCE_SET_NAME))
+						.toPath());
+	}
 
-		});
+	@Override
+	public Class<FFCompiler> getTaskClass() {
+		return FFCompiler.class;
 	}
 
 }

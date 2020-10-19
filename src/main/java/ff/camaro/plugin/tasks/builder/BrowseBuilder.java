@@ -1,25 +1,19 @@
 package ff.camaro.plugin.tasks.builder;
 
-import org.gradle.api.Action;
 import org.gradle.api.Project;
 
-import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.Browse;
 
-public class BrowseBuilder extends TaskBuilder {
+public class BrowseBuilder extends TaskBuilder<Browse> {
 
 	@Override
-	public void define(final Project project, final String taskName) {
-		project.getTasks().create(taskName, Browse.class, new Action<Browse>() {
+	public void configure(final Project project, final String taskName, final Browse browse) {
+		browse.setUri(config.getString("uri").replace("$build_dir$", project.getBuildDir().getAbsolutePath()));
+	}
 
-			@Override
-			public void execute(final Browse browse) {
-				BaseTask.base_setup(browse, getDefinition(), getConfiguration());
-				browse.setUri(getString("uri").replace("$build_dir$", project.getBuildDir().getAbsolutePath()));
-			}
-
-		});
-
+	@Override
+	public Class<Browse> getTaskClass() {
+		return Browse.class;
 	}
 
 }

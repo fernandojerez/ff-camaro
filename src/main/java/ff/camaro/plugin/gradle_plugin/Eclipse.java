@@ -1,7 +1,6 @@
 package ff.camaro.plugin.gradle_plugin;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,6 @@ import org.gradle.plugins.ide.eclipse.model.SourceFolder;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
-import groovy.util.Node;
 
 public class Eclipse extends GradlePlugin {
 
@@ -72,7 +70,6 @@ public class Eclipse extends GradlePlugin {
 		classpath.file(new Action<XmlFileContentMerger>() {
 			@Override
 			public void execute(final XmlFileContentMerger merger) {
-				System.out.println("The merger is " + merger.getClass());
 				merger.whenMerged(new Action<>() {
 					@Override
 					public void execute(final Object item) {
@@ -104,32 +101,6 @@ public class Eclipse extends GradlePlugin {
 							} else {
 								addEclipseSourceFolder(cp, entry.getKey(), configurator.test(f.get("test")));
 							}
-						}
-
-						final List<String> builds = configurator.getList("eclipse_build");
-						for (final String path : builds) {
-							cp.getEntries().add(new ClasspathEntry() {
-
-								@Override
-								public void appendNode(final Node node) {
-									System.out.println("Build the entry");
-									final Map<String, String> attrs = new LinkedHashMap<>();
-									attrs.put("kind", "lib");
-									attrs.put("path", "build/classes/" + path + "/main");
-									node.appendNode("classpathentry", attrs);
-									System.out.println(node);
-								}
-
-								@Override
-								public String getKind() {
-									return "lib";
-								}
-
-								@Override
-								public String toString() {
-									return "lib to " + "build/classes/" + path + "/main";
-								}
-							});
 						}
 					}
 				});

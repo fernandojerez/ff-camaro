@@ -45,14 +45,17 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.jvm.tasks.Jar;
 
 import ff.camaro.ArtifactInfo;
+import ff.camaro.CamaroSourceSet;
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
-import ff.camaro.FFSourceSet;
+import ff.camaro.MapStore;
 import ff.camaro.Util;
 import ff.camaro.artifact.Artifact;
 import ff.camaro.artifact.Artifacts;
 import ff.camaro.plugin.gradle_plugin.GradlePlugin;
+import ff.camaro.plugin.gradle_plugin.Java;
 import ff.camaro.plugin.tasks.BaseTask;
+import ff.camaro.plugin.tasks.DefaultTask;
 import ff.camaro.plugin.tasks.builder.TaskBuilder;
 import groovy.json.JsonSlurper;
 import groovy.util.Node;
@@ -147,51 +150,99 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		}
 	}
 
-	private void addFFMainSourceSet(final Project prj, final String name, final boolean test) {
+	private void addSourceSet(final Project prj, final String name, final String type, final boolean test) {
 		final DependencyHandler dependencies = prj.getDependencies();
 		final JavaPluginConvention javaConvenion = prj.getConvention().getPlugin(JavaPluginConvention.class);
 
 		final SourceSetContainer sourceSets = javaConvenion.getSourceSets();
 
-		sourceSets.all(new Action<SourceSet>() {
-			@Override
-			public void execute(final SourceSet sourceSet) {
-				if (!test) {
-					if (sourceSet.getName().equals(SourceSet.TEST_SOURCE_SET_NAME)) {
+		if (type == null) {
+			sourceSets.all(new Action<SourceSet>() {
+				@Override
+				public void execute(final SourceSet sourceSet) {
+					final String sName = sourceSet.getName();
+					if (!(sName.equals(SourceSet.TEST_SOURCE_SET_NAME)
+							|| sName.equals(SourceSet.MAIN_SOURCE_SET_NAME))) {
 						return;
 					}
-				}
-				final FFSourceSet ffSourceSet = new FFSourceSet(((DefaultSourceSet) sourceSet).getDisplayName(),
-						objectFactory, sourceSet.getExtensions());
-				new DslObject(sourceSet).getConvention().getPlugins().put(name, ffSourceSet);
-
-				prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));
-				final File outdir = new File(prj.getBuildDir(),
-						ConfigLoader.output_path(prj, name, sourceSet.getName()));
-				prj.mkdir(outdir);
-				ffSourceSet.getFf().srcDir(ConfigLoader.src_path(name, sourceSet.getName()));
-				ffSourceSet.getFf().setOutputDir(outdir);
-				sourceSets.add(ffSourceSet);
-			}
-		});
-
-		final SourceSet main_set = javaConvenion.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		final FFSourceSet ff_set = (FFSourceSet) new DslObject(main_set).getConvention().getPlugins().get(name);
-		dependencies.add("compile", prj.files(ff_set.getFf().getOutputDir()));
-
-		prj.afterEvaluate(new Action<Project>() {
-			@Override
-			public void execute(final Project project) {
-				final TaskContainer tasks = project.getTasks();
-				tasks.getByName("jar", new Action<Task>() {
-					@Override
-					public void execute(final Task task) {
-						final Jar jar = (Jar) task;
-						jar.from(ff_set.getFf().getOutputDir()).include("**/*.class");
+					if (!test) {
+						if (sourceSet.getName().equals(SourceSet.TEST_SOURCE_SET_NAME)) {
+							return;
+						}
 					}
-				});
-			}
-		});
+					final CamaroSourceSet ffSourceSet = new CamaroSourceSet(
+							((DefaultSourceSet) sourceSet).getDisplayName(), objectFactory, sourceSet.getExtensions());
+					new DslObject(sourceSet).getConvention().getPlugins().put(name, ffSourceSet);
+
+					prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));
+					final File outdir = new File(prj.getBuildDir(),
+							ConfigLoader.output_path(prj, name, sourceSet.getName()));
+					prj.mkdir(outdir);
+
+					ffSourceSet.getSrcDir().srcDir(ConfigLoader.src_path(name, sourceSet.getName()));
+					ffSourceSet.getSrcDir().setOutputDir(outdir);
+				}
+			});
+
+			final SourceSet main_set = javaConvenion.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+			final CamaroSourceSet ff_set = (CamaroSourceSet) new DslObject(main_set).getConvention().getPlugins()
+					.get(name);
+			dependencies.add("compileOnly", prj.files(ff_set.getSrcDir().getOutputDir()));
+			dependencies.add("compileOnly", project.files(project.getBuildDir().toPath()
+					.resolve(ConfigLoader.output_main_path(project, "ff_java")).toFile()));
+
+			prj.afterEvaluate(new Action<Project>() {
+				@Override
+				public void execute(final Project project) {
+					final TaskContainer tasks = project.getTasks();
+					tasks.getByName("jar", new Action<Task>() {
+						@Override
+						public void execute(final Task task) {
+							final Jar jar = (Jar) task;
+							jar.from(ff_set.getSrcDir().getOutputDir()).include("**/*.class");
+						}
+					});
+				}
+			});
+		} else if ("definition".equals(type)) {
+			final SourceSet sourceSet = sourceSets.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+			final String src_path = ConfigLoader.src_path(name, sourceSet.getName());
+			prj.mkdir(prj.file(src_path));
+			final File outdir = new File(prj.getBuildDir(), ConfigLoader.output_path(prj, name, sourceSet.getName()));
+			prj.mkdir(outdir);
+			sourceSet.getJava().srcDir(prj.file(src_path));
+			sourceSet.getJava().setOutputDir(outdir);
+
+			final String language = name.substring("interfaces/".length());
+			Java.createJavaCompileTask(project, name.replace("/", "_"), prj.file(src_path), outdir,
+					project.files(prj.getConfigurations().getByName(language).resolve()));
+		} else {
+			sourceSets.all(new Action<SourceSet>() {
+				@Override
+				public void execute(final SourceSet sourceSet) {
+					if (!test) {
+						if (sourceSet.getName().equals(SourceSet.TEST_SOURCE_SET_NAME)) {
+							return;
+						}
+					}
+
+					final String src_path = ConfigLoader.src_path(name, sourceSet.getName());
+					prj.mkdir(prj.file(src_path));
+					if ("java".equals(type)) {
+						sourceSet.getJava().srcDir(src_path);
+					} else if ("resources".equals(type)) {
+						sourceSet.getResources().srcDir(src_path);
+					} else {
+						final CamaroSourceSet camaroSourceSet = (CamaroSourceSet) new DslObject(sourceSet)
+								.getConvention().getPlugins().get(type);
+						if (camaroSourceSet != null) {
+							camaroSourceSet.getSrcDir().srcDir(src_path);
+						}
+					}
+				}
+			});
+		}
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -331,7 +382,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		new File(ffBuildDir, target.getName() + "/.gradle").mkdirs();
 		new File(ffBuildDir, target.getName() + "/eclipse").mkdirs();
 
-		setup(target, ConfigLoader.plugin.load(target, getConfiguration()));
+		init(target, ConfigLoader.plugin.load(target, getConfiguration()));
 		final RepositoryHandler repositories = project.getRepositories();
 		repositories.add(repositories.maven(new Action<MavenArtifactRepository>() {
 			@Override
@@ -450,20 +501,20 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				final Map<String, Object> task = (Map<String, Object>) entry.getValue();
 				final String clazz = toString(task.get("class"));
 				if (clazz == null) {
-					project.getTasks().create(entry.getKey(), BaseTask.class, new Action<BaseTask>() {
+					project.getTasks().create(entry.getKey(), DefaultTask.class, new Action<DefaultTask>() {
 
 						@Override
-						public void execute(final BaseTask t) {
-							t.setup(project, task, CamaroPlugin.this);
+						public void execute(final DefaultTask t) {
+							t.init(new MapStore(task), CamaroPlugin.this);
 						}
 
 					});
 				} else {
 					if (clazz.startsWith("$")) {
-						final Class<? extends TaskBuilder> cls = (Class<? extends TaskBuilder>) Class
+						final Class<? extends TaskBuilder<?>> cls = (Class<? extends TaskBuilder<?>>) Class
 								.forName("ff.camaro.plugin.tasks.builder." + clazz.substring(1).trim() + "Builder");
-						final TaskBuilder builder = cls.getConstructor().newInstance();
-						builder.setDefinition(task, this);
+						final TaskBuilder<?> builder = cls.getConstructor().newInstance();
+						builder.init(new MapStore(task), this);
 						builder.define(project, entry.getKey());
 					} else {
 						final Class<? extends BaseTask> cls = (Class<? extends BaseTask>) Class
@@ -472,7 +523,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 							@Override
 							public void execute(final BaseTask t) {
-								t.setup(project, task, CamaroPlugin.this);
+								t.init(new MapStore(task), CamaroPlugin.this);
 							}
 
 						});
@@ -482,8 +533,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 			final Map<String, Object> sources = getMap("sources");
 			for (final Map.Entry<String, Object> entry : sources.entrySet()) {
-				final Map<String, Object> source = (Map<String, Object>) entry.getValue();
-				addFFMainSourceSet(project, entry.getKey(), test(source.get("test")));
+				final MapStore source = new MapStore((Map<String, Object>) entry.getValue());
+				addSourceSet(project, entry.getKey(), source.getString("type"), test(source.getString("test")));
 			}
 
 			final PublishingExtension publisher = project.getExtensions().getByType(PublishingExtension.class);

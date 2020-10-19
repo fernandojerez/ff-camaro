@@ -1,84 +1,26 @@
-plugins: [ camaro, java, eclipse, ivy ]
-
-tasks:
-   debug_on:
-      group: ff
-      description: Indicate that the build has debug enabled
-      log-end: Using debug
-      
-   ff-publish:
-      group: ff
-      description: Build and Publish the artifact
-      depends: [ testing, publish ]
-      log-end: App build and uploaded
-
-   testing:
-      group: ff
-      description: Build and Test the artifact
-      depends: [ build, jacocoTestReport ]
-      log-end: App build and jacoco report generated
-   
-   show_coverage_report:
-      class: $Browse
-      group: report
-      description: Coverage Test Report
-      uri: file://$build_dir$/jacocoHtml/index.html
-   
-   show_test_report:
-      class: $Browse
-      group: report
-      description: Test Report
-      uri: file://$build_dir$/reports/tests/test/index.html
-         
-   jar: 
-      class: $ChangeJar
-   
-publish_to:
-   local: $local
-
-facets: [ base ]
+use: camaro
 
 configurations:
-   implementation: [ ]
-   compileOnly: [ ]
-   compileClasspath: [ compileOnly, implementation ]
-   annotationProcessor: [ ]
-   runtime: []
-   compile: []
-   runtimeOnly: [ ]
-   runtimeClasspath: [ runtimeOnly, implementation ]
-   testImplementation: [ implementation ]
-   testCompileOnly: [ ]
-   testCompileClasspath: [ testCompileOnly, testImplementation ]
-   testRuntimeOnly: [ runtimeOnly ]
-   testRuntime: []
-   testRuntimeClasspath: [ testRuntimeOnly, testImplementation, testCompileClasspath ]
-   archives: [ ]
-   default: [ runtime ]
-   kitt: [ ]
-   macros: [ ]
+  camaro: []
+  kitt: []
+  macros: []
 
 dependencies:
-   macros: 
-      - "ff:charger:+;java_libs"
-   testImplementation:
-      - "org.junit.jupiter:junit-jupiter-api:5.7.0"
-      - "org.junit.jupiter:junit-jupiter-params:5.7.0"
-      - "org.junit.platform:junit-platform-commons:1.7.0"
-   testRuntimeOnly:
-      - "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-      - "org.junit.platform:junit-platform-commons:1.7.0"
-   compileOnly:
-      - "ff:crl:+;default"
-      - "org.junit.jupiter:junit-jupiter-api:5.7.0"
-      - "org.junit.jupiter:junit-jupiter-params:5.7.0"
-      - "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-      - "org.junit.platform:junit-platform-commons:1.7.0"
-   kitt:
-      - "ff:crl:+"
-      - "ff:kitt:+:java"
-      - "ff.java:charger:+"
-      - "ff:charger:+:java"
-      
-artifacts:
-   - $task jar
+  kitt:
+    - "ff:crl:+"
+    - "ff:kitt:+:java"
+    - "ff.java:charger:+"
+    - "ff:charger:+:java"
+  camaro:
+    - "ff:ff:+"
+    - "ff:crl:+"
+    - "ff.java:charger:+"
+    - "ff.dart:charger:+"
+    - "ff.js:charger:+"
+    - "ff.python:charger:+"
+    - "org.bouncycastle:bcprov-jdk15on:1.66"
+    - "com.squareup.okhttp3:okhttp:3.14.9"
+  macros:
+    - "ff:charger:+;java_libs"
+  compileOnly:
+    - "ff:crl:+;default"

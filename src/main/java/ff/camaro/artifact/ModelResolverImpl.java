@@ -1,5 +1,11 @@
 package ff.camaro.artifact;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Repository;
@@ -7,12 +13,6 @@ import org.apache.maven.model.building.ModelSource;
 import org.apache.maven.model.resolution.ModelResolver;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings("deprecation")
 public class ModelResolverImpl implements ModelResolver {
@@ -50,7 +50,7 @@ public class ModelResolverImpl implements ModelResolver {
 	}
 
 	@Override
-	public ModelSource resolveModel(final Parent parent){
+	public ModelSource resolveModel(final Parent parent) {
 		return resolveModel(parent.getGroupId(), parent.getArtifactId(), parent.getVersion());
 	}
 
@@ -64,7 +64,6 @@ public class ModelResolverImpl implements ModelResolver {
 		config.getDependencies().add(dependency);
 
 		final File pomXml = config.getSingleFile();
-		System.err.println(String.format("############# %s:%s:%s", groupId, artifactId, version));
 		listener.onResolveModel(groupId, artifactId, version, pomXml);
 		return new ModelSource() {
 			@Override
