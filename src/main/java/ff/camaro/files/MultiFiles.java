@@ -1,6 +1,6 @@
-package ff.camaro.facet;
+package ff.camaro.files;
 
-public class MultiFacet extends Facet {
+public class MultiFiles extends Files {
 
 	@Override
 	protected String getConfiguration() {

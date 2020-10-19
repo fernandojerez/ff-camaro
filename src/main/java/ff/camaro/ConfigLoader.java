@@ -35,7 +35,7 @@ import org.snakeyaml.engine.v1.common.FlowStyle;
 public class ConfigLoader {
 
 	public static final ConfigLoader plugin = new ConfigLoader("/ff/camaro/plugin");
-	public static final ConfigLoader facet = new ConfigLoader("/ff/camaro/files");
+	public static final ConfigLoader files = new ConfigLoader("/ff/camaro/files");
 
 	public static String eclipse_output_path(final String name, final String sourceSet) {
 		return "build/classes/" + name + "/" + sourceSet;

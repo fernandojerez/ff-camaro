@@ -11,9 +11,14 @@ import java.util.Set;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.snakeyaml.engine.v1.api.Dump;
+import org.snakeyaml.engine.v1.api.DumpSettings;
+import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
+import org.snakeyaml.engine.v1.common.FlowStyle;
+import org.snakeyaml.engine.v1.common.ScalarStyle;
 
 import ff.camaro.Store;
-import ff.camaro.facet.Facet;
+import ff.camaro.files.Files;
 import ff.camaro.plugin.CamaroMetadata;
 import ff.camaro.plugin.CamaroPlugin;
 import groovy.json.JsonOutput;
@@ -24,7 +29,7 @@ public class UpdateCamaro extends DefaultTask {
 	public static final String TASK_LABEL = "Update Camaro";
 	public static final String TASK_NAME = "update_camaro";
 
-	private List<String> facets;
+	private List<String> files;
 
 	public UpdateCamaro() {
 		setGroup("camaro");
@@ -36,7 +41,6 @@ public class UpdateCamaro extends DefaultTask {
 	public void run() throws Exception {
 		final Map<String, Object> base_map = new HashMap<>();
 		final File output = new File(getProject().getProjectDir(), "camaro.json");
-		final File camaro_build = new File(getProject().getProjectDir(), "camaro.build.json");
 		if (output.exists()) {
 			final JsonSlurper sluper = new JsonSlurper();
 			final Map<String, Object> result = (Map<String, Object>) sluper.parse(output);
@@ -44,8 +48,8 @@ public class UpdateCamaro extends DefaultTask {
 			base_map.putAll(result);
 		}
 		final Map<String, Object> camaro_build_map = CamaroPlugin.camaro_build(getProject());
-		for (final String facet : facets) {
-			final Facet f = (Facet) Class.forName("ff.camaro.facet." + Store.capitalize(facet) + "Facet")
+		for (final String facet : files) {
+			final Files f = (Files) Class.forName("ff.camaro.files." + Store.capitalize(facet) + "Files")
 					.getConstructor().newInstance();
 			f.apply(getProject(), base_map, (Map<String, Object>) camaro_build_map.get("kitt"));
 		}
@@ -78,13 +82,19 @@ public class UpdateCamaro extends DefaultTask {
 		try (final PrintStream stream = new PrintStream(output)) {
 			stream.print(JsonOutput.prettyPrint(JsonOutput.toJson(base_map)));
 		}
-		try (final PrintStream camaro_stream = new PrintStream(camaro_build)) {
-			camaro_stream.print(JsonOutput.prettyPrint(JsonOutput.toJson(camaro_build_map)));
+		try (final PrintStream camaro_stream = new PrintStream(
+				new File(getProject().getProjectDir(), "camaro.config.yml"))) {
+			final DumpSettings settings = new DumpSettingsBuilder()//
+					.setDefaultFlowStyle(FlowStyle.BLOCK) //
+					.setDefaultScalarStyle(ScalarStyle.PLAIN) //
+					.build();
+			final Dump dump = new Dump(settings);
+			camaro_stream.print(dump.dumpToString(camaro_build_map));
 		}
 	}
 
 	public void setFacets(final List<String> facet) {
-		facets = facet;
+		files = facet;
 	}
 
 }

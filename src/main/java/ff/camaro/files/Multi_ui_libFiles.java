@@ -1,6 +1,6 @@
-package ff.camaro.facet;
+package ff.camaro.files;
 
-public class Multi_ui_libFacet extends Facet {
+public class Multi_ui_libFiles extends Files {
 
 	@Override
 	protected String getConfiguration() {

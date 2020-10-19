@@ -1,6 +1,7 @@
 package ff.camaro.plugin;
 
 import java.io.File;
+import java.io.FileReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.jvm.tasks.Jar;
+import org.snakeyaml.engine.v1.api.Load;
+import org.snakeyaml.engine.v1.api.LoadSettings;
+import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
 
 import ff.camaro.ArtifactInfo;
 import ff.camaro.CamaroSourceSet;
@@ -91,11 +95,21 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> camaro_build(final Project target) {
-		final File camaro_build = new File(target.getProjectDir(), "camaro.build.json");
+		File camaro_build = new File(target.getProjectDir(), "camaro.build.json");
 		if (camaro_build.exists()) {
 			final JsonSlurper sluper = new JsonSlurper();
 			final Map<String, Object> result = (Map<String, Object>) sluper.parse(camaro_build);
 			return result;
+		}
+		camaro_build = new File(target.getProjectDir(), "camaro.config.yml");
+		if (camaro_build.exists()) {
+			final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro Config").build();
+			final Load load = new Load(settings);
+			try (FileReader reader = new FileReader(camaro_build)) {
+				return (Map<String, Object>) load.loadFromReader(reader);
+			} catch (final Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 		final JsonSlurper sluper = new JsonSlurper();
 		final Map<String, Object> result = (Map<String, Object>) sluper.parseText("{\r\n" + //
@@ -104,7 +118,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				"				},\r\n" + //
 				"				\"languages\": [],\r\n" + //
 				"				\"dependencies\": {},\r\n" + //
-				"				\"props\": {}	\r\n" + //
+				"				\"variables\": {}	\r\n" + //
 				"			}");
 		return result;
 	}
@@ -453,7 +467,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				}
 			}
 
-			final Map<String, Object> props = (Map<String, Object>) camaro_build.get("props");
+			final Map<String, Object> props = (Map<String, Object>) camaro_build.get("variables");
 			final Map<String, Object> custom_deps = (Map<String, Object>) camaro_build.get("dependencies");
 			for (final Map.Entry<String, Object> custom_cfg : custom_deps.entrySet()) {
 				final List<Object> deps = (List<Object>) custom_cfg.getValue();

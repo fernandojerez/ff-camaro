@@ -95,7 +95,6 @@ public class FFCompiler extends CamaroTask {
 			output = buildDir.resolve(ConfigLoader.output_main_path(getProject(), source));
 		}
 
-		System.out.println("The output dir is " + output);
 		final String suffix = testMode ? "_test" : "";
 
 		final Path depsOutput = macroMode ? null : //

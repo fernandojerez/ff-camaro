@@ -1,4 +1,4 @@
-package ff.camaro.facet;
+package ff.camaro.files;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,12 +25,12 @@ import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
 import groovy.json.JsonSlurper;
 
-public abstract class Facet extends Configurator {
+public abstract class Files extends Configurator {
 
 	public void apply(final Project project, final Map<String, Object> config, final Map<String, Object> kitt)
 			throws IOException {
 		System.out.println(getConfiguration());
-		init(project, ConfigLoader.facet.load(project, getConfiguration()));
+		init(project, ConfigLoader.files.load(project, getConfiguration()));
 
 		final File projectDir = project.getProjectDir();
 		final Properties props = new Properties();
@@ -46,10 +46,10 @@ public abstract class Facet extends Configurator {
 
 		final List<String> commands = getList("commands");
 		for (final String command : commands) {
-			final Map<String, Object> base = loadJson("/ff/camaro/facet/" + command + ".json");
+			final Map<String, Object> base = loadJson("/ff/camaro/files/" + command + ".json");
 			merge_two_maps(config, base);
 
-			final Map<String, Object> yml = loadYml("/ff/camaro/facet/kitt/" + command + ".yml");
+			final Map<String, Object> yml = loadYml("/ff/camaro/files/kitt/" + command + ".yml");
 			merge_two_maps(kitt, yml);
 		}
 
