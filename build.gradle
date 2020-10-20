@@ -5,10 +5,19 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * user guide available at https://docs.gradle.org/4.3/userguide/java_library_plugin.html
  */
+plugins {
+	id  'java-library'
+	id  'maven-publish'
+	id 	'signing'
+}
 
-// Apply the java-library plugin to add support for Java Library
-apply plugin: 'java'
-apply plugin: 'ivy-publish'
+if(System.env.FF_BUILD_DIR != null){
+	new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build').mkdirs()
+	project.buildDir = new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build')
+}
+
+def props = new Properties()
+file("repo.properties").withInputStream { props.load(it) }
 
 sourceCompatibility = 14
 targetCompatibility = 14
@@ -31,33 +40,55 @@ jar {
 	}
 } 
 
-if(System.env.FF_BUILD_DIR != null){
-	new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build').mkdirs()
-	project.buildDir = new File(file(System.env.FF_BUILD_DIR), 'ff@camaro/build')
-}
-
 publishing {
 	publications {
-		ivy(IvyPublication) {
+		maven(MavenPublication) {
 			from components.java
-			organisation = project_group
-			module = project_name
+
+			groupId = project_group
+			artifactId = project_name
 			version = project_version
+			
+			pom {
+				name = "FF Camaro"
+				description = "Camaro is a build system layer over gradle. Its purporse is to allow the compilation of FF projects."
+				url = "https://github.com/fernandojerez/ff-camaro"
+				licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+				developers {
+                    developer {
+                        id = 'fernandojerez'
+                        name = 'Fernando Jerez'
+                        email = 'fernandojerez@gmail.com'
+                    }
+                }
+				scm {
+                    connection = 'scm:git:git://git@github.com:fernandojerez/ff-camaro.git'
+                    developerConnection = 'scm:git:ssh://git@github.com:fernandojerez/ff-camaro.git'
+                    url = 'https://github.com/fernandojerez/ff-camaro'
+                }
+			}
 		}
 	}
 	repositories {
-		String usrHome = System.getProperty("user.home")
-		String repoUrl = "file://" + usrHome + "/.ff"
-		if(System.env.FF_REPO != null){
-			if(!System.env.FF_REPO.contains('://')){
-				repoUrl = 'file://' + System.env.FF_REPO
-			}else{
-				repoUrl = System.env.FF_REPO
+		maven {
+			url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+			credentials {
+				username = props.getProperty("sonatypeUsername")
+				password = props.getProperty("sonatypePassword")
 			}
-		}
-		
-		ivy {
-			url = repoUrl
-		}
+		}		
 	}
 } 
+
+ext.set("signing.keyId", props.getProperty("signing.keyId"))
+ext.set("signing.password", props.getProperty("signing.password"))
+ext.set("signing.secretKeyRingFile", props.getProperty("signing.secretKeyRingFile"))
+	
+signing {	
+    sign publishing.publications.maven
+}

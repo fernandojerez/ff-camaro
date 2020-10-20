@@ -121,7 +121,7 @@ tasks:
       ff_java:
         type: output
         include: ["**/*.class"]
-      interfaces/java:
+      java:
         type: output
         include: ["**/*.class", "**/*"]
         exclude: ["**/*.java"]
