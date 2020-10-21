@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Lee el archivo de artifacts y crear una lista de artefactos
  *
- * java|ff@tundra#java;+<br/>
+ * java|ff@tundra#java;+<br>
  * config|org@module#classifier;version
  *
  * @author fernandojerez

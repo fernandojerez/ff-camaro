@@ -33,6 +33,11 @@ dependencies {
 	implementation 'org.snakeyaml:snakeyaml-engine:1.0' 
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 jar {
 	manifest {
 		attributes('Implementation-Title': project_group + '@' + project_name,

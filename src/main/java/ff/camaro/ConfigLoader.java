@@ -20,14 +20,14 @@ import org.snakeyaml.engine.v1.common.FlowStyle;
 
 /**
  * Camaro configuration files are yaml files. there are two types of stores:
- * <br/>
+ * <br>
  *
  * 1. plugins: they define folder structure, dependencies, configurations,
  * project, the configuration files reside into a package
- * "ff.camaro.plugins.models" <br/>
+ * "ff.camaro.plugins.models" <br>
  * 2. files: they define files like metadata configuration files, camaro.json
  * files. The configuration files reside into a package "ff.camaro.files.models"
- * <br/>
+ * <br>
  *
  * @author fernandojerez
  *
@@ -92,7 +92,7 @@ public class ConfigLoader {
 	 * @param resolver the collection of configurations loaded
 	 * @param name     the name of the configuration file
 	 * @param fragment if a fragment file or model file
-	 * @return
+	 * @return A map with properties merged
 	 */
 	public Map<String, Object> load(final Project prj, final KeyResolver resolver, final String name,
 			final boolean fragment) {
@@ -125,7 +125,7 @@ public class ConfigLoader {
 	 *
 	 * @param prj  the gradle project
 	 * @param name the name of the file
-	 * @return
+	 * @return A map with properties merged
 	 */
 	public Map<String, Object> load(final Project prj, final String name) {
 		final KeyResolver resolver = new KeyResolver();

@@ -1,5 +1,5 @@
 /.gradle/
 /bin/
 /build/
-secrets.gpg
+secring.gpg
 repo.properties

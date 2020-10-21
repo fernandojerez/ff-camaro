@@ -18,9 +18,10 @@ public class Util {
 	}
 
 	/**
-	 * if FF_REPO variable is not defined the local repo will be <user.home>/.ff
+	 * if FF_REPO variable is not defined the local repo will be
+	 * &lt;user.home&gt;/.ff
 	 *
-	 * @return
+	 * @return path to local repository
 	 */
 	public static String getFFRepo() {
 		if (System.getenv("FF_REPO") != null) {
