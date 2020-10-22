@@ -8,6 +8,7 @@
 plugins {
 	id  'java-library'
 	id  'maven-publish'
+	id  'ivy-publish'
 	id 	'signing'
 }
 
@@ -45,8 +46,17 @@ jar {
 	}
 } 
 
-publishing {
+//def local_publish = System.env.FF_REPO != null;
+//def publish_maven_central = project.getProperty('publish_maven_central')
+
+publishing {	
 	publications {
+		ivy(IvyPublication) {
+			from components.java
+			organisation = project_group
+			module = project_name
+			version = project_version
+		}
 		maven(MavenPublication) {
 			from components.java
 
@@ -59,34 +69,44 @@ publishing {
 				description = "Camaro is a build system layer over gradle. Its purporse is to allow the compilation of FF projects."
 				url = "https://github.com/fernandojerez/ff-camaro"
 				licenses {
-                    license {
-                        name = 'The Apache License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
+					license {
+						name = 'The Apache License, Version 2.0'
+						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
 				developers {
-                    developer {
-                        id = 'fernandojerez'
-                        name = 'Fernando Jerez'
-                        email = 'fernandojerez@gmail.com'
-                    }
-                }
+					developer {
+						id = 'fernandojerez'
+						name = 'Fernando Jerez'
+						email = 'fernandojerez@gmail.com'
+					}
+				}
 				scm {
-                    connection = 'scm:git:git://git@github.com:fernandojerez/ff-camaro.git'
-                    developerConnection = 'scm:git:ssh://git@github.com:fernandojerez/ff-camaro.git'
-                    url = 'https://github.com/fernandojerez/ff-camaro'
-                }
+					connection = 'scm:git:git://git@github.com:fernandojerez/ff-camaro.git'
+					developerConnection = 'scm:git:ssh://git@github.com:fernandojerez/ff-camaro.git'
+					url = 'https://github.com/fernandojerez/ff-camaro'
+				}
 			}
 		}
 	}
 	repositories {
+		def usrHome = System.getProperty("user.home")
+		def repoUrl = "file://" + usrHome + "/.ff"
+		if(!System.env.FF_REPO.contains('://')){
+			repoUrl = 'file://' + System.env.FF_REPO
+		}else{
+			repoUrl = System.env.FF_REPO
+		}
+		ivy {
+			url = repoUrl
+		}
 		maven {
 			url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 			credentials {
 				username = props.getProperty("sonatypeUsername")
 				password = props.getProperty("sonatypePassword")
 			}
-		}		
+		}
 	}
 } 
 

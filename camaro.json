@@ -1,9 +1,10 @@
 {
-	"menu": {
-		"Publish": "publish",
-		"Update Camaro": "update_camaro"
-	},
-	"custom_menu": {
-		"Update Camaro": "@exclude"
-	}
+  "menu": {
+    "Publish": "publishIvyPublicationToIvyRepository",
+    "Publish Maven Central": "publishMavenPublicationToMavenRepository",
+    "Update Camaro": "update_camaro"
+  },
+  "custom_menu": {
+    "Update Camaro": "@exclude"
+  }
 }
