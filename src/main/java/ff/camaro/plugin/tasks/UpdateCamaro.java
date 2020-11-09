@@ -47,7 +47,7 @@ public class UpdateCamaro extends DefaultTask {
 			result.remove("menu");
 			base_map.putAll(result);
 		}
-		final Map<String, Object> camaro_build_map = CamaroPlugin.camaro_build(getProject());
+		final Map<String, Object> camaro_build_map = CamaroPlugin.camaro_project_config(getProject());
 		for (final String facet : files) {
 			final Files f = (Files) Class.forName("ff.camaro.files." + Store.capitalize(facet) + "Files")
 					.getConstructor().newInstance();

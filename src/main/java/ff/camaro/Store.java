@@ -23,6 +23,11 @@ public abstract class Store {
 		return (T) getValue(key);
 	}
 
+	public boolean getBoolean(final String key) {
+		final var value = getString(key);
+		return "true".equals(value);
+	}
+
 	public <T> List<T> getList(final String key) {
 		final var result = getValue(key);
 		return toList(result);

@@ -46,9 +46,6 @@ jar {
 	}
 } 
 
-//def local_publish = System.env.FF_REPO != null;
-//def publish_maven_central = project.getProperty('publish_maven_central')
-
 publishing {	
 	publications {
 		ivy(IvyPublication) {

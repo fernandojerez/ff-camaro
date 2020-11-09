@@ -94,8 +94,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> camaro_build(final Project target) {
-		File camaro_build = new File(target.getProjectDir(), "camaro.build.json");
+	public static Map<String, Object> camaro_project_config(final Project target) {
+		File camaro_build = new File(target.getProjectDir(), "camaro.config.json");
 		if (camaro_build.exists()) {
 			final JsonSlurper sluper = new JsonSlurper();
 			final Map<String, Object> result = (Map<String, Object>) sluper.parse(camaro_build);
@@ -232,6 +232,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					project.files(prj.getConfigurations().getByName(language).resolve()));
 		} else {
 			sourceSets.all(new Action<SourceSet>() {
+
 				@Override
 				public void execute(final SourceSet sourceSet) {
 					if (!test) {
@@ -254,6 +255,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 						}
 					}
 				}
+
 			});
 		}
 
@@ -264,8 +266,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	public final void apply(final Project target) {
 		final CamaroMetadata metadata = new CamaroMetadata();
 		target.getConvention().add(CamaroPlugin.CAMARO, metadata);
-		final Map<String, Object> camaro_build = CamaroPlugin.camaro_build(target);
-		final List<String> languages = (List<String>) camaro_build.get("languages");
+		final MapStore camaro_build = new MapStore(CamaroPlugin.camaro_project_config(target));
+		final List<String> languages = camaro_build.getList("languages");
 		for (final String str : languages) {
 			if (str.startsWith("-")) {
 				continue;
@@ -296,7 +298,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 								}
 
 								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
-									final Map<String, Object> camaro_cfg = CamaroPlugin.camaro_build(project);
+									final Map<String, Object> camaro_cfg = CamaroPlugin.camaro_project_config(project);
 									final Map<String, Object> cfg = (Map<String, Object>) camaro_cfg.get("kitt");
 									final Object obj_pck = cfg.get(code.substring(0, ix));
 									if (obj_pck == null) {
@@ -402,15 +404,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			@Override
 			public void execute(final MavenArtifactRepository repo) {
 				repo.setUrl(Util.getFFRepo() + "/repo");
-//				repo.metadataSources(new Action<MetadataSources>() {
-//
-//					@Override
-//					public void execute(final MetadataSources sources) {
-//						sources.mavenPom();
-//						sources.artifact();
-//					}
-//
-//				});
 			}
 		}));
 		repositories.add(repositories.ivy(new Action<IvyArtifactRepository>() {
@@ -419,6 +412,9 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				repo.setUrl(Util.getFFRepo());
 			}
 		}));
+		repositories.add(repositories.mavenCentral());
+		repositories.add(repositories.google());
+
 		try {
 			final List<String> plugins = getList("plugins");
 			for (final String plugin : plugins) {
@@ -467,8 +463,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				}
 			}
 
-			final Map<String, Object> props = (Map<String, Object>) camaro_build.get("variables");
-			final Map<String, Object> custom_deps = (Map<String, Object>) camaro_build.get("dependencies");
+			final Map<String, Object> props = camaro_build.getMap("variables");
+			final Map<String, Object> custom_deps = camaro_build.getMap("dependencies");
 			for (final Map.Entry<String, Object> custom_cfg : custom_deps.entrySet()) {
 				final List<Object> deps = (List<Object>) custom_cfg.getValue();
 				for (final Object dep : deps) {
