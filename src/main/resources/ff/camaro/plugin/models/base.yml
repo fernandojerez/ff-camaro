@@ -18,7 +18,7 @@ dependencies:
     - "ff.dart:charger:+"
     - "ff.js:charger:+"
     - "ff.python:charger:+"
-    - "org.bouncycastle:bcprov-jdk15on:1.66"
+    - "org.bouncycastle:bcprov-jdk15on:1.67"
     - "com.squareup.okhttp3:okhttp:3.14.9"
   macros:
     - "ff:charger:+;java_libs"

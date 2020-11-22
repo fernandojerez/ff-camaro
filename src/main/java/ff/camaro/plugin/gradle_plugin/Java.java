@@ -5,8 +5,8 @@ import java.io.File;
 import org.gradle.api.Action;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileTree;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Copy;
@@ -30,7 +30,7 @@ public class Java extends GradlePlugin {
 	}
 
 	public static void createJavaCompileTask(final Project project, final String name, final File source,
-			final File output, final FileCollection classpath) {
+			final File output, final Configuration classpath) {
 		final TaskContainer tasks = project.getTasks();
 		final String compilerTaskName = name + "_compiler";
 		tasks.create(compilerTaskName, JavaCompile.class, new Action<JavaCompile>() {

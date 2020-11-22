@@ -228,8 +228,11 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			sourceSet.getJava().setOutputDir(outdir);
 
 			final String language = name.substring("interfaces/".length());
-			Java.createJavaCompileTask(project, name.replace("/", "_"), prj.file(src_path), outdir,
-					project.files(prj.getConfigurations().getByName(language).resolve()));
+			Java.createJavaCompileTask(project, //
+					name.replace("/", "_"), //
+					prj.file(src_path), //
+					outdir, //
+					prj.getConfigurations().getByName(language));
 		} else {
 			sourceSets.all(new Action<SourceSet>() {
 
