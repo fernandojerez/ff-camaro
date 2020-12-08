@@ -224,8 +224,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			prj.mkdir(prj.file(src_path));
 			final File outdir = new File(prj.getBuildDir(), ConfigLoader.output_path(prj, name, sourceSet.getName()));
 			prj.mkdir(outdir);
-			sourceSet.getJava().srcDir(prj.file(src_path));
-			sourceSet.getJava().setOutputDir(outdir);
+//			sourceSet.getJava().srcDir(prj.file(src_path));
+//			sourceSet.getJava().setOutputDir(outdir);
 
 			final String language = name.substring("interfaces/".length());
 			Java.createJavaCompileTask(project, //

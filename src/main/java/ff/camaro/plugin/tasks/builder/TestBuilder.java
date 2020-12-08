@@ -8,6 +8,9 @@ import java.util.Set;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.testing.jacoco.plugins.JacocoTaskExtension;
 import org.gradle.testing.jacoco.tasks.JacocoReport;
@@ -45,7 +48,26 @@ public class TestBuilder extends TaskBuilder<Test> {
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "macros")));
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff_" + flang)));
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff")));
+				if ("java".equals(flang)) {
+					final JavaPluginConvention javaConvenion = project.getConvention()
+							.getPlugin(JavaPluginConvention.class);
+					final SourceSetContainer sourceSets = javaConvenion.getSourceSets();
+					sourceSets.all(new Action<SourceSet>() {
 
+						@Override
+						public void execute(final SourceSet sourceSet) {
+							if (sourceSet.getJava() != null) {
+								try {
+									final File dir = sourceSet.getJava().getOutputDir();
+									files.add(dir);
+								} catch (final Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+
+					});
+				}
 				test.setClasspath(project.files(files.toArray()));
 			}
 		});

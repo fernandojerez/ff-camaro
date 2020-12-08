@@ -29,7 +29,6 @@ public abstract class Files extends Configurator {
 
 	public void apply(final Project project, final Map<String, Object> config, final Map<String, Object> kitt)
 			throws IOException {
-		System.out.println(getConfiguration());
 		init(project, ConfigLoader.files.load(project, getConfiguration()));
 
 		final File projectDir = project.getProjectDir();
@@ -70,7 +69,6 @@ public abstract class Files extends Configurator {
 	}
 
 	protected void copyTextFile(final String route, final File output, final Object... args) throws IOException {
-		System.out.println(route);
 		try (InputStream input = getClass().getResourceAsStream(route)) {
 			final InputStreamReader reader = new InputStreamReader(input);
 			final StringBuilder result = new StringBuilder();

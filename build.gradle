@@ -20,8 +20,8 @@ if(System.env.FF_BUILD_DIR != null){
 def props = new Properties()
 file("repo.properties").withInputStream { props.load(it) }
 
-sourceCompatibility = 14
-targetCompatibility = 14
+sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
 	mavenCentral()

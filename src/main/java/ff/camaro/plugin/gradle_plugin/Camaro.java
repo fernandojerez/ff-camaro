@@ -18,7 +18,7 @@ public class Camaro extends GradlePlugin {
 
 			@Override
 			public void execute(final UpdateCamaro task) {
-				task.setFacets(configurator.getList("facets"));
+				task.setFacets(configurator.getList("files"));
 			}
 
 		});

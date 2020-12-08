@@ -24,6 +24,8 @@ import ff.camaro.Configurator;
 
 public class Java extends GradlePlugin {
 
+	public static final JavaVersion SUPPORTED_MAX_VERSION = JavaVersion.VERSION_11;
+
 	private static void configureCompiler(final JavaCompile compile) {
 		compile.getOptions().setEncoding("UTF-8");
 		compile.getOptions().getCompilerArgs().add("-Xlint:deprecation");
@@ -70,8 +72,8 @@ public class Java extends GradlePlugin {
 		project.getPluginManager().apply(JavaPlugin.class);
 
 		final JavaPluginConvention javaSettings = project.getConvention().getPlugin(JavaPluginConvention.class);
-		javaSettings.setSourceCompatibility(JavaVersion.VERSION_14);
-		javaSettings.setTargetCompatibility(JavaVersion.VERSION_14);
+		javaSettings.setSourceCompatibility(Java.SUPPORTED_MAX_VERSION);
+		javaSettings.setTargetCompatibility(Java.SUPPORTED_MAX_VERSION);
 
 		final JavaCompile compile = (JavaCompile) project.getTasks().getByName("compileJava");
 		Java.configureCompiler(compile);
