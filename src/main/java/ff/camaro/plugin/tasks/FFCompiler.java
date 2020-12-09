@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.SourceSet;
@@ -60,7 +59,8 @@ public class FFCompiler extends CamaroTask {
 		if (configuration != null && configuration.length > 0) {
 			final Set<File> files = new HashSet<>();
 			for (final String str : configuration) {
-				files.addAll(getProject().getConfigurations().getByName(str).resolve());
+				final Set<File> filesResolved = getProject().getConfigurations().getByName(str).resolve();
+				files.addAll(filesResolved);
 			}
 			classpathFiles = files;
 		}
@@ -131,24 +131,6 @@ public class FFCompiler extends CamaroTask {
 			macroFiles.add(macros.toUri().toURL());
 		}
 
-		try {
-			if (getProject().getName().equals("ff@charger")) {
-				String getenv = System.getenv("FF_REPO");
-				if (getenv.startsWith("file://")) {
-					getenv = getenv.substring("file://".length());
-				}
-				final File charger = new File(getenv + "/ff/charger/0.0.1/charger-0.0.1-java.jar");
-				if (charger.exists()) {
-					macroFiles.add(charger.toURI().toURL());
-				}
-			}
-			final Configuration conf = getProject().getConfigurations().getByName("macros");
-			for (final File file : conf.getFiles()) {
-				macroFiles.add(file.toURI().toURL());
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
 		final URLClassLoader macro_loader = macroFiles.isEmpty() ? baseLibs
 				: new URLClassLoader(macroFiles.toArray(new URL[0]), baseLibs);
 

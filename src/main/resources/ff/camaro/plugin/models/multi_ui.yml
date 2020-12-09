@@ -19,4 +19,4 @@ dependencies:
   js_test:
     - "ff:viper:+:js"
 
-facets: [$clear, multi_ui]
+files: [$clear, multi_ui]

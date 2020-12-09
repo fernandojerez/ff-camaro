@@ -1,21 +1,21 @@
 use: multi_mustang
 
 dependencies:
-   implementation:
-      - "ff:mustang:+"
-      - "ff:mustang:+:java"
-   macros:
-      - "ff:mustang:+"
-      - "ff:mustang:+:java"
-   dart:
-      - "ff:mustang:+:dart"
-   python:
-      - "ff:mustang:+:python"
-   js: 
-      - "ff:mustang:+:js"
-   java:
-      - "ff:mustang:+:java"
-   java_libs:
-      - "ff:mustang:+;java_libs"
+  implementation:
+    - "ff:mustang:+"
+    - "ff:mustang:+:java"
+  macros:
+    - "ff:mustang:+"
+    - "ff:mustang:+:java"
+  dart:
+    - "ff:mustang:+:dart"
+  python:
+    - "ff:mustang:+:python"
+  js:
+    - "ff:mustang:+:js"
+  java:
+    - "ff:mustang:+:java"
+  java_libs:
+    - "ff:mustang:+;java_libs"
 
-facets: [ $clear, mustang ]
+files: [$clear, mustang]

@@ -30,7 +30,6 @@ dependencies:
   java:
     - "ff:charger:+:java"
   implementation:
-    - "ff:charger:+:java"
     - "ff:crl:+"
     - "ff.java:charger:+"
     - "ff.dart:charger:+"
@@ -290,7 +289,7 @@ tasks:
     description: Coverage Test Report
     uri: file://$build_dir$/reports/jacoco/html/index.html
 
-facets: [$clear, multi]
+files: [$clear, multi]
 
 artifacts:
   - $clear

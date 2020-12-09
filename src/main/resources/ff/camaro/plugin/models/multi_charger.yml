@@ -1,0 +1,21 @@
+use: multi
+
+dependencies:
+  dart:
+    - $clear
+  python:
+    - $clear
+  js:
+    - $clear
+  java_libs:
+    - $clear
+    - "com.squareup.okhttp3:okhttp:3.14.9;none"
+    - "ff.java:charger:+;default"
+    - "ff:crl:+;default"
+  java:
+    - $clear
+  macros:
+    - "ff:charger:+"
+    - "ff:charger:+:java"
+    - "ff:charger:+;java_libs"
+    - "ff.java:charger:+"
