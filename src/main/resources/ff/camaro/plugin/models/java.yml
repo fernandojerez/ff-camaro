@@ -41,15 +41,11 @@ dependencies:
   testImplementation: $remove
 
   java:
-    - "ff.java:charger:+;default"
-    - "ff:charger:+:java"
+    - "ff.java@charger;+"
+    - "ff@charger#java;+"
   implementation:
-    - "ff:crl:+"
-    - "ff:charger:+"
-    - "ff:charger:+:java"
-  macros:
-    - "ff:charger:+:java"
-    - "ff.java:charger:+"
+    - "ff@crl;+"
+    - "ff@charger#java;+"
   java_test:
     - $clear
 

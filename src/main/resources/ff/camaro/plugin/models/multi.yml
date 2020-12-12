@@ -8,7 +8,7 @@ configurations:
   dart: []
   python: []
   macros: []
-  base_test: []
+  base_test: [testImplementation]
   java_test: [java, java_libs, base_test]
   js_test: [js, base_test]
   dart_test: [dart, base_test]
@@ -17,46 +17,32 @@ configurations:
 
 dependencies:
   dart:
-    - "ff:charger:+:dart"
+    - "ff@charger#dart;+"
   python:
-    - "ff:charger:+:python"
+    - "ff@charger#python;+"
   js:
-    - "ff:charger:+:js"
+    - "ff@charger#js;+"
   java_libs:
-    - "com.squareup.okhttp3:okhttp:3.14.9;none"
-    - "ff.java:charger:+;default"
-    - "ff:charger:+;java_libs"
-    - "ff:crl:+;default"
+    - "com.squareup.okhttp3@okhttp;3.14.9"
+    - "ff.java@charger;+"
+    - "java_libs|ff@charger;+"
+    - "ff@crl;+"
   java:
-    - "ff:charger:+:java"
+    - "ff@charger#java;+"
   implementation:
-    - "ff:crl:+"
-    - "ff.java:charger:+"
-    - "ff.dart:charger:+"
-    - "ff.js:charger:+"
-    - "ff.python:charger:+"
+    - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "ff.dart@charger;+"
+    - "ff.js@charger;+"
+    - "ff.python@charger;+"
   macros:
-    - "ff:charger:+"
-    - "ff:charger:+:java"
-    - "ff:charger:+;java_libs"
-    - "ff.java:charger:+"
-  testImplementation:
-    - "ff.js:charger:+"
-    - "ff.java:charger:+"
-    - "ff.dart:charger:+"
-    - "ff.python:charger:+"
-  base_test:
-    - "ff:crl:+;default"
-    - "org.junit.jupiter:junit-jupiter-api:5.7.0"
-    - "org.junit.jupiter:junit-jupiter-params:5.7.0"
-    - "org.junit.jupiter:junit-jupiter-engine:5.7.0"
-    - "ff.js:charger:+"
-    - "ff.java:charger:+"
-    - "ff.dart:charger:+"
-    - "ff.python:charger:+"
+    - "macros|ff@charger;+"
+    - "ff@charger#java;+"
+    - "java_libs|ff@charger;+"
+    - "ff.java@charger;+"
   js_test:
-    - "org.seleniumhq.selenium:selenium-java:3.141.59;default"
-    - "org.seleniumhq.selenium:selenium-chrome-driver:3.141.59;default"
+    - "org.seleniumhq.selenium@selenium-java;3.141.59"
+    - "org.seleniumhq.selenium@selenium-chrome-driver;3.141.59"
 
 sources:
   ff: { test: true }

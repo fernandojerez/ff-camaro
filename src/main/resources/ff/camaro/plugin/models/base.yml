@@ -7,18 +7,18 @@ configurations:
 
 dependencies:
   kitt:
-    - "ff:crl:+"
-    - "ff:kitt:+:java"
-    - "ff.java:charger:+"
-    - "ff:charger:+:java"
+    - "ff@crl;+"
+    - "ff@kitt#java;+"
+    - "ff.java@charger;+"
+    - "ff@charger#java;+"
   camaro:
-    - "ff:ff:+"
-    - "ff:crl:+"
-    - "ff.java:charger:+"
-    - "ff.dart:charger:+"
-    - "ff.js:charger:+"
-    - "ff.python:charger:+"
-    - "org.bouncycastle:bcprov-jdk15on:1.67"
-    - "com.squareup.okhttp3:okhttp:3.14.9"
+    - "ff@ff;+"
+    - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "ff.dart@charger;+"
+    - "ff.js@charger;+"
+    - "ff.python@charger;+"
+    - "org.bouncycastle@bcprov-jdk15on;1.67"
+    - "com.squareup.okhttp3@okhttp;3.14.9"
   compileOnly:
-    - "ff:crl:+;default"
+    - "ff@crl;+"

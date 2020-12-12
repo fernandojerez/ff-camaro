@@ -69,8 +69,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	private static final String CAMARO = "__camaro__";
 
-	public static Set<String> group_configurations = Util.set("macros", "java", "dart", "python", "js", //
-			"macro_test", "java_test", "dart_test", "python_test", "js_test");
+	public static Set<String> group_configurations = Util.set("macros", "java", "dart", "python", "js");
 
 	public static void add_repositories(final PublishingExtension publisher, final Configurator config,
 			final Map<String, Object> map) {
@@ -139,9 +138,13 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		final String classifier = artifact.getClassifierString();
 		final Dependency dep = d.add(cfg, artifact.getOrg() + ":" + artifact.getName() + ":" + artifact.getVersion()
 				+ (classifier != null ? ":" + classifier : ""));
+		String targetCfg = artifact.getCfg();
+		if (classifier != null && CamaroPlugin.group_configurations.contains(classifier)) {
+			targetCfg = classifier;
+		}
 		final ModuleDependency moduleDependency = (ModuleDependency) dep;
-		if (artifact.getCfg() != null) {
-			add_target_configuration(moduleDependency, d, cfg, artifact.getCfg());
+		if (targetCfg != null) {
+			add_target_configuration(moduleDependency, d, cfg, targetCfg);
 		}
 		moduleDependency.setTransitive(artifact.isTransitive());
 		return moduleDependency;
@@ -443,30 +446,14 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			}
 
 			final Map<String, Object> dependencies = getMap("dependencies");
-			final DependencyHandler d = project.getDependencies();
+			final Map<String, Object> props = camaro_build.getMap("variables");
 			for (final Map.Entry<String, Object> entry : dependencies.entrySet()) {
 				final Set<String> values = new HashSet<>(toList(entry.getValue()));
-				for (String dependency : values) {
-					final int ix = dependency.lastIndexOf(";");
-					String conf = null;
-					if (ix != -1) {
-						conf = dependency.substring(ix + 1).trim();
-						dependency = dependency.substring(0, ix).trim();
-					}
-					final Dependency dep = d.add(entry.getKey(), dependency);
-					if (conf != null) {
-						if (!"none".equals(conf)) {
-							add_target_configuration((ModuleDependency) dep, d, entry.getKey(), conf);
-						}
-					} else {
-						if (CamaroPlugin.group_configurations.contains(entry.getKey())) {
-							add_target_configuration((ModuleDependency) dep, d, entry.getKey(), entry.getKey());
-						}
-					}
+				for (final String dependency : values) {
+					add_dependency(project, props, entry.getKey(), dependency);
 				}
 			}
 
-			final Map<String, Object> props = camaro_build.getMap("variables");
 			final Map<String, Object> custom_deps = camaro_build.getMap("dependencies");
 			for (final Map.Entry<String, Object> custom_cfg : custom_deps.entrySet()) {
 				final List<Object> deps = (List<Object>) custom_cfg.getValue();
