@@ -3,14 +3,17 @@ use: multi
 dependencies:
   dart:
     - $clear
+    - "ff@crl;+"
   python:
     - $clear
+    - "ff@crl;+"
   js:
     - $clear
+    - "ff@crl;+"
   java_libs:
     - $clear
-    - "ff@crl;+"
-    - "ff.java@charger;+"
     - "com.squareup.okhttp3@okhttp;3.14.9"
   java:
     - $clear
+    - "ff@crl;+"
+    - "ff.java@charger;+"
