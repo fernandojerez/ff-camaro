@@ -8,13 +8,13 @@ tasks:
 
 dependencies:
   dart:
-    - "ff@viper#dart;+"
+    - "ff@viper-dart;+"
   js:
-    - "ff@viper#js;+"
+    - "ff@viper-js;+"
   macros:
-    - "macros|ff@viper;+"
-    - "macros|ff@mustang;+"
+    - "ff@viper-macros;+"
+    - "ff@mustang-macros;+"
   js_test:
-    - "ff@viper#js;+"
+    - "ff@viper-js;+"
 
 files: [$clear, multi_ui]

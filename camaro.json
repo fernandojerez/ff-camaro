@@ -1,6 +1,6 @@
 {
   "menu": {
-    "Publish": "publishIvyPublicationToIvyRepository",
+    "Publish": "publishLocalPublicationToLocalRepository",
     "Publish Maven Central": "publishMavenPublicationToMavenRepository",
     "Update Camaro": "update_camaro"
   },

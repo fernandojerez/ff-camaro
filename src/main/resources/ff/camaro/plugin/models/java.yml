@@ -42,10 +42,10 @@ dependencies:
 
   java:
     - "ff.java@charger;+"
-    - "ff@charger#java;+"
+    - "ff@charger-java;+"
   implementation:
     - "ff@crl;+"
-    - "ff@charger#java;+"
+    - "ff@charger-java;+"
   java_test:
     - $clear
 
@@ -66,5 +66,5 @@ files: [$clear, java]
 
 artifacts:
   - $clear
-  - $task macros_jar;macros
-  - $task java_jar;java
+  - macros
+  - java

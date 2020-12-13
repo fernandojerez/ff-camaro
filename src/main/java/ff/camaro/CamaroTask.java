@@ -14,7 +14,7 @@ public abstract class CamaroTask extends DefaultTask {
 
 	protected void fillClassPath(final Set<URL> urls, final String name) throws MalformedURLException {
 		final Configuration conf = getProject().getConfigurations().getByName(name);
-		for (final File file : conf.getFiles()) {
+		for (final File file : conf.resolve()) {
 			urls.add(file.toURI().toURL());
 		}
 	}

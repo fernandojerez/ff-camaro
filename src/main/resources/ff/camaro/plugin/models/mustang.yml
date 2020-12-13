@@ -2,19 +2,19 @@ use: multi_mustang
 
 dependencies:
   compileOnly:
-    - "ff@mustang#java;+"
+    - "ff@mustang-java;+"
   macros:
-    - "macros|ff@mustang;+"
-    - "ff@mustang#java;+"
+    - "ff@mustang-macros;+"
+    - "ff@mustang-java;+"
   dart:
-    - "ff@mustang#dart;+"
+    - "ff@mustang-dart;+"
   python:
-    - "ff@mustang#python;+"
+    - "ff@mustang-python;+"
   js:
-    - "ff@mustang#js;+"
+    - "ff@mustang-js;+"
   java:
-    - "ff@mustang#java;+"
+    - "ff@mustang-java;+"
   java_libs:
-    - "java_libs|ff@mustang;+"
+    - "ff@mustang-java-libs;+"
 
 files: [$clear, mustang]

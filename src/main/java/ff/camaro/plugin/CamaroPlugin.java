@@ -18,28 +18,24 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Rule;
 import org.gradle.api.Task;
-import org.gradle.api.XmlProvider;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.DependencyArtifact;
-import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.ExcludeRule;
 import org.gradle.api.artifacts.ModuleDependency;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository.MetadataSources;
+import org.gradle.api.attributes.java.TargetJvmVersion;
+import org.gradle.api.component.ConfigurationVariantDetails;
+import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.internal.tasks.DefaultSourceSet;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.PublishingExtension;
-import org.gradle.api.publish.ivy.IvyArtifact;
-import org.gradle.api.publish.ivy.IvyConfiguration;
-import org.gradle.api.publish.ivy.IvyConfigurationContainer;
-import org.gradle.api.publish.ivy.IvyPublication;
+import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
@@ -60,16 +56,15 @@ import ff.camaro.plugin.gradle_plugin.GradlePlugin;
 import ff.camaro.plugin.gradle_plugin.Java;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.DefaultTask;
+import ff.camaro.plugin.tasks.builder.JarBuilder;
 import ff.camaro.plugin.tasks.builder.TaskBuilder;
 import groovy.json.JsonSlurper;
-import groovy.util.Node;
-import groovy.util.NodeList;
 
 public abstract class CamaroPlugin extends Configurator implements Plugin<Project> {
 
 	private static final String CAMARO = "__camaro__";
 
-	public static Set<String> group_configurations = Util.set("macros", "java", "dart", "python", "js");
+	public static Map<String, Object> artifacts_extensions = Util.map("python", "py");
 
 	public static void add_repositories(final PublishingExtension publisher, final Configurator config,
 			final Map<String, Object> map) {
@@ -77,15 +72,16 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		for (final Map.Entry<String, Object> entry : map.entrySet()) {
 			final String repo = config.toString(entry.getValue());
 			if (repo.startsWith("$local")) {
-				final IvyArtifactRepository ivy = repositories.ivy(new Action<IvyArtifactRepository>() {
+				final MavenArtifactRepository maven = repositories.maven(new Action<MavenArtifactRepository>() {
 
 					@Override
-					public void execute(final IvyArtifactRepository repo) {
+					public void execute(final MavenArtifactRepository repo) {
 						repo.setUrl(Util.getFFRepo());
+						repo.setName("local");
 					}
 
 				});
-				repositories.add(ivy);
+				repositories.add(maven);
 			} else {
 				throw new UnsupportedOperationException("repo not supported: " + repo);
 			}
@@ -127,9 +123,11 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	}
 
 	private final ObjectFactory objectFactory;
+	private final SoftwareComponentFactory componentFactory;
 
-	public CamaroPlugin(final ObjectFactory objectFactory) {
+	public CamaroPlugin(final ObjectFactory objectFactory, final SoftwareComponentFactory componentFactory) {
 		this.objectFactory = objectFactory;
+		this.componentFactory = componentFactory;
 	}
 
 	protected ModuleDependency add_dependency(final Project project, final Map<String, Object> props, final String cfg,
@@ -138,10 +136,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		final String classifier = artifact.getClassifierString();
 		final Dependency dep = d.add(cfg, artifact.getOrg() + ":" + artifact.getName() + ":" + artifact.getVersion()
 				+ (classifier != null ? ":" + classifier : ""));
-		String targetCfg = artifact.getCfg();
-		if (classifier != null && CamaroPlugin.group_configurations.contains(classifier)) {
-			targetCfg = classifier;
-		}
+		final String targetCfg = artifact.getCfg();
 		final ModuleDependency moduleDependency = (ModuleDependency) dep;
 		if (targetCfg != null) {
 			add_target_configuration(moduleDependency, d, cfg, targetCfg);
@@ -227,8 +222,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			prj.mkdir(prj.file(src_path));
 			final File outdir = new File(prj.getBuildDir(), ConfigLoader.output_path(prj, name, sourceSet.getName()));
 			prj.mkdir(outdir);
-//			sourceSet.getJava().srcDir(prj.file(src_path));
-//			sourceSet.getJava().setOutputDir(outdir);
+			// sourceSet.getJava().srcDir(prj.file(src_path));
+			// sourceSet.getJava().setOutputDir(outdir);
 
 			final String language = name.substring("interfaces/".length());
 			Java.createJavaCompileTask(project, //
@@ -412,10 +407,20 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				repo.setUrl(Util.getFFRepo() + "/repo");
 			}
 		}));
-		repositories.add(repositories.ivy(new Action<IvyArtifactRepository>() {
+		repositories.add(repositories.maven(new Action<MavenArtifactRepository>() {
 			@Override
-			public void execute(final IvyArtifactRepository repo) {
+			public void execute(final MavenArtifactRepository repo) {
 				repo.setUrl(Util.getFFRepo());
+				repo.metadataSources(new Action<MetadataSources>() {
+
+					@Override
+					public void execute(final MetadataSources metadata) {
+						metadata.artifact();
+						metadata.mavenPom();
+						metadata.ignoreGradleMetadataRedirection();
+					}
+
+				});
 			}
 		}));
 		repositories.add(repositories.mavenCentral());
@@ -430,6 +435,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			final Map<String, Object> configurations = getMap("configurations");
 			for (final Map.Entry<String, Object> entry : configurations.entrySet()) {
 				final Configuration cinstance = c.maybeCreate(entry.getKey());
+				final var attributes = cinstance.getAttributes();
+				attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11);
 				final List<String> extendsList = toList(entry.getValue());
 				final List<Configuration> cfgs = new ArrayList<>(extendsList.size());
 				for (final String e : extendsList) {
@@ -542,142 +549,71 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			CamaroPlugin.add_repositories(publisher, this, publish);
 
 			final PublicationContainer publications = publisher.getPublications();
-
 			final ArtifactInfo info = getArtifactInfo();
-			final IvyPublication publication = publications.create("ff_publishing", IvyPublication.class,
-					new Action<IvyPublication>() {
+			final List<String> artifacts = getList("artifacts");
+			for (final String artifact : artifacts) {
+				if (artifact.startsWith("$task jar")) {
+					publications.create("ff_publishing", MavenPublication.class, new Action<MavenPublication>() {
 
 						@Override
-						public void execute(final IvyPublication ivy) {
-							ivy.setOrganisation(info.getGroup());
-							ivy.setModule(info.getName());
-							ivy.setRevision(info.getVersion());
+						public void execute(final MavenPublication maven) {
+							maven.from(project.getComponents().findByName("java"));
+							maven.suppressAllPomMetadataWarnings();
+							maven.setGroupId(info.getGroup());
+							maven.setArtifactId(info.getName());
+							maven.setVersion(info.getVersion());
 						}
 
 					});
-
-			final List<String> artifacts = getList("artifacts");
-			for (String artifact : artifacts) {
-				final int ix = artifact.lastIndexOf(";");
-				String conf = null;
-				if (ix != -1) {
-					conf = artifact.substring(ix + 1).trim();
-					artifact = artifact.substring(0, ix).trim();
-				}
-				if (artifact.startsWith("$task")) {
-					final IvyArtifact a = publication
-							.artifact(project.getTasks().getByName(artifact.substring("$task".length()).trim()));
-					if (conf != null) {
-						a.setConf(conf);
-					}
 				} else {
-					final IvyArtifact a = publication.artifact(project.file(artifact));
-					if (conf != null) {
-						a.setConf(conf);
+					final String suffix = artifact;
+					final var configuration = project.getConfigurations().getByName(suffix);
+					final var component = componentFactory.adhoc(suffix + "_component");
+					component.addVariantsFromConfiguration(configuration, new Action<ConfigurationVariantDetails>() {
+
+						@Override
+						public void execute(final ConfigurationVariantDetails variant) {
+							variant.mapToMavenScope("runtime");
+						}
+					});
+					project.getComponents().add(component);
+					if (artifact.endsWith("_libs")) {
+
+						publications.create("ff_" + artifact + "_publishing", MavenPublication.class,
+								new Action<MavenPublication>() {
+
+									@Override
+									public void execute(final MavenPublication maven) {
+										maven.from(component);
+										maven.suppressAllPomMetadataWarnings();
+										maven.setGroupId(info.getGroup());
+										maven.setArtifactId(info.getName() + "-" + suffix.replace("_libs", "-libs"));
+										maven.setVersion(info.getVersion());
+									}
+
+								});
+					} else {
+						final JarBuilder jar = new JarBuilder();
+						jar.init(new MapStore(jarProperties(artifact)), this);
+						jar.define(project, artifact + "_jar");
+
+						publications.create("ff_" + artifact + "_publishing", MavenPublication.class,
+								new Action<MavenPublication>() {
+
+									@Override
+									public void execute(final MavenPublication maven) {
+										maven.from(component);
+										maven.suppressAllPomMetadataWarnings();
+										maven.setGroupId(info.getGroup());
+										maven.setArtifactId(info.getName() + "-" + suffix);
+										maven.setVersion(info.getVersion());
+										maven.artifact(project.getTasks().getByName(artifact + "_jar"));
+									}
+
+								});
 					}
 				}
 			}
-
-			publication.configurations(new Action<IvyConfigurationContainer>() {
-
-				@Override
-				public void execute(final IvyConfigurationContainer ivy) {
-					for (final Map.Entry<String, Object> entry : configurations.entrySet()) {
-						if (entry.getKey().equals("camaro")) {
-							continue;
-						}
-						if (entry.getKey().equals("kitt")) {
-							continue;
-						}
-						final IvyConfiguration ivyConfiguration = ivy.create(entry.getKey());
-						ivy.add(ivyConfiguration);
-						final List<String> extendsList = toList(entry.getValue());
-						for (final String e : extendsList) {
-							ivyConfiguration.getExtends().add(e);
-						}
-					}
-				}
-			});
-
-			publication.getDescriptor().withXml(new Action<XmlProvider>() {
-
-				@SuppressWarnings({ "rawtypes" })
-				@Override
-				public void execute(final XmlProvider xml) {
-					final NodeList list = (NodeList) xml.asNode().get("dependencies");
-					final Node node = (Node) list.get(0);
-					for (final Configuration cfg : c) {
-						if (cfg.getName().equals("camaro")) {
-							continue;
-						}
-						if (cfg.getName().equals("kitt")) {
-							continue;
-						}
-						if (cfg.getName().equals("jacocoAgent")) {
-							continue;
-						}
-						if (cfg.getName().equals("jacocoAnt")) {
-							continue;
-						}
-						final DependencySet dependencies = cfg.getDependencies();
-						for (final Dependency dep : dependencies) {
-							final Map<String, Object> attrs = Util.map("org", dep.getGroup(), //
-									"name", dep.getName(), //
-									"rev", dep.getVersion() //
-							);
-							if (dep instanceof ModuleDependency) {
-								final ModuleDependency mdep = (ModuleDependency) dep;
-								attrs.put("conf", cfg.getName() + "->" + nvl_dep(mdep.getTargetConfiguration()));
-								final Set<DependencyArtifact> artifacts = mdep.getArtifacts();
-								final Node depNode = node.appendNode("dependency", attrs);
-								final Map depAttrs = depNode.attributes();
-								for (final DependencyArtifact artifact : artifacts) {
-									final String classifier = artifact.getClassifier();
-									final Map<String, Object> artifactAttrs = new HashMap<>();
-									if (classifier != null) {
-										depAttrs.put("xmlns:m", "http://ant.apache.org/ivy/maven");
-										depAttrs.put("m:classifier", classifier);
-
-										artifactAttrs.put("xmlns:m", "http://ant.apache.org/ivy/maven");
-										artifactAttrs.put("m:classifier", classifier);
-									}
-									final String extension = artifact.getExtension();
-									if (extension != null) {
-										artifactAttrs.put("ext", extension);
-									}
-									artifactAttrs.put("name", artifact.getName());
-									artifactAttrs.put("type", artifact.getType());
-									depNode.appendNode("artifact", artifactAttrs);
-								}
-								final Set<ExcludeRule> rules = mdep.getExcludeRules();
-								for (final ExcludeRule rule : rules) {
-									final Map<String, Object> excludeAttrs = new HashMap<>();
-									final String group = rule.getGroup();
-									if (group != null) {
-										excludeAttrs.put("org", group);
-									}
-									final String module = rule.getModule();
-									if (module != null) {
-										excludeAttrs.put("module", module);
-									}
-									depNode.appendNode("exclude", excludeAttrs);
-								}
-							} else {
-								continue;
-							}
-						}
-					}
-				}
-
-				private String nvl_dep(final String conf) {
-					if (conf == null) {
-						return "default";
-					}
-					return conf;
-				}
-
-			});
-
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -704,8 +640,82 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	public abstract String getConfiguration();
 
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> jarProperties(final String artifact) {
+		String definition = languageJarDefinition();
+		if ("java".equals(artifact)) {
+			definition = javaJarDefinition();
+		} else if ("macros".equals(artifact)) {
+			definition = macrosJarDefinition();
+		}
+
+		definition = definition.replace("{artifact}", artifact);
+		String extension = artifact;
+		final String tmp = (String) CamaroPlugin.artifacts_extensions.get(extension);
+		if (tmp != null) {
+			extension = tmp;
+		}
+		definition = definition.replace("{extension}", extension);
+
+		final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro Jar Definition").build();
+		final Load load = new Load(settings);
+		final Map<String, Object> cfg = (Map<String, Object>) load.loadFromString(definition);
+		return (Map<String, Object>) cfg.get("jar");
+	}
+
+	private String javaJarDefinition() {
+		return "jar:\n" + //
+				"  class: $Jar\n" + //
+				"  group: ff\n" + //
+				"  description: Generate FF jar for java\n" + //
+				"  suffix: java\n" + //
+				"  extension: jar\n" + //
+				"  from:\n" + //
+				"    resources:\n" + //
+				"      include: [\"**/*\"]\n" + //
+				"    ff_java:\n" + //
+				"      type: output\n" + //
+				"      include: [\"**/*.class\"]\n" + //
+				"    java:\n" + //
+				"      type: output\n" + //
+				"      include: [\"**/*.class\", \"**/*\"]\n" + //
+				"      exclude: [\"**/*.java\"]";
+	}
+
+	private String languageJarDefinition() {
+		return "jar:\n" + //
+				"  class: $Jar\n" + //
+				"  group: ff\n" + //
+				"  description: Generate FF jar for {artifact}\n" + //
+				"  suffix: {artifact}\n" + //
+				"  extension: jar\n" + //
+				"  from:\n" + //
+				"    resources:\n" + //
+				"      include: [\"**/*\"]\n" + //
+				"    ff_{artifact}:\n" + //
+				"      type: output\n" + //
+				"      include: [\"**/*.class\", \"**/*.{extension}\"]\n" + //
+				"    interfaces/js:\n" + //
+				"      type: output\n" + //
+				"      include: [\"**/*.class\", \"**/*\"]\n" + //
+				"      exclude: [\"**/*.java\"]";
+	}
+
 	private GradlePlugin loadGradlePlugin(final String plugin) throws Exception {
 		return loadClass("ff.camaro.plugin.gradle_plugin", plugin);
+	}
+
+	private String macrosJarDefinition() {
+		return "jar:\n" + //
+				"  class: $Jar\n" + //
+				"  group: ff\n" + //
+				"  description: Generate FF jar for macros\n" + //
+				"  suffix: macros\n" + //
+				"  extension: jar\n" + //
+				"  from:\n" + //
+				"    macros:\n" + //
+				"      type: output\n" + //
+				"      include: [\"**/*.class\"]";
 	}
 
 	private Artifact merge_artifact(final Artifact artifact, final Artifact sArtifact) {

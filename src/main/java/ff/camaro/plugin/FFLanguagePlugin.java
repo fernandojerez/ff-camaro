@@ -5,16 +5,16 @@ import javax.inject.Inject;
 import org.gradle.api.component.SoftwareComponentFactory;
 import org.gradle.api.model.ObjectFactory;
 
-public class FFMultiUiPlugin extends CamaroPlugin {
+public class FFLanguagePlugin extends CamaroPlugin {
 
 	@Inject
-	public FFMultiUiPlugin(final ObjectFactory objectFactory, final SoftwareComponentFactory componentFactory) {
+	public FFLanguagePlugin(final ObjectFactory objectFactory, final SoftwareComponentFactory componentFactory) {
 		super(objectFactory, componentFactory);
 	}
 
 	@Override
 	public String getConfiguration() {
-		return "multi_ui";
+		return "language";
 	}
 
 }

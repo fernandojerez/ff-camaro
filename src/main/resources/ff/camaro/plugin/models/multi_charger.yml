@@ -9,8 +9,8 @@ dependencies:
     - $clear
   java_libs:
     - $clear
-    - "com.squareup.okhttp3@okhttp;3.14.9"
-    - "ff.java@charger;+"
     - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "com.squareup.okhttp3@okhttp;3.14.9"
   java:
     - $clear

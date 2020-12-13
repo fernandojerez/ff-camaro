@@ -38,12 +38,17 @@ public class JarBuilder extends TaskBuilder<Jar> {
 						}
 					});
 		}
+		String suffix = config.getString("suffix", "");
+		if (suffix != null) {
+			suffix = "-" + suffix;
+			jar.getArchiveAppendix().set(suffix);
+		}
 		final String classifier = config.getString("classifier");
 		if (classifier != null) {
 			jar.getArchiveClassifier().set(classifier);
-			jar.getManifest().attributes(getManifestAttributes(project, "-" + classifier));
+			jar.getManifest().attributes(getManifestAttributes(project, suffix, "-" + classifier));
 		} else {
-			jar.getManifest().attributes(getManifestAttributes(project, ""));
+			jar.getManifest().attributes(getManifestAttributes(project, suffix, ""));
 		}
 
 		final String extension = config.getString("extension");
@@ -52,16 +57,17 @@ public class JarBuilder extends TaskBuilder<Jar> {
 		}
 	}
 
-	public ArtifactInfo getArtifactInfo(final Project project) {
+	public ArtifactInfo getArtifactInfo(final Project project, final String suffix) {
 		final Map<String, ?> properties = project.getProperties();
 		return new ArtifactInfo((String) properties.get("project_name"), (String) properties.get("project_group"),
 				(String) properties.get("project_version"));
 	}
 
-	protected HashMap<String, String> getManifestAttributes(final Project project, final String suffix) {
-		final ArtifactInfo info = getArtifactInfo(project);
+	protected HashMap<String, String> getManifestAttributes(final Project project, final String suffix,
+			final String classifier) {
+		final ArtifactInfo info = getArtifactInfo(project, suffix);
 		final HashMap<String, String> jarAttributes = new HashMap<>();
-		jarAttributes.put("Implementation-Title", info.getGroup() + "@" + info.getName() + suffix);
+		jarAttributes.put("Implementation-Title", info.getGroup() + "@" + info.getName() + classifier);
 		jarAttributes.put("Implementation-Version", info.getVersion());
 		jarAttributes.put("Generated", new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(new Date()));
 		return jarAttributes;

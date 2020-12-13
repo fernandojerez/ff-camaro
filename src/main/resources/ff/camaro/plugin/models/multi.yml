@@ -16,19 +16,32 @@ configurations:
   macros_test: [macros, base_test]
 
 dependencies:
-  dart:
-    - "ff@charger#dart;+"
-  python:
-    - "ff@charger#python;+"
-  js:
-    - "ff@charger#js;+"
-  java_libs:
-    - "com.squareup.okhttp3@okhttp;3.14.9"
-    - "ff.java@charger;+"
-    - "java_libs|ff@charger;+"
+  camaro:
+    - "ff@ff;+"
     - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "ff.dart@charger;+"
+    - "ff.js@charger;+"
+    - "ff.python@charger;+"
+    - "org.bouncycastle@bcprov-jdk15on;1.67"
+    - "com.squareup.okhttp3@okhttp;3.14.9"
+  kitt:
+    - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "ff@kitt-java;+"
+    - "ff@charger-java;+"
+  dart:
+    - "ff@charger-dart;+"
+  python:
+    - "ff@charger-python;+"
+  js:
+    - "ff@charger-js;+"
+  java_libs:
+    - "ff@crl;+"
+    - "ff.java@charger;+"
+    - "ff@charger-java-libs;+"
   java:
-    - "ff@charger#java;+"
+    - "ff@charger-java;+"
   implementation:
     - "ff@crl;+"
     - "ff.java@charger;+"
@@ -36,10 +49,10 @@ dependencies:
     - "ff.js@charger;+"
     - "ff.python@charger;+"
   macros:
-    - "macros|ff@charger;+"
-    - "ff@charger#java;+"
-    - "java_libs|ff@charger;+"
     - "ff.java@charger;+"
+    - "ff@charger-macros;+"
+    - "ff@charger-java;+"
+    - "ff@charger-java-libs;+"
   js_test:
     - "org.seleniumhq.selenium@selenium-java;3.141.59"
     - "org.seleniumhq.selenium@selenium-chrome-driver;3.141.59"
@@ -94,81 +107,6 @@ tasks:
     class: $FFCompiler
     language: java
     test: true
-  java_jar:
-    class: $Jar
-    group: ff
-    description: Generate Java FF jar
-    classifier: java
-    extension: jar
-    from:
-      resources:
-        include: ["**/*"]
-      ff_java:
-        type: output
-        include: ["**/*.class"]
-      java:
-        type: output
-        include: ["**/*.class", "**/*"]
-        exclude: ["**/*.java"]
-  js_jar:
-    class: $Jar
-    group: ff
-    description: Generate Javascript FF jar
-    classifier: js
-    extension: jar
-    from:
-      js:
-        include: ["**/*.js"]
-      resources:
-        include: ["**/*"]
-      ff_js:
-        type: output
-        include: ["**/*.class", "**/*.js"]
-      interfaces/js:
-        type: output
-        include: ["**/*.class", "**/*"]
-        exclude: ["**/*.java"]
-  dart_jar:
-    class: $Jar
-    group: ff
-    description: Generate Dart FF jar
-    classifier: dart
-    extension: jar
-    from:
-      resources:
-        include: ["**/*"]
-      ff_dart:
-        type: output
-        include: ["**/*.class", "**/*.dart"]
-      interfaces/dart:
-        type: output
-        include: ["**/*.class", "**/*.dart"]
-        exclude: ["**/*.java"]
-  python_jar:
-    class: $Jar
-    group: ff
-    description: Generate Python FF jar
-    classifier: python
-    extension: jar
-    from:
-      resources:
-        include: ["**/*"]
-      ff_python:
-        type: output
-        include: ["**/*.class", "**/*.py"]
-      interfaces/python:
-        type: output
-        include: ["**/*.class", "**/*.py"]
-        exclude: ["**/*.java"]
-  macros_jar:
-    class: $Jar
-    group: ff
-    description: Generate Macros FF jar
-    extension: jar
-    from:
-      macros:
-        type: output
-        include: ["**/*.class"]
   ff_java_test:
     class: $Test
     group: ff
@@ -279,8 +217,9 @@ files: [$clear, multi]
 
 artifacts:
   - $clear
-  - $task macros_jar;macros
-  - $task java_jar;java
-  - $task js_jar;js
-  - $task dart_jar;dart
-  - $task python_jar;python
+  - macros
+  - java
+  - js
+  - dart
+  - python
+  - java_libs

@@ -1,4 +1,4 @@
-plugins: [camaro, java, eclipse, ivy]
+plugins: [camaro, java, eclipse, maven]
 
 tasks:
   debug_on:
@@ -51,7 +51,6 @@ configurations:
   testCompileOnly: []
   testCompileClasspath: [testCompileOnly, testImplementation]
   testRuntimeOnly: [runtimeOnly]
-  testRuntime: []
   testRuntimeClasspath: [testRuntimeOnly, testImplementation]
   archives: []
   default: [implementation]

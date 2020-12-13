@@ -32,9 +32,9 @@ dependencies:
     - "ff.dart@charger;+"
     - "ff.python@charger;+"
   dart:
-    - "ff@mustang#dart;+"
+    - "ff@mustang-dart;+"
   js:
-    - "ff@mustang#js;+"
+    - "ff@mustang-js;+"
 
 configurations:
   java: $remove
@@ -54,6 +54,6 @@ files: [$clear, multi_ui_lib]
 
 artifacts:
   - $clear
-  - $task macros_jar;macros
-  - $task js_jar;js
-  - $task dart_jar;dart
+  - macros
+  - js
+  - dart
