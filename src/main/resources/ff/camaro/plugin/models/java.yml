@@ -68,3 +68,4 @@ artifacts:
   - $clear
   - macros
   - java
+  - java_libs
