@@ -2,4 +2,4 @@ use: base
 
 dependencies:
   compileOnly:
-    - "ff@crl;+"
+    - "org.ff-lang@crl;+"

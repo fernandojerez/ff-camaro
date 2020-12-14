@@ -41,11 +41,11 @@ dependencies:
   testImplementation: $remove
 
   java:
-    - "ff.java@charger;+"
-    - "ff@charger-java;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@charger-java;+"
   implementation:
-    - "ff@crl;+"
-    - "ff@charger-java;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang@charger-java;+"
   java_test:
     - $clear
 

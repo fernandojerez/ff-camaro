@@ -17,42 +17,42 @@ configurations:
 
 dependencies:
   camaro:
-    - "ff@ff;+"
-    - "ff@crl;+"
-    - "ff.java@charger;+"
-    - "ff.dart@charger;+"
-    - "ff.js@charger;+"
-    - "ff.python@charger;+"
+    - "org.ff-lang@ff;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang.dart@charger;+"
+    - "org.ff-lang.js@charger;+"
+    - "org.ff-lang.python@charger;+"
     - "org.bouncycastle@bcprov-jdk15on;1.67"
     - "com.squareup.okhttp3@okhttp;3.14.9"
   kitt:
-    - "ff@crl;+"
-    - "ff.java@charger;+"
-    - "ff@kitt-java;+"
-    - "ff@charger-java;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@kitt-java;+"
+    - "org.ff-lang@charger-java;+"
   dart:
-    - "ff@charger-dart;+"
+    - "org.ff-lang@charger-dart;+"
   python:
-    - "ff@charger-python;+"
+    - "org.ff-lang@charger-python;+"
   js:
-    - "ff@charger-js;+"
+    - "org.ff-lang@charger-js;+"
   java_libs:
-    - "ff@crl;+"
-    - "ff.java@charger;+"
-    - "ff@charger-java-libs;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@charger-java-libs;+"
   java:
-    - "ff@charger-java;+"
+    - "org.ff-lang@charger-java;+"
   implementation:
-    - "ff@crl;+"
-    - "ff.java@charger;+"
-    - "ff.dart@charger;+"
-    - "ff.js@charger;+"
-    - "ff.python@charger;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang.dart@charger;+"
+    - "org.ff-lang.js@charger;+"
+    - "org.ff-lang.python@charger;+"
   macros:
-    - "ff.java@charger;+"
-    - "ff@charger-macros;+"
-    - "ff@charger-java;+"
-    - "ff@charger-java-libs;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@charger-macros;+"
+    - "org.ff-lang@charger-java;+"
+    - "org.ff-lang@charger-java-libs;+"
   js_test:
     - "org.seleniumhq.selenium@selenium-java;3.141.59"
     - "org.seleniumhq.selenium@selenium-chrome-driver;3.141.59"

@@ -27,14 +27,14 @@ dependencies:
   java: $remove
   java_test: $remove
   testImplementation:
-    - "ff.js@charger;+"
-    - "ff.java@charger;+"
-    - "ff.dart@charger;+"
-    - "ff.python@charger;+"
+    - "org.ff-lang.js@charger;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang.dart@charger;+"
+    - "org.ff-lang.python@charger;+"
   dart:
-    - "ff@mustang-dart;+"
+    - "org.ff-lang@mustang-dart;+"
   js:
-    - "ff@mustang-js;+"
+    - "org.ff-lang@mustang-js;+"
 
 configurations:
   java: $remove

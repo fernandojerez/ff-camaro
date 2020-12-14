@@ -3,17 +3,17 @@ use: multi
 dependencies:
   dart:
     - $clear
-    - "ff@crl;+"
+    - "org.ff-lang@crl;+"
   python:
     - $clear
-    - "ff@crl;+"
+    - "org.ff-lang@crl;+"
   js:
     - $clear
-    - "ff@crl;+"
+    - "org.ff-lang@crl;+"
   java_libs:
     - $clear
     - "com.squareup.okhttp3@okhttp;3.14.9"
   java:
     - $clear
-    - "ff@crl;+"
-    - "ff.java@charger;+"
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
