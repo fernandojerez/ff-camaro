@@ -4,3 +4,10 @@ configurations:
   camaro: []
   kitt: []
   macros: []
+
+dependencies:
+    kitt:
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@kitt-java;+"
+    - "org.ff-lang@charger-java;+"

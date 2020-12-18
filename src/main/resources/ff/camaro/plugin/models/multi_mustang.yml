@@ -7,3 +7,7 @@ configurations:
   java_test: [java, java_libs, base_test, jetty, undertow]
 
 files: [$clear, multi]
+
+artifacts:
+  - jetty
+  - undertow
