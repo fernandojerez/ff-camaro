@@ -281,106 +281,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			@Override
 			public void apply(final String text) {
 				if (text.startsWith("kitt_")) {
-					target.getTasks().create(text, new Action<Task>() {
-
-						@Override
-						public void execute(final Task t) {
-							try {
-								final String code = text.substring("kitt_".length());
-								final int ix = code.indexOf("#");
-								if (ix == -1) {
-									throw new GradleException("kitt task need a package: pck#function");
-								}
-								final Configuration kitt_conf = project.getConfigurations().getByName("kitt");
-								final Set<File> files = kitt_conf.resolve();
-								final Set<URL> urls = new HashSet<>();
-								for (final File f : files) {
-									urls.add(f.toURI().toURL());
-								}
-
-								try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
-									final Map<String, Object> camaro_cfg = CamaroPlugin.camaro_project_config(project);
-									final Map<String, Object> cfg = (Map<String, Object>) camaro_cfg.get("kitt");
-									final Object obj_pck = cfg.get(code.substring(0, ix));
-									if (obj_pck == null) {
-										throw new GradleException("FF module not found " + code.substring(0, ix));
-									}
-									final String pck = String.valueOf(obj_pck);
-									Class<?> module = null;
-									if (module == null) {
-										try {
-											module = loader.loadClass(pck);
-										} catch (final Exception e) {
-										}
-									}
-									if (module == null) {
-										try {
-											module = loader.loadClass(pck + ".Module");
-										} catch (final Exception e) {
-										}
-									}
-									if (module == null) {
-										try {
-											final int lix = pck.lastIndexOf(".");
-											if (lix != -1) {
-												final String lastName = pck.substring(lix + 1);
-												module = loader
-														.loadClass(pck + "." + Character.toUpperCase(lastName.charAt(0))
-																+ lastName.substring(1));
-											}
-										} catch (final Exception e) {
-										}
-									}
-									if (module == null) {
-										throw new ClassNotFoundException("Class not found " + pck);
-									}
-									final String function = code.substring(ix + 1);
-									Object result = null;
-									boolean process = true;
-									if (process) {
-										try {
-											result = module.getMethod(function, Project.class).invoke(null, project);
-											process = false;
-										} catch (final NoSuchMethodException e) {
-										}
-									}
-									if (process) {
-										try {
-											result = module.getMethod(function, String.class, String.class).invoke(null,
-													project.getRootDir().getAbsolutePath(),
-													project.getBuildDir().getAbsolutePath());
-											process = false;
-										} catch (final NoSuchMethodException e) {
-										}
-									}
-									if (process) {
-										try {
-											result = module.getMethod(function, String.class).invoke(null,
-													project.getRootDir().getAbsolutePath());
-											process = false;
-										} catch (final NoSuchMethodException e) {
-										}
-									}
-									if (process) {
-										try {
-											result = module.getMethod(function).invoke(null);
-											process = false;
-										} catch (final NoSuchMethodException e) {
-										}
-									}
-									if (process) {
-										throw new NoSuchMethodException(module.getName() + "#" + function);
-									}
-									loader.loadClass("ff.kitt.Utils").getMethod("waitUntil", Object.class).invoke(null,
-											result);
-								}
-							} catch (final Exception e) {
-								throw new RuntimeException(e);
-							}
-						}
-
-					});
-
+					ruleRunKittScript(target, text);
 				}
 			}
 
@@ -400,6 +301,12 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		new File(ffBuildDir, target.getName() + "/eclipse").mkdirs();
 
 		init(target, ConfigLoader.plugin.load(target, getConfiguration()));
+
+		final String cfgBuildDir = getString("build_dir");
+		if (cfgBuildDir != null) {
+			target.setBuildDir(project.file(cfgBuildDir));
+		}
+
 		final RepositoryHandler repositories = project.getRepositories();
 		repositories.add(repositories.maven(new Action<MavenArtifactRepository>() {
 			@Override
@@ -544,14 +451,16 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				addSourceSet(project, entry.getKey(), source.getString("type"), test(source.getString("test")));
 			}
 
-			final PublishingExtension publisher = project.getExtensions().getByType(PublishingExtension.class);
-			final Map<String, Object> publish = getMap("publish_to");
-			CamaroPlugin.add_repositories(publisher, this, publish);
+			final PublishingExtension publisher = project.getExtensions().findByType(PublishingExtension.class);
+			if (publisher != null) {
+				final Map<String, Object> publish = getMap("publish_to");
+				CamaroPlugin.add_repositories(publisher, this, publish);
+			}
 
-			final PublicationContainer publications = publisher.getPublications();
 			final ArtifactInfo info = getArtifactInfo();
 			final List<String> artifacts = getList("artifacts");
 			for (final String artifact : artifacts) {
+				final PublicationContainer publications = publisher.getPublications();
 				if (artifact.startsWith("$task jar")) {
 					publications.create("ff_publishing", MavenPublication.class, new Action<MavenPublication>() {
 
@@ -746,5 +655,111 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			txt = txt.replace("${" + entry.getKey() + "}", String.valueOf(entry.getValue()));
 		}
 		return txt;
+	}
+
+	protected void ruleRunKittScript(final Project target, final String text) {
+		target.getTasks().create(text, new Action<Task>() {
+
+			@Override
+			public void execute(final Task t) {
+				try {
+					final String code = text.substring("kitt_".length());
+					final int ix = code.indexOf("#");
+					if (ix == -1) {
+						throw new GradleException("kitt task need a package: pck#function");
+					}
+					final Configuration kitt_conf = project.getConfigurations().getByName("kitt");
+					final Set<File> files = kitt_conf.resolve();
+					final Set<URL> urls = new HashSet<>();
+					for (final File f : files) {
+						urls.add(f.toURI().toURL());
+					}
+
+					try (final URLClassLoader loader = new URLClassLoader(urls.toArray(new URL[0]))) {
+						final Map<String, Object> camaro_cfg = CamaroPlugin.camaro_project_config(project);
+						@SuppressWarnings("unchecked")
+						final Map<String, Object> cfg = (Map<String, Object>) camaro_cfg.get("kitt");
+						final Object obj_pck = cfg.get(code.substring(0, ix));
+						if (obj_pck == null) {
+							throw new GradleException("FF module not found " + code.substring(0, ix));
+						}
+						final String pck = String.valueOf(obj_pck);
+						Class<?> module = null;
+						if (module == null) {
+							try {
+								module = loader.loadClass(pck);
+							} catch (final Exception e) {
+							}
+						}
+						if (module == null) {
+							try {
+								module = loader.loadClass(pck + ".Module");
+							} catch (final Exception e) {
+							}
+						}
+						if (module == null) {
+							try {
+								final int lix = pck.lastIndexOf(".");
+								if (lix != -1) {
+									final String lastName = pck.substring(lix + 1);
+									module = loader.loadClass(pck + "." + Character.toUpperCase(lastName.charAt(0))
+											+ lastName.substring(1));
+								}
+							} catch (final Exception e) {
+							}
+						}
+						if (module == null) {
+							throw new ClassNotFoundException("Class not found " + pck);
+						}
+
+						final var finalModule = module;
+						final String function = code.substring(ix + 1);
+						Object result = null;
+						boolean process = true;
+						if (process) {
+							try {
+								result = finalModule.getMethod(function, Project.class).invoke(null, project);
+								process = false;
+							} catch (final NoSuchMethodException e) {
+							}
+						}
+						if (process) {
+							try {
+								result = finalModule.getMethod(function, String.class, String.class).invoke(null,
+										project.getRootDir().getAbsolutePath(),
+										project.getBuildDir().getAbsolutePath());
+								process = false;
+							} catch (final NoSuchMethodException e) {
+							}
+						}
+						if (process) {
+							try {
+								result = finalModule.getMethod(function, String.class).invoke(null,
+										project.getRootDir().getAbsolutePath());
+								process = false;
+							} catch (final NoSuchMethodException e) {
+							}
+						}
+						if (process) {
+							try {
+								result = finalModule.getMethod(function).invoke(null);
+								process = false;
+							} catch (final NoSuchMethodException e) {
+							}
+						}
+						if (process) {
+							throw new NoSuchMethodException(finalModule.getName() + "#" + function);
+						}
+						loader.loadClass("ff.kitt.Utils").getMethod("waitUntil", Object.class).invoke(null, result);
+					}
+				} catch (final Exception e) {
+					if (e instanceof RuntimeException) {
+						throw (RuntimeException) e;
+					}
+					throw new RuntimeException(e);
+				}
+			}
+
+		});
 	}
 }

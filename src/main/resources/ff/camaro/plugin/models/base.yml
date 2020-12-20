@@ -6,7 +6,7 @@ configurations:
   macros: []
 
 dependencies:
-    kitt:
+  kitt:
     - "org.ff-lang@crl;+"
     - "org.ff-lang.java@charger;+"
     - "org.ff-lang@kitt-java;+"

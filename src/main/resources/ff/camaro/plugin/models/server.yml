@@ -1,0 +1,19 @@
+plugins: [camaro, java, eclipse]
+
+configurations:
+  kitt: []
+
+dependencies:
+  kitt:
+    - "org.ff-lang@crl;+"
+    - "org.ff-lang.java@charger;+"
+    - "org.ff-lang@kitt-java;+"
+    - "org.ff-lang@charger-java;+"
+
+sources:
+  dependencies: { test: false, type: resources }
+  config: { test: false, type: resources }
+  env: { test: false, type: resources }
+  datasources: { test: false, type: resources }
+
+files: [server]

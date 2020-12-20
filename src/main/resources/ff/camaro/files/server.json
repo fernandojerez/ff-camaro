@@ -1,0 +1,13 @@
+{
+  "menu": {
+    "Install": "kitt_mustang#camaro_install_server",
+    "Init Datasource": "kitt_mustang#camaro_init_datasource",
+    "Server": {
+      "Start": "kitt_mustang#camaro_start",
+      "Start Debug": "kitt_mustang#camaro_start_debug",
+      "Stop": "kitt_mustang#camaro_stop",
+      "Show Logs": "kitt_mustang#camaro_show_logs"
+    },
+    "Update Camaro": "update_camaro,kitt_mustang#camaro_prepare_project"
+  }
+}

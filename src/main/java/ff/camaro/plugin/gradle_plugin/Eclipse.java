@@ -48,9 +48,12 @@ public class Eclipse extends GradlePlugin {
 		project.getPluginManager().apply(EclipsePlugin.class);
 
 		final EclipseModel model = project.getExtensions().getByType(EclipseModel.class);
-		model.getJdt().setJavaRuntimeName("JavaSE-" + Java.SUPPORTED_MAX_VERSION.getMajorVersion());
-		model.getJdt().setSourceCompatibility(Java.SUPPORTED_MAX_VERSION);
-		model.getJdt().setTargetCompatibility(Java.SUPPORTED_MAX_VERSION);
+
+		if (model.getJdt() != null) {
+			model.getJdt().setJavaRuntimeName("JavaSE-" + Java.SUPPORTED_MAX_VERSION.getMajorVersion());
+			model.getJdt().setSourceCompatibility(Java.SUPPORTED_MAX_VERSION);
+			model.getJdt().setTargetCompatibility(Java.SUPPORTED_MAX_VERSION);
+		}
 
 		model.project(new Action<EclipseProject>() {
 

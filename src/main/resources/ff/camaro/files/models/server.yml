@@ -1,0 +1,3 @@
+use: base
+
+commands: [$clear, server]
