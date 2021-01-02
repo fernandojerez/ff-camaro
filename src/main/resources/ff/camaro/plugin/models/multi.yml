@@ -23,7 +23,7 @@ dependencies:
     - "org.ff-lang.dart@charger;+"
     - "org.ff-lang.js@charger;+"
     - "org.ff-lang.python@charger;+"
-    - "org.bouncycastle@bcprov-jdk15on;1.67"
+    - "org.bouncycastle@bcprov-jdk15on;1.68"
     - "com.squareup.okhttp3@okhttp;3.14.9"
   kitt:
     - "org.ff-lang@crl;+"
