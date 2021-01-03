@@ -604,7 +604,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				"    ff_{artifact}:\n" + //
 				"      type: output\n" + //
 				"      include: [\"**/*.class\", \"**/*.{extension}\"]\n" + //
-				"    interfaces/js:\n" + //
+				"    interfaces/{artifact}:\n" + //
 				"      type: output\n" + //
 				"      include: [\"**/*.class\", \"**/*\"]\n" + //
 				"      exclude: [\"**/*.java\"]";
