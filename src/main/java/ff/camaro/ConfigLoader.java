@@ -11,12 +11,11 @@ import java.util.regex.Pattern;
 
 import org.gradle.api.Project;
 import org.gradle.api.tasks.SourceSet;
-import org.snakeyaml.engine.v1.api.Dump;
-import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
-import org.snakeyaml.engine.v1.common.FlowStyle;
+import org.snakeyaml.engine.v2.api.Dump;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
+import org.snakeyaml.engine.v2.common.FlowStyle;
 
 /**
  * Camaro configuration files are yaml files. there are two types of stores:
@@ -96,7 +95,7 @@ public class ConfigLoader {
 	 */
 	public Map<String, Object> load(final Project prj, final KeyResolver resolver, final String name,
 			final boolean fragment) {
-		final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro").build();
+		final LoadSettings settings = LoadSettings.builder().setLabel("Camaro").build();
 		final Load load = new Load(settings);
 		final Map<String, Object> cfg = (Map<String, Object>) load.loadFromInputStream(ConfigLoader.class
 				.getResourceAsStream(pck_resolver + "/models/" + (fragment ? "fragment/" : "") + name + ".yml"));
@@ -279,7 +278,7 @@ public class ConfigLoader {
 
 	public String toYaml(final Map<String, Object> config) {
 		final Dump dump = new Dump(
-				new DumpSettingsBuilder().setCanonical(false).setDefaultFlowStyle(FlowStyle.BLOCK).build());
+				DumpSettings.builder().setCanonical(false).setDefaultFlowStyle(FlowStyle.BLOCK).build());
 		return dump.dumpToString(config);
 	}
 

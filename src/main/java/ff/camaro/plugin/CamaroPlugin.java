@@ -40,9 +40,8 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.jvm.tasks.Jar;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import ff.camaro.ArtifactInfo;
 import ff.camaro.CamaroSourceSet;
@@ -98,7 +97,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		}
 		camaro_build = new File(target.getProjectDir(), "camaro.config.yml");
 		if (camaro_build.exists()) {
-			final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro Config").build();
+			final LoadSettings settings = LoadSettings.builder().setLabel("Camaro Config").build();
 			final Load load = new Load(settings);
 			try (FileReader reader = new FileReader(camaro_build)) {
 				return (Map<String, Object>) load.loadFromReader(reader);
@@ -112,6 +111,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				"					\"kitt\": \"ff.kitt\"\r\n" + //
 				"				},\r\n" + //
 				"				\"languages\": [],\r\n" + //
+				"				\"configurations\": {},\r\n" + //
 				"				\"dependencies\": {},\r\n" + //
 				"				\"variables\": {}	\r\n" + //
 				"			}");
@@ -222,8 +222,6 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			prj.mkdir(prj.file(src_path));
 			final File outdir = new File(prj.getBuildDir(), ConfigLoader.output_path(prj, name, sourceSet.getName()));
 			prj.mkdir(outdir);
-			// sourceSet.getJava().srcDir(prj.file(src_path));
-			// sourceSet.getJava().setOutputDir(outdir);
 
 			final String language = name.substring("interfaces/".length());
 			Java.createJavaCompileTask(project, //
@@ -566,7 +564,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		}
 		definition = definition.replace("{extension}", extension);
 
-		final LoadSettings settings = new LoadSettingsBuilder().setLabel("Camaro Jar Definition").build();
+		final LoadSettings settings = LoadSettings.builder().setLabel("Camaro Jar Definition").build();
 		final Load load = new Load(settings);
 		final Map<String, Object> cfg = (Map<String, Object>) load.loadFromString(definition);
 		return (Map<String, Object>) cfg.get("jar");

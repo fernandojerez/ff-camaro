@@ -17,9 +17,8 @@ import java.util.Set;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
-import org.snakeyaml.engine.v1.api.Load;
-import org.snakeyaml.engine.v1.api.LoadSettings;
-import org.snakeyaml.engine.v1.api.LoadSettingsBuilder;
+import org.snakeyaml.engine.v2.api.Load;
+import org.snakeyaml.engine.v2.api.LoadSettings;
 
 import ff.camaro.ConfigLoader;
 import ff.camaro.Configurator;
@@ -120,7 +119,7 @@ public abstract class Files extends Configurator {
 
 	@SuppressWarnings("unchecked")
 	protected Map<String, Object> loadYml(final String route) throws IOException {
-		final LoadSettings settings = new LoadSettingsBuilder().setLabel("KITT").build();
+		final LoadSettings settings = LoadSettings.builder().setLabel("KITT").build();
 		final Load load = new Load(settings);
 		Map<String, Object> cfg = null;
 		try (InputStream in = getClass().getResourceAsStream(route)) {

@@ -11,11 +11,10 @@ import java.util.Set;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
-import org.snakeyaml.engine.v1.api.Dump;
-import org.snakeyaml.engine.v1.api.DumpSettings;
-import org.snakeyaml.engine.v1.api.DumpSettingsBuilder;
-import org.snakeyaml.engine.v1.common.FlowStyle;
-import org.snakeyaml.engine.v1.common.ScalarStyle;
+import org.snakeyaml.engine.v2.api.Dump;
+import org.snakeyaml.engine.v2.api.DumpSettings;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
 
 import ff.camaro.Store;
 import ff.camaro.files.Files;
@@ -54,7 +53,6 @@ public class UpdateCamaro extends DefaultTask {
 			f.apply(getProject(), base_map, (Map<String, Object>) camaro_build_map.get("kitt"));
 		}
 		final CamaroMetadata metadata = CamaroPlugin.metadata(getProject());
-
 		final List<Object> languages = (List<Object>) camaro_build_map.get("languages");
 		final Set<Object> languages_set = new HashSet<>(languages);
 		final Map<String, Object> dependencies = (Map<String, Object>) camaro_build_map.get("dependencies");
@@ -84,7 +82,7 @@ public class UpdateCamaro extends DefaultTask {
 		}
 		try (final PrintStream camaro_stream = new PrintStream(
 				new File(getProject().getProjectDir(), "camaro.config.yml"))) {
-			final DumpSettings settings = new DumpSettingsBuilder()//
+			final DumpSettings settings = DumpSettings.builder()//
 					.setDefaultFlowStyle(FlowStyle.BLOCK) //
 					.setDefaultScalarStyle(ScalarStyle.PLAIN) //
 					.build();
