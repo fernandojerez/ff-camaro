@@ -12,7 +12,6 @@ dependencies:
     - "org.ff-lang@crl;+"
   java_libs:
     - $clear
-    - "com.squareup.okhttp3@okhttp;3.14.9"
   java:
     - $clear
     - "org.ff-lang@crl;+"

@@ -1,4 +1,0 @@
-use: multi
-
-commands: [ $clear, camaro, multi, mustang ]
-      
