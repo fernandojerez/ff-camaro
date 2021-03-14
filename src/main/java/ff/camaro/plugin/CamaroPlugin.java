@@ -337,7 +337,27 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				loadGradlePlugin(plugin).apply(project, this);
 			}
 			final ConfigurationContainer c = project.getConfigurations();
-			final Map<String, Object> configurations = getMap("configurations");
+			Map<String, Object> configurations = getMap("configurations");
+			for (final Map.Entry<String, Object> entry : configurations.entrySet()) {
+				final Configuration cinstance = c.maybeCreate(entry.getKey());
+				final var attributes = cinstance.getAttributes();
+				attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 11);
+				final List<String> extendsList = toList(entry.getValue());
+				final List<Configuration> cfgs = new ArrayList<>(extendsList.size());
+				for (final String e : extendsList) {
+					cfgs.add(c.maybeCreate(e));
+				}
+				cinstance.extendsFrom(cfgs.toArray(new Configuration[0]));
+				if (entry.getKey().equals("camaro")) {
+					continue;
+				}
+				if (entry.getKey().equals("kitt")) {
+					continue;
+				}
+				metadata.getConfigurations().add(entry.getKey());
+			}
+
+			configurations = camaro_build.getMap("configurations");
 			for (final Map.Entry<String, Object> entry : configurations.entrySet()) {
 				final Configuration cinstance = c.maybeCreate(entry.getKey());
 				final var attributes = cinstance.getAttributes();
@@ -456,7 +476,9 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			}
 
 			final ArtifactInfo info = getArtifactInfo();
+			final List<String> camaroBuildArtifacts = camaro_build.getList("artifacts");
 			final List<String> artifacts = getList("artifacts");
+			artifacts.addAll(camaroBuildArtifacts);
 			for (final String artifact : artifacts) {
 				final PublicationContainer publications = publisher.getPublications();
 				if (artifact.startsWith("$task jar")) {

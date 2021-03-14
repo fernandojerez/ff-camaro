@@ -75,6 +75,9 @@ public class Java extends GradlePlugin {
 		javaSettings.setSourceCompatibility(Java.SUPPORTED_MAX_VERSION);
 		javaSettings.setTargetCompatibility(Java.SUPPORTED_MAX_VERSION);
 
+//		final JavaPluginExtension javaPlugin = project.getExtensions().findByType(JavaPluginExtension.class);
+//		javaPlugin.getModularity().getInferModulePath().set(true);
+
 		final JavaCompile compile = (JavaCompile) project.getTasks().getByName("compileJava");
 		Java.configureCompiler(compile);
 

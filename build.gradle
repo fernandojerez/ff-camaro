@@ -41,7 +41,8 @@ java {
 jar {
 	manifest {
 		attributes('Implementation-Title': project_group + '@' + project_name,
-				   'Implementation-Version': project_version)
+				   'Implementation-Version': project_version,
+				   'Automatic-Module-Name': 'ff.camaro')
 	}
 } 
 

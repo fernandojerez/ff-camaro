@@ -18,6 +18,16 @@ import ff.camaro.MapStore;
 
 public class JarBuilder extends TaskBuilder<Jar> {
 
+	private String cleanGroup(final String group) {
+		if (group.equals("org.ff-lang")) {
+			return "ff";
+		}
+		if (group.startsWith("org.ff-lang.")) {
+			return "ff." + group.substring("org.ff-lang.".length());
+		}
+		return group;
+	}
+
 	@Override
 	public void configure(final Project project, final String taskName, final Jar jar) {
 		final Map<String, Object> from = config.getMap("from");
@@ -70,6 +80,7 @@ public class JarBuilder extends TaskBuilder<Jar> {
 		jarAttributes.put("Implementation-Title", info.getGroup() + "@" + info.getName() + classifier);
 		jarAttributes.put("Implementation-Version", info.getVersion());
 		jarAttributes.put("Generated", new SimpleDateFormat("yyyy/MMM/dd HH:mm:ss").format(new Date()));
+		jarAttributes.put("Automatic-Module-Name", cleanGroup(info.getGroup()) + "." + info.getName() + classifier);
 		return jarAttributes;
 	}
 

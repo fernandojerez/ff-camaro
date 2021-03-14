@@ -48,7 +48,9 @@ public abstract class Files extends Configurator {
 			merge_two_maps(config, base);
 
 			final Map<String, Object> yml = loadYml("/ff/camaro/files/kitt/" + command + ".yml");
-			merge_two_maps(kitt, yml);
+			if (yml != null) {
+				merge_two_maps(kitt, yml);
+			}
 		}
 
 		String gradleVersion = System.getenv("FF_GRADLE_VERSION");
@@ -119,13 +121,17 @@ public abstract class Files extends Configurator {
 
 	@SuppressWarnings("unchecked")
 	protected Map<String, Object> loadYml(final String route) throws IOException {
-		final LoadSettings settings = LoadSettings.builder().setLabel("KITT").build();
-		final Load load = new Load(settings);
-		Map<String, Object> cfg = null;
-		try (InputStream in = getClass().getResourceAsStream(route)) {
-			cfg = (Map<String, Object>) load.loadFromInputStream(in);
+		try {
+			final LoadSettings settings = LoadSettings.builder().setLabel("KITT").build();
+			final Load load = new Load(settings);
+			Map<String, Object> cfg = null;
+			try (InputStream in = getClass().getResourceAsStream(route)) {
+				cfg = (Map<String, Object>) load.loadFromInputStream(in);
+			}
+			return cfg;
+		} catch (final Exception e) {
+			return null;
 		}
-		return cfg;
 	}
 
 	@SuppressWarnings("unchecked")
