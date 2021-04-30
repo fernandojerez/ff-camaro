@@ -24,7 +24,7 @@ targetCompatibility = 11
 
 repositories {
 	mavenCentral()
-} 
+}
 
 dependencies {
     implementation gradleApi()
