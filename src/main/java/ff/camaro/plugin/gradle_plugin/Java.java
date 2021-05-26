@@ -7,6 +7,7 @@ import org.gradle.api.JavaVersion;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileTree;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Copy;
@@ -88,6 +89,9 @@ public class Java extends GradlePlugin {
 		test.useJUnitPlatform();
 		test.setIgnoreFailures(true);
 		test.setFailFast(false);
+
+		final Copy processResources = (Copy) project.getTasks().findByName("processResources");
+		processResources.setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 
 		setup_jacoco(project);
 	}

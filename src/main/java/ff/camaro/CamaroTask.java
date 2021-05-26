@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.tasks.Internal;
 
 public abstract class CamaroTask extends DefaultTask {
 
@@ -19,6 +20,7 @@ public abstract class CamaroTask extends DefaultTask {
 		}
 	}
 
+	@Internal
 	protected URLClassLoader getClassLoader() throws MalformedURLException {
 		final Set<URL> urls = new HashSet<>();
 		fillClassPath(urls, "camaro");

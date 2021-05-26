@@ -10,6 +10,7 @@ import java.util.Map;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.jvm.tasks.Jar;
 
 import ff.camaro.ArtifactInfo;
@@ -65,6 +66,7 @@ public class JarBuilder extends TaskBuilder<Jar> {
 		if (extension != null) {
 			jar.getArchiveExtension().set(extension);
 		}
+		jar.setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 	}
 
 	public ArtifactInfo getArtifactInfo(final Project project, final String suffix) {

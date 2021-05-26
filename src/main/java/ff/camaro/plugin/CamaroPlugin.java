@@ -596,6 +596,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		return "jar:\n" + //
 				"  class: $Jar\n" + //
 				"  group: ff\n" + //
+				"  depends: [ff_compile, compileJava]\n" + //
 				"  description: Generate FF jar for java\n" + //
 				"  suffix: java\n" + //
 				"  extension: jar\n" + //
@@ -615,6 +616,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		return "jar:\n" + //
 				"  class: $Jar\n" + //
 				"  group: ff\n" + //
+				"  depends: [ff_{artifact}_compile]\n" + //
 				"  description: Generate FF jar for {artifact}\n" + //
 				"  suffix: {artifact}\n" + //
 				"  extension: jar\n" + //
