@@ -10,8 +10,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.gradle.api.internal.plugins.DslObject;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.StopActionException;
 import org.gradle.api.tasks.TaskAction;
@@ -47,10 +46,10 @@ public class FFCompiler extends CamaroTask {
 
 	private void doCompile() throws Exception {
 		final String sourceSetName = testMode ? SourceSet.TEST_SOURCE_SET_NAME : SourceSet.MAIN_SOURCE_SET_NAME;
-		final JavaPluginConvention javaConvenion = getProject().getConvention().getPlugin(JavaPluginConvention.class);
+		final JavaPluginExtension javaConvenion = getProject().getExtensions().getByType(JavaPluginExtension.class);
 		final SourceSet sourceSet = javaConvenion.getSourceSets().getByName(sourceSetName);
-		final CamaroSourceSet ffSet = (CamaroSourceSet) new DslObject(sourceSet).getConvention().getPlugins()
-				.get(macroMode ? "macros" : "ff");
+		final CamaroSourceSet ffSet = (CamaroSourceSet) sourceSet.getExtensions()
+				.getByName(macroMode ? "macros" : "ff");
 
 		final Set<File> classes = sourceSet.getOutput().getClassesDirs().getFiles();
 		Set<File> classpathFiles = sourceSet.getCompileClasspath().getFiles();

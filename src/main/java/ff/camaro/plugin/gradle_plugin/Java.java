@@ -9,7 +9,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.ConfigurableFileTree;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.compile.JavaCompile;
@@ -50,7 +50,7 @@ public class Java extends GradlePlugin {
 					}
 
 				}));
-				compiler.setDestinationDir(output);
+				compiler.getDestinationDirectory().set(output);
 			}
 
 		});
@@ -72,11 +72,9 @@ public class Java extends GradlePlugin {
 	public void apply(final Project project, final Configurator configurator) {
 		project.getPluginManager().apply(JavaPlugin.class);
 
-		final JavaPluginConvention javaSettings = project.getConvention().getPlugin(JavaPluginConvention.class);
+		final JavaPluginExtension javaSettings = project.getExtensions().getByType(JavaPluginExtension.class);
 		javaSettings.setSourceCompatibility(Java.SUPPORTED_MAX_VERSION);
 		javaSettings.setTargetCompatibility(Java.SUPPORTED_MAX_VERSION);
-
-//		final JavaPluginExtension javaPlugin = project.getExtensions().findByType(JavaPluginExtension.class);
 //		javaPlugin.getModularity().getInferModulePath().set(true);
 
 		final JavaCompile compile = (JavaCompile) project.getTasks().getByName("compileJava");
@@ -104,9 +102,9 @@ public class Java extends GradlePlugin {
 
 		final JacocoReport report = (JacocoReport) project.getTasks().getByName("jacocoTestReport");
 		final JacocoReportsContainer reports = report.getReports();
-		reports.getXml().setEnabled(false);
-		reports.getCsv().setEnabled(false);
-		reports.getHtml().setDestination(new File(project.getBuildDir(), "jacocoHtml"));
+		reports.getXml().getOutputLocation().set(new File(project.getBuildDir(), "jacocoXml"));
+		reports.getCsv().getRequired().set(false);
+		reports.getHtml().getOutputLocation().set(new File(project.getBuildDir(), "jacocoHtml"));
 
 		final Test test = (Test) project.getTasks().getByName("test");
 		final JacocoTaskExtension jacoco = test.getExtensions().getByType(JacocoTaskExtension.class);

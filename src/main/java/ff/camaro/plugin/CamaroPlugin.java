@@ -29,10 +29,9 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository.MetadataSou
 import org.gradle.api.attributes.java.TargetJvmVersion;
 import org.gradle.api.component.ConfigurationVariantDetails;
 import org.gradle.api.component.SoftwareComponentFactory;
-import org.gradle.api.internal.plugins.DslObject;
 import org.gradle.api.internal.tasks.DefaultSourceSet;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.publish.PublicationContainer;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
@@ -119,7 +118,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	}
 
 	public static CamaroMetadata metadata(final Project prj) {
-		return (CamaroMetadata) prj.getConvention().findByName(CamaroPlugin.CAMARO);
+		return (CamaroMetadata) prj.getExtensions().getByName(CamaroPlugin.CAMARO);
 	}
 
 	private final ObjectFactory objectFactory;
@@ -164,10 +163,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 
 	private void addSourceSet(final Project prj, final String name, final String type, final boolean test) {
 		final DependencyHandler dependencies = prj.getDependencies();
-		final JavaPluginConvention javaConvenion = prj.getConvention().getPlugin(JavaPluginConvention.class);
-
+		final JavaPluginExtension javaConvenion = prj.getExtensions().getByType(JavaPluginExtension.class);
 		final SourceSetContainer sourceSets = javaConvenion.getSourceSets();
-
 		if (type == null) {
 			sourceSets.all(new Action<SourceSet>() {
 				@Override
@@ -184,7 +181,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					}
 					final CamaroSourceSet ffSourceSet = new CamaroSourceSet(
 							((DefaultSourceSet) sourceSet).getDisplayName(), objectFactory, sourceSet.getExtensions());
-					new DslObject(sourceSet).getConvention().getPlugins().put(name, ffSourceSet);
+
+					sourceSet.getExtensions().add(name, ffSourceSet);
 
 					prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));
 					final File outdir = new File(prj.getBuildDir(),
@@ -192,14 +190,13 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					prj.mkdir(outdir);
 
 					ffSourceSet.getSrcDir().srcDir(ConfigLoader.src_path(name, sourceSet.getName()));
-					ffSourceSet.getSrcDir().setOutputDir(outdir);
+					ffSourceSet.getSrcDir().getDestinationDirectory().set(outdir);
 				}
 			});
 
 			final SourceSet main_set = javaConvenion.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-			final CamaroSourceSet ff_set = (CamaroSourceSet) new DslObject(main_set).getConvention().getPlugins()
-					.get(name);
-			dependencies.add("compileOnly", prj.files(ff_set.getSrcDir().getOutputDir()));
+			final CamaroSourceSet ff_set = (CamaroSourceSet) main_set.getExtensions().getByName(name);
+			dependencies.add("compileOnly", prj.files(ff_set.getSrcDir().getDestinationDirectory().get()));
 			dependencies.add("compileOnly", project.files(project.getBuildDir().toPath()
 					.resolve(ConfigLoader.output_main_path(project, "ff_java")).toFile()));
 
@@ -211,7 +208,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 						@Override
 						public void execute(final Task task) {
 							final Jar jar = (Jar) task;
-							jar.from(ff_set.getSrcDir().getOutputDir()).include("**/*.class");
+							jar.from(ff_set.getSrcDir().getDestinationDirectory()).include("**/*.class");
 						}
 					});
 				}
@@ -247,8 +244,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					} else if ("resources".equals(type)) {
 						sourceSet.getResources().srcDir(src_path);
 					} else {
-						final CamaroSourceSet camaroSourceSet = (CamaroSourceSet) new DslObject(sourceSet)
-								.getConvention().getPlugins().get(type);
+						final CamaroSourceSet camaroSourceSet = (CamaroSourceSet) sourceSet.getExtensions()
+								.getByName(type);
 						if (camaroSourceSet != null) {
 							camaroSourceSet.getSrcDir().srcDir(src_path);
 						}
@@ -264,7 +261,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	@Override
 	public final void apply(final Project target) {
 		final CamaroMetadata metadata = new CamaroMetadata();
-		target.getConvention().add(CamaroPlugin.CAMARO, metadata);
+		target.getExtensions().add(CamaroPlugin.CAMARO, metadata);
 		final MapStore camaro_build = new MapStore(CamaroPlugin.camaro_project_config(target));
 		final List<String> languages = camaro_build.getList("languages");
 		for (final String str : languages) {
@@ -523,7 +520,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 								});
 					} else {
 						final JarBuilder jar = new JarBuilder();
-						jar.init(new MapStore(jarProperties(artifact)), this);
+						jar.init(new MapStore(jarProperties(project, artifact)), this);
 						jar.define(project, artifact + "_jar");
 
 						publications.create("ff_" + artifact + "_publishing", MavenPublication.class,
@@ -570,8 +567,8 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 	public abstract String getConfiguration();
 
 	@SuppressWarnings("unchecked")
-	private Map<String, Object> jarProperties(final String artifact) {
-		String definition = languageJarDefinition();
+	private Map<String, Object> jarProperties(final Project project, final String artifact) {
+		String definition = languageJarDefinition(project.getTasks().findByName("ff_" + artifact + "_compile") != null);
 		if ("java".equals(artifact)) {
 			definition = javaJarDefinition();
 		} else if ("macros".equals(artifact)) {
@@ -612,11 +609,15 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 				"      exclude: [\"**/*.java\"]";
 	}
 
-	private String languageJarDefinition() {
+	private String languageJarDefinition(final boolean addDependency) {
+		String dependency = "";
+		if (addDependency) {
+			dependency = "  depends: [ff_{artifact}_compile]\n";
+		}
 		return "jar:\n" + //
 				"  class: $Jar\n" + //
 				"  group: ff\n" + //
-				"  depends: [ff_{artifact}_compile]\n" + //
+				dependency + //
 				"  description: Generate FF jar for {artifact}\n" + //
 				"  suffix: {artifact}\n" + //
 				"  extension: jar\n" + //

@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.testing.Test;
@@ -49,8 +49,8 @@ public class TestBuilder extends TaskBuilder<Test> {
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff_" + flang)));
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_test_path(project, "ff")));
 				if ("java".equals(flang)) {
-					final JavaPluginConvention javaConvenion = project.getConvention()
-							.getPlugin(JavaPluginConvention.class);
+					final JavaPluginExtension javaConvenion = project.getExtensions()
+							.getByType(JavaPluginExtension.class);
 					final SourceSetContainer sourceSets = javaConvenion.getSourceSets();
 					sourceSets.all(new Action<SourceSet>() {
 
@@ -58,7 +58,7 @@ public class TestBuilder extends TaskBuilder<Test> {
 						public void execute(final SourceSet sourceSet) {
 							if (sourceSet.getJava() != null) {
 								try {
-									final File dir = sourceSet.getJava().getOutputDir();
+									final File dir = sourceSet.getJava().getDestinationDirectory().getAsFile().get();
 									files.add(dir);
 								} catch (final Exception e) {
 									e.printStackTrace();
@@ -111,11 +111,10 @@ public class TestBuilder extends TaskBuilder<Test> {
 
 				@Override
 				public void execute(final JacocoReport report) {
-					report.getReports().getXml().setEnabled(false);
-					report.getReports().getCsv().setEnabled(false);
-					report.getReports().getHtml().setEnabled(true);
-					report.getReports().getHtml()
-							.setDestination(new File(project.getBuildDir(), "reports/jacoco/html"));
+					final var reports = report.getReports();
+					reports.getXml().getOutputLocation().set(new File(project.getBuildDir(), "reports/jacoco/xml"));
+					reports.getCsv().getRequired().set(false);
+					reports.getHtml().getOutputLocation().set(new File(project.getBuildDir(), "reports/jacoco/html"));
 					report.executionData(new File(project.getBuildDir(), "jacoco/java/test.exec"));
 					report.additionalSourceDirs(new File("src/main/ff"), new File("src/main/interfaces/java"));
 					report.additionalClassDirs(new File(project.getBuildDir(), "classes/ff_java/main"),
