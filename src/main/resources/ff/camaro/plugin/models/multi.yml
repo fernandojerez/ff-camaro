@@ -8,7 +8,7 @@ configurations:
   dart: []
   python: []
   macros: []
-  base_test: [testImplementation]
+  base_test: [testImplementation ff_test_runtime]
   java_test: [java, java_libs, base_test]
   js_test: [js, base_test]
   dart_test: [dart, base_test]
@@ -111,7 +111,7 @@ tasks:
     group: ff
     description: Execute Java Test
     lang: java
-    depends: ["ff_java_test_compile"]
+    depends: ["ff_java_test_compile", "compileTestJava"]
   ff_js_test:
     depends: ["ff_js_chrome_test", "ff_js_firefox_test", "ff_js_edge_test"]
     log-end: "Js Test executed"

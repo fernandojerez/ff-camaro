@@ -40,15 +40,9 @@ files: [base]
 
 configurations:
   archives: []
-  default: [implementation]
-  ff_test_runtime: []
+  ff_test_runtime: [testImplementation]
 
 dependencies:
-  testCompileClasspath:
-    - "org.junit.jupiter@junit-jupiter-api;5.7.2"
-    - "org.junit.jupiter@junit-jupiter-params;5.7.2"
-    - "org.junit.jupiter@junit-jupiter-engine;5.7.2"
-    - "org.junit.platform@junit-platform-commons;1.7.2"
   ff_test_runtime:
     - "org.junit.jupiter@junit-jupiter-api;5.7.2"
     - "org.junit.jupiter@junit-jupiter-params;5.7.2"
