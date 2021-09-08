@@ -179,18 +179,24 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 							return;
 						}
 					}
+
 					final CamaroSourceSet ffSourceSet = new CamaroSourceSet(
 							((DefaultSourceSet) sourceSet).getDisplayName(), objectFactory, sourceSet.getExtensions());
 
 					sourceSet.getExtensions().add(name, ffSourceSet);
-
 					prj.mkdir(prj.file(ConfigLoader.src_path(name, sourceSet.getName())));
 					final File outdir = new File(prj.getBuildDir(),
 							ConfigLoader.output_path(prj, name, sourceSet.getName()));
 					prj.mkdir(outdir);
 
-					ffSourceSet.getSrcDir().srcDir(ConfigLoader.src_path(name, sourceSet.getName()));
+					final String src_path = ConfigLoader.src_path(name, sourceSet.getName());
+					ffSourceSet.getSrcDir().srcDir(src_path);
 					ffSourceSet.getSrcDir().getDestinationDirectory().set(outdir);
+
+					if (sourceSet.getName().equals(SourceSet.TEST_SOURCE_SET_NAME) && name.equals("ff")) {
+						sourceSet.getJava().srcDir(src_path);
+						sourceSet.getJava().getDestinationDirectory().set(outdir);
+					}
 				}
 			});
 

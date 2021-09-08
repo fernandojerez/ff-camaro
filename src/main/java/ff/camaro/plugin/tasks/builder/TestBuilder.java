@@ -42,6 +42,7 @@ public class TestBuilder extends TaskBuilder<Test> {
 			public void execute(final Project arg0) {
 				final Set<File> files = new HashSet<>();
 				files.addAll(project.getConfigurations().getByName(flang + "_test").resolve());
+				files.addAll(project.getConfigurations().getByName("ff_test_runtime").resolve());
 				files.add(new File(project.getBuildDir(), ConfigLoader.output_main_path(project, "ff_" + flang)));
 				files.add(new File(project.getBuildDir(),
 						ConfigLoader.output_main_path(project, "interfaces\\" + flang)));

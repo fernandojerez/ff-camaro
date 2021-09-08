@@ -39,33 +39,21 @@ publish_to:
 files: [base]
 
 configurations:
-  api: []
-  implementation: [api]
-  compileOnlyApi: []
-  compileOnly: [compileOnlyApi]
-  compileClasspath: [compileOnly, implementation]
-  annotationProcessor: []
-  runtimeOnly: []
-  runtimeClasspath: [runtimeOnly, implementation]
-  testImplementation: [implementation]
-  testCompileOnly: []
-  testCompileClasspath: [testCompileOnly, testImplementation]
-  testRuntimeOnly: [runtimeOnly]
-  testRuntimeClasspath: [testRuntimeOnly, testImplementation]
   archives: []
   default: [implementation]
+  ff_test_runtime: []
 
 dependencies:
-  testImplementation:
+  testCompileClasspath:
     - "org.junit.jupiter@junit-jupiter-api;5.7.2"
     - "org.junit.jupiter@junit-jupiter-params;5.7.2"
     - "org.junit.jupiter@junit-jupiter-engine;5.7.2"
     - "org.junit.platform@junit-platform-commons;1.7.2"
-  testRuntimeOnly:
+  ff_test_runtime:
+    - "org.junit.jupiter@junit-jupiter-api;5.7.2"
+    - "org.junit.jupiter@junit-jupiter-params;5.7.2"
     - "org.junit.jupiter@junit-jupiter-engine;5.7.2"
     - "org.junit.platform@junit-platform-commons;1.7.2"
-  compileOnly:
-    - "org.junit.jupiter@junit-jupiter-params;5.7.2"
 
 artifacts:
   - $task jar
