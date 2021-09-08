@@ -1,8 +1,9 @@
 {
-	"menu": {
-		"Update Camaro": "update_camaro",
-		"kitt": {
-			"set as workdir": "kitt_kitt#set_kitt_workdir"
-		}
-	}
+  "menu": {
+    "Update Camaro": "update_camaro",
+    "About Project": "about_project",
+    "kitt": {
+      "set as workdir": "kitt_kitt#set_kitt_workdir"
+    }
+  }
 }

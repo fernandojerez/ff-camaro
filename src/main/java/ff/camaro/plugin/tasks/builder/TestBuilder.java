@@ -112,6 +112,7 @@ public class TestBuilder extends TaskBuilder<Test> {
 
 				@Override
 				public void execute(final JacocoReport report) {
+					report.dependsOn(taskName);
 					final var reports = report.getReports();
 					reports.getXml().getOutputLocation().set(new File(project.getBuildDir(), "reports/jacoco/xml"));
 					reports.getCsv().getRequired().set(false);

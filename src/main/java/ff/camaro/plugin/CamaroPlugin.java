@@ -52,6 +52,7 @@ import ff.camaro.artifact.Artifact;
 import ff.camaro.artifact.Artifacts;
 import ff.camaro.plugin.gradle_plugin.GradlePlugin;
 import ff.camaro.plugin.gradle_plugin.Java;
+import ff.camaro.plugin.tasks.AboutProject;
 import ff.camaro.plugin.tasks.BaseTask;
 import ff.camaro.plugin.tasks.DefaultTask;
 import ff.camaro.plugin.tasks.builder.JarBuilder;
@@ -194,6 +195,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 					ffSourceSet.getSrcDir().getDestinationDirectory().set(outdir);
 
 					if (sourceSet.getName().equals(SourceSet.TEST_SOURCE_SET_NAME) && name.equals("ff")) {
+						sourceSet.setCompileClasspath(prj.getConfigurations().getByName("ff_test_runtime"));
 						sourceSet.getJava().srcDir(src_path);
 						sourceSet.getJava().getDestinationDirectory().set(outdir);
 					}
@@ -276,6 +278,14 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 			}
 			metadata.enabled_languages(str);
 		}
+		target.getTasks().create(AboutProject.TASK_NAME, AboutProject.class, new Action<AboutProject>() {
+
+			@Override
+			public void execute(final AboutProject task) {
+				task.setLanguages(languages);
+			}
+
+		});
 		// configure rules
 		target.getTasks().addRule(new Rule() {
 
