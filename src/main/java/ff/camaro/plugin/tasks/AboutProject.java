@@ -34,10 +34,10 @@ public class AboutProject extends BaseTask {
 		printFile(out, "Project Build Directory", buildDir);
 		out.println();
 		out.println(title("## Analyzed code"));
-		printOutputDirs(languages, out, new File(buildDir, "analyzed"));
+		printOutputDirs(languages, out, new File(buildDir, "analized"));
 		out.println();
 		out.println(title("## Analyzed test"));
-		printOutputDirs(languages, out, new File(buildDir, "analyzed_test"));
+		printOutputDirs(languages, out, new File(buildDir, "analized_test"));
 		out.println();
 		out.println(title("## Macros generated code"));
 		printOutputDirs(languages, out, new File(buildDir, "macros"));
