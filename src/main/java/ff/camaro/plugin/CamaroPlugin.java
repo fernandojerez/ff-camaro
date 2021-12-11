@@ -92,8 +92,7 @@ public abstract class CamaroPlugin extends Configurator implements Plugin<Projec
 		File camaro_build = new File(target.getProjectDir(), "camaro.config.json");
 		if (camaro_build.exists()) {
 			final JsonSlurper sluper = new JsonSlurper();
-			final Map<String, Object> result = (Map<String, Object>) sluper.parse(camaro_build);
-			return result;
+			return (Map<String, Object>) sluper.parse(camaro_build);
 		}
 		camaro_build = new File(target.getProjectDir(), "camaro.config.yml");
 		if (camaro_build.exists()) {

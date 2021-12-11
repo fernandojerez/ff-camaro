@@ -3,3 +3,4 @@
 /build/
 secring.gpg
 repo.properties
+/.idea/
