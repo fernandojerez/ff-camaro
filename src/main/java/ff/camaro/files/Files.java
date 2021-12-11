@@ -63,10 +63,6 @@ public abstract class Files extends Configurator {
 					props.getProperty("project_group") + "@" + props.getProperty("project_name"), "#FF_JAVA_HOME#",
 					System.getenv("FF_JAVA_HOME").replace("\\", "/"), "#GRADLE_VERSION#", gradleVersion);
 		}
-
-		copyTextFile("/ff/camaro/eclipse/project.txt", new File(projectDir, ".project"), "#ProjectName#",
-				props.getProperty("project_group") + "@" + props.getProperty("project_name"), "#FF_JAVA_HOME#",
-				System.getenv("FF_JAVA_HOME").replace("\\", "/"));
 	}
 
 	protected void copyTextFile(final String route, final File output, final Object... args) throws IOException {
