@@ -1,8 +1,7 @@
 {
   "menu": {
     "Publish": "publishLocalPublicationToLocalRepository",
-    "Publish Maven Central": "publishMavenPublicationToMavenRepository",
-    "Update Camaro": "update_camaro"
+    "Publish Maven Central": "publishMavenPublicationToMavenRepository"
   },
   "custom_menu": {
     "Update Camaro": "@exclude"

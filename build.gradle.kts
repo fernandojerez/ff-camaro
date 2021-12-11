@@ -11,7 +11,7 @@ plugins {
 project.buildDir = System.getenv("FF_BUILD_DIR")?.let {
     File("${it}/ff@camaro/build").mkdirs()
     File("${it}/ff@camaro/build")
-}
+}!!
 
 val props = FileInputStream(File("repo.properties")).use {
     val p = Properties()

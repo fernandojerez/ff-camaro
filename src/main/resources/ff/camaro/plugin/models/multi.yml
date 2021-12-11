@@ -1,19 +1,19 @@
 use: base
 
 configurations:
-  compileOnly: [java_libs]
-  java_libs: []
-  java: []
-  js: []
-  dart: []
-  python: []
-  macros: []
-  base_test: [testImplementation ff_test_runtime]
-  java_test: [java, java_libs, base_test]
-  js_test: [js, base_test]
-  dart_test: [dart, base_test]
-  python_test: [python, base_test]
-  macros_test: [macros, base_test]
+  compileOnly: [ java_libs ]
+  java_libs: [ ]
+  java: [ ]
+  js: [ ]
+  dart: [ ]
+  python: [ ]
+  macros: [ ]
+  base_test: [ testImplementation ff_test_runtime ]
+  java_test: [ java, java_libs, base_test ]
+  js_test: [ js, base_test ]
+  dart_test: [ dart, base_test ]
+  python_test: [ python, base_test ]
+  macros_test: [ macros, base_test ]
 
 dependencies:
   camaro:
@@ -23,7 +23,7 @@ dependencies:
     - "org.ff-lang.dart@charger;+"
     - "org.ff-lang.js@charger;+"
     - "org.ff-lang.python@charger;+"
-    - "org.bouncycastle@bcprov-jdk15on;1.68"
+    - "org.bouncycastle@bcprov-jdk15on;1.70"
   kitt:
     - "org.ff-lang@crl;+"
     - "org.ff-lang.java@charger;+"
@@ -53,8 +53,8 @@ dependencies:
     - "org.ff-lang@charger-java;+"
     - "org.ff-lang@charger-java-libs;+"
   js_test:
-    - "org.seleniumhq.selenium@selenium-java;3.141.59"
-    - "org.seleniumhq.selenium@selenium-chrome-driver;3.141.59"
+    - "org.seleniumhq.selenium@selenium-java;4.1.0"
+    - "org.seleniumhq.selenium@selenium-chrome-driver;4.1.0"
 
 sources:
   ff: { test: true }
@@ -111,9 +111,9 @@ tasks:
     group: ff
     description: Execute Java Test
     lang: java
-    depends: ["ff_java_test_compile", "compileTestJava"]
+    depends: [ "ff_java_test_compile", "compileTestJava" ]
   ff_js_test:
-    depends: ["ff_js_chrome_test", "ff_js_firefox_test", "ff_js_edge_test"]
+    depends: [ "ff_js_chrome_test", "ff_js_firefox_test", "ff_js_edge_test" ]
     log-end: "Js Test executed"
   ff_js_chrome_test:
     class: $Test
@@ -121,52 +121,52 @@ tasks:
     description: Execute Chrome Js Test
     lang: js
     browser: chrome
-    depends: ["ff_js_test_compile"]
+    depends: [ "ff_js_test_compile" ]
   ff_js_firefox_test:
     class: $Test
     group: ff
     description: Execute Firefox Js Test
     lang: js
     browser: firefox
-    depends: ["ff_js_test_compile"]
+    depends: [ "ff_js_test_compile" ]
   ff_js_edge_test:
     class: $Test
     group: ff
     description: Execute Edge Js Test
     lang: js
     browser: edge
-    depends: ["ff_js_test_compile"]
+    depends: [ "ff_js_test_compile" ]
   ff_dart_test:
     class: $Test
     group: ff
     description: Execute Dart Test
     lang: dart
-    depends: ["ff_dart_test_compile"]
+    depends: [ "ff_dart_test_compile" ]
   ff_python_test:
     class: $Test
     group: ff
     description: Execute Python Test
     lang: python
-    depends: ["ff_python_test_compile"]
+    depends: [ "ff_python_test_compile" ]
   ff_publish:
     group: ff
     description: Build and Publish the artifact
-    depends: [publish]
+    depends: [ publish ]
     log-end: App build and uploaded
   ff_compile:
     depends:
       [
-        "ff_java_compile",
-        "ff_js_compile",
-        "ff_dart_compile",
-        "ff_python_compile",
+          "ff_java_compile",
+          "ff_js_compile",
+          "ff_dart_compile",
+          "ff_python_compile",
       ]
     log-end: "Source compiled"
   ff_jar:
-    depends: ["jar", "js_jar", "java_jar", "dart_jar", "python_jar"]
+    depends: [ "jar", "js_jar", "java_jar", "dart_jar", "python_jar" ]
     log-end: "Jar generated"
   ff_test:
-    depends: ["ff_java_test", "ff_js_test", "ff_dart_test", "ff_python_test"]
+    depends: [ "ff_java_test", "ff_js_test", "ff_dart_test", "ff_python_test" ]
     log-end: "Test executed"
   show_ff_python_test_report:
     class: $Browse
@@ -201,9 +201,9 @@ tasks:
   show_ff_js_test_report:
     depends:
       [
-        "show_ff_js_chrome_test_report",
-        "show_ff_js_firefox_test_report",
-        "show_ff_js_edge_test_report",
+          "show_ff_js_chrome_test_report",
+          "show_ff_js_firefox_test_report",
+          "show_ff_js_edge_test_report",
       ]
     log-end: "Test executed"
   show_ff_coverage_report:
@@ -212,7 +212,7 @@ tasks:
     description: Coverage Test Report
     uri: file://$build_dir$/reports/jacoco/html/index.html
 
-files: [$clear, multi]
+files: [ $clear, multi ]
 
 artifacts:
   - $clear
